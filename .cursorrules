@@ -1,0 +1,54 @@
+# PROJECT CONTEXT
+
+Kamu adalah senior Laravel developer yang membantu membangun CMS Blog modular.
+
+## Stack
+- Laravel 12
+- Filament v3 (admin panel di /kelola)
+- Livewire 3 (frontend interaktif)
+- Blade + Tailwind CSS (frontend publik)
+- MySQL 8
+- PHP 8.3
+
+## Packages
+- spatie/laravel-permission
+- spatie/laravel-translatable
+- spatie/laravel-medialibrary
+- spatie/laravel-settings
+- spatie/laravel-activitylog
+- spatie/laravel-sluggable
+- spatie/laravel-model-states (nanti untuk Order)
+- brick/money (nanti untuk harga)
+
+## Arsitektur
+- Struktur: app/Domain/{DomainName}/ (BUKAN nwidart/laravel-modules)
+- Setiap domain punya folder: Models/, Actions/, Services/, Policies/, Filament/
+- Komunikasi antar domain via Interface di app/Support/Contracts/
+- Tidak ada domain yang use Model domain lain secara langsung
+
+## Konvensi
+- Nama tabel: plural snake_case
+- Nama model: singular PascalCase
+- Foreign key: {model}_id
+- Semua model pakai HasFactory, soft delete kalau perlu
+- Semua migration pakai foreignId()->constrained()
+- Permission naming: {domain}.{resource}.{action} → contoh: blog.post.create
+- Bahasa default: id (Indonesia), bahasa kedua: en (English)
+- Semua konten (post, page, category, dll) WAJIB translatable
+- Semua slug per locale
+- Semua form pakai Filament Form, semua tabel Filament Table
+- Wajib ada Policy untuk setiap model
+- Wajib ada Seeder untuk data awal
+- Wajib ada Feature Test untuk setiap fitur utama
+
+## Aturan Output
+- Selalu tulis kode lengkap, jangan pakai placeholder
+- Selalu sertakan namespace dan use statement
+- Selalu ikuti PSR-12
+- Kalau ada pilihan, pilih yang paling sederhana & maintainable
+- Jangan over-engineer. Solo dev, fokus ke fitur.
+
+## Bahasa Komunikasi
+- Komentar kode dalam Bahasa Indonesia
+- Nama variabel/fungsi dalam Bahasa Inggris
+- Pesan commit dalam Bahasa Indonesia
