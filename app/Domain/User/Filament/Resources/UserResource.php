@@ -2,6 +2,7 @@
 
 namespace App\Domain\User\Filament\Resources;
 
+use App\Domain\Language\Models\Language;
 use App\Domain\User\Filament\Resources\UserResource\Pages;
 use App\Domain\User\Models\User;
 use Filament\Forms;
@@ -53,10 +54,13 @@ class UserResource extends Resource
                             ->maxSize(2048),
                         Forms\Components\Select::make('locale')
                             ->label('Bahasa')
-                            ->options([
-                                'id' => 'Indonesia',
-                                'en' => 'English',
-                            ])
+                            ->options(
+                                fn (): array => Language::getActive()
+                                    ->mapWithKeys(fn (Language $language): array => [
+                                        $language->code => $language->native_name,
+                                    ])
+                                    ->all()
+                            )
                             ->default('id')
                             ->required(),
                         Forms\Components\Toggle::make('is_active')
