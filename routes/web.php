@@ -2,6 +2,7 @@
 
 use App\Domain\Blog\Post\Http\Controllers\BlogController;
 use App\Domain\Gallery\Album\Http\Controllers\GalleryController;
+use App\Domain\Page\Http\Controllers\PageController;
 use App\Domain\Language\Models\Language;
 use Illuminate\Support\Facades\Route;
 
@@ -10,6 +11,7 @@ Route::redirect('/admin/menus', '/kelola/menus');
 Route::redirect('/admin/posts', '/kelola/posts');
 Route::redirect('/admin/albums', '/kelola/albums');
 Route::redirect('/admin/comments', '/kelola/comments');
+Route::redirect('/admin/pages', '/kelola/pages');
 Route::redirect('/admin', '/kelola');
 
 Route::get('/sitemap.xml', function () {
@@ -29,9 +31,9 @@ Route::get('/', function () {
 Route::prefix('{locale}')
     ->where(['locale' => '[A-Za-z]{2,5}'])
     ->group(function () {
-        Route::get('/', function () {
-            return view('welcome');
-        })->name('home');
+        Route::get('/', [PageController::class, 'home'])->name('home');
+
+        Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
 
         Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
         Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');

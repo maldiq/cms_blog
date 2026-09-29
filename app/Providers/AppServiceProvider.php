@@ -6,6 +6,8 @@ use App\Domain\Blog\Post\Models\Post;
 use App\Domain\Blog\Post\Observers\PostObserver;
 use App\Domain\Comment\Events\CommentCreated;
 use App\Domain\Comment\Listeners\SendNewCommentAdminNotification;
+use App\Domain\Page\Models\Page;
+use App\Domain\Page\Observers\PageObserver;
 use App\Domain\Menu\Models\Menu;
 use App\Domain\Menu\Models\MenuItem;
 use App\Domain\Menu\Observers\MenuItemObserver;
@@ -40,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
         Menu::observe(MenuObserver::class);
         MenuItem::observe(MenuItemObserver::class);
         Post::observe(PostObserver::class);
+        Page::observe(PageObserver::class);
 
         Gate::define('manage-settings', fn (User $user): bool => (new SettingsPolicy())->manage($user));
 

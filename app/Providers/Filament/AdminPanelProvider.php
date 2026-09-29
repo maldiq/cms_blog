@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Domain\Blog\Category\Filament\Resources\CategoryResource;
 use App\Domain\Comment\Filament\Resources\CommentResource;
 use App\Domain\Gallery\Album\Filament\Resources\AlbumResource;
+use App\Domain\Page\Filament\Resources\PageResource;
 use App\Domain\Blog\Post\Filament\Resources\PostResource;
 use App\Domain\Blog\Series\Filament\Resources\SeriesResource;
 use App\Domain\Blog\Tag\Filament\Resources\TagResource;
@@ -52,6 +53,7 @@ class AdminPanelProvider extends PanelProvider
                 SeriesResource::class,
                 AlbumResource::class,
                 CommentResource::class,
+                PageResource::class,
             ])
             ->discoverResources(in: app_path('Domain/Blog'), for: 'App\\Domain\\Blog')
             ->discoverResources(in: app_path('Domain/Gallery'), for: 'App\\Domain\\Gallery')
