@@ -61,6 +61,18 @@ class RolePermissionSeeder extends Seeder
         'service.service.create',
         'service.service.update',
         'service.service.delete',
+        'portfolio.portfolio.viewAny',
+        'portfolio.portfolio.create',
+        'portfolio.portfolio.update',
+        'portfolio.portfolio.delete',
+        'team.team.viewAny',
+        'team.team.create',
+        'team.team.update',
+        'team.team.delete',
+        'testimonial.testimonial.viewAny',
+        'testimonial.testimonial.create',
+        'testimonial.testimonial.update',
+        'testimonial.testimonial.delete',
     ];
 
     /**
@@ -132,6 +144,18 @@ class RolePermissionSeeder extends Seeder
             'service.service.create',
             'service.service.update',
             'service.service.delete',
+            'portfolio.portfolio.viewAny',
+            'portfolio.portfolio.create',
+            'portfolio.portfolio.update',
+            'portfolio.portfolio.delete',
+            'team.team.viewAny',
+            'team.team.create',
+            'team.team.update',
+            'team.team.delete',
+            'testimonial.testimonial.viewAny',
+            'testimonial.testimonial.create',
+            'testimonial.testimonial.update',
+            'testimonial.testimonial.delete',
         ]);
 
         Role::findByName('editor', 'web')->syncPermissions([
@@ -156,6 +180,15 @@ class RolePermissionSeeder extends Seeder
             'service.service.viewAny',
             'service.service.create',
             'service.service.update',
+            'portfolio.portfolio.viewAny',
+            'portfolio.portfolio.create',
+            'portfolio.portfolio.update',
+            'team.team.viewAny',
+            'team.team.create',
+            'team.team.update',
+            'testimonial.testimonial.viewAny',
+            'testimonial.testimonial.create',
+            'testimonial.testimonial.update',
         ]);
 
         Role::findByName('author', 'web')->syncPermissions([

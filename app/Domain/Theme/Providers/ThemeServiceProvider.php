@@ -7,9 +7,12 @@ use App\Domain\Theme\Services\ThemeService;
 use App\View\Components\Theme\Sections\AboutSection;
 use App\View\Components\Theme\Sections\CtaSection;
 use App\View\Components\Theme\Sections\Hero;
+use App\View\Components\Theme\Sections\PortfolioSection;
 use App\View\Components\Theme\Sections\ProcessSection;
 use App\View\Components\Theme\Sections\ServicesSection;
 use App\View\Components\Theme\Sections\StatsSection;
+use App\View\Components\Theme\Sections\TeamSection;
+use App\View\Components\Theme\Sections\TestimonialSection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -42,6 +45,9 @@ class ThemeServiceProvider extends ServiceProvider
         Blade::component(ServicesSection::class, 'theme::services-section');
         Blade::component(AboutSection::class, 'theme::about-section');
         Blade::component(ProcessSection::class, 'theme::process-section');
+        Blade::component(PortfolioSection::class, 'theme::portfolio-section');
+        Blade::component(TeamSection::class, 'theme::team-section');
+        Blade::component(TestimonialSection::class, 'theme::testimonial-section');
     }
 
     public function registerThemeViewNamespace(string $slug): void
