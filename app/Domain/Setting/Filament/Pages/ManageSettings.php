@@ -83,6 +83,7 @@ class ManageSettings extends Page implements HasForms
             'require_email' => $comment->require_email,
             'notify_admin' => $comment->notify_admin,
             'admin_email' => $comment->admin_email,
+            'blocked_words' => $comment->blocked_words,
             'driver' => $mail->driver,
             'host' => $mail->host,
             'port' => $mail->port,
@@ -198,6 +199,10 @@ class ManageSettings extends Page implements HasForms
             Forms\Components\Toggle::make('require_email')->label('Wajib email'),
             Forms\Components\Toggle::make('notify_admin')->label('Notifikasi admin'),
             Forms\Components\TextInput::make('admin_email')->label('Email admin')->email(),
+            Forms\Components\Textarea::make('blocked_words')
+                ->label('Kata terlarang (pisah koma)')
+                ->rows(2)
+                ->helperText('Komentar yang mengandung kata ini otomatis ditandai spam.'),
         ];
     }
 
@@ -282,6 +287,7 @@ class ManageSettings extends Page implements HasForms
         $comment->require_email = (bool) ($state['require_email'] ?? true);
         $comment->notify_admin = (bool) ($state['notify_admin'] ?? true);
         $comment->admin_email = $state['admin_email'] ?? null;
+        $comment->blocked_words = $state['blocked_words'] ?? null;
         $comment->save();
 
         $mail = app(MailSettings::class);

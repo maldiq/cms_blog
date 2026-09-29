@@ -88,8 +88,11 @@
             </section>
         @endif
 
-        <section class="mt-12 rounded-lg border border-dashed border-gray-300 p-6 text-sm text-gray-500">
-            Comment section — coming soon (Prompt 9).
-        </section>
+        @if ($post->allow_comment)
+            @livewire(\App\Domain\Comment\Livewire\CommentSection::class, [
+                'commentableType' => \App\Domain\Blog\Post\Models\Post::class,
+                'commentableId' => $post->id,
+            ])
+        @endif
     </main>
 @endsection

@@ -16,6 +16,9 @@ class CommentSettings extends Settings
 
     public ?string $admin_email;
 
+    /** Daftar kata terlarang, dipisah koma (case-insensitive). */
+    public ?string $blocked_words;
+
     public static function group(): string
     {
         return 'comment';

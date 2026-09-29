@@ -9,6 +9,7 @@ Route::redirect('/admin/media', '/kelola/media');
 Route::redirect('/admin/menus', '/kelola/menus');
 Route::redirect('/admin/posts', '/kelola/posts');
 Route::redirect('/admin/albums', '/kelola/albums');
+Route::redirect('/admin/comments', '/kelola/comments');
 Route::redirect('/admin', '/kelola');
 
 Route::get('/sitemap.xml', function () {

@@ -3,6 +3,7 @@
 namespace App\Domain\Blog\Post\Models;
 
 use App\Domain\Blog\Category\Models\Category;
+use App\Domain\Comment\Models\Comment;
 use App\Domain\Blog\Post\Policies\PostPolicy;
 use App\Domain\Blog\Series\Models\Series;
 use App\Domain\Blog\Tag\Models\Tag;

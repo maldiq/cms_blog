@@ -37,6 +37,7 @@ if (! function_exists('setting')) {
             'require_email' => [CommentSettings::class, 'require_email'],
             'notify_admin' => [CommentSettings::class, 'notify_admin'],
             'admin_email' => [CommentSettings::class, 'admin_email'],
+            'blocked_words' => [CommentSettings::class, 'blocked_words'],
             'driver' => [MailSettings::class, 'driver'],
             'host' => [MailSettings::class, 'host'],
             'port' => [MailSettings::class, 'port'],

@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Domain\Blog\Post\Models\Post;
 use App\Domain\Blog\Post\Observers\PostObserver;
+use App\Domain\Comment\Events\CommentCreated;
+use App\Domain\Comment\Listeners\SendNewCommentAdminNotification;
 use App\Domain\Menu\Models\Menu;
 use App\Domain\Menu\Models\MenuItem;
 use App\Domain\Menu\Observers\MenuItemObserver;
@@ -33,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Event::listen(Login::class, UpdateLastLoginOnLogin::class);
+        Event::listen(CommentCreated::class, SendNewCommentAdminNotification::class);
 
         Menu::observe(MenuObserver::class);
         MenuItem::observe(MenuItemObserver::class);
