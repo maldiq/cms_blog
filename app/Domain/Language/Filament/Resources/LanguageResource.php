@@ -20,6 +20,8 @@ class LanguageResource extends Resource
 
     protected static ?string $navigationGroup = 'Sistem';
 
+    protected static ?int $navigationSort = 2;
+
     protected static ?string $modelLabel = 'Bahasa';
 
     protected static ?string $pluralModelLabel = 'Bahasa';

@@ -19,6 +19,8 @@ class RoleResource extends Resource
 
     protected static ?string $navigationGroup = 'Pengguna';
 
+    protected static ?int $navigationSort = 2;
+
     protected static ?string $modelLabel = 'Role';
 
     protected static ?string $pluralModelLabel = 'Role';

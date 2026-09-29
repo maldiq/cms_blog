@@ -41,6 +41,14 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Emerald,
             ])
+            ->navigationGroups([
+                'Konten',
+                'Blog',
+                'Media',
+                'Gallery',
+                'Pengguna',
+                'Sistem',
+            ])
             ->resources([
                 UserResource::class,
                 RoleResource::class,

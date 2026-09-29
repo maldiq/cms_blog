@@ -23,6 +23,8 @@ class SeriesResource extends Resource
 
     protected static ?string $navigationGroup = 'Blog';
 
+    protected static ?int $navigationSort = 4;
+
     protected static ?string $modelLabel = 'Series';
 
     protected static ?string $slug = 'series';

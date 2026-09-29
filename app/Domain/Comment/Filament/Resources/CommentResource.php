@@ -24,6 +24,8 @@ class CommentResource extends Resource
 
     protected static ?string $navigationGroup = 'Blog';
 
+    protected static ?int $navigationSort = 5;
+
     protected static ?string $modelLabel = 'Komentar';
 
     protected static ?string $slug = 'comments';

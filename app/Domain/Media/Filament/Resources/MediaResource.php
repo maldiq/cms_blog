@@ -17,6 +17,8 @@ class MediaResource extends Resource
 
     protected static ?string $navigationGroup = 'Media';
 
+    protected static ?int $navigationSort = 1;
+
     protected static ?string $modelLabel = 'Media';
 
     protected static ?string $pluralModelLabel = 'Media';

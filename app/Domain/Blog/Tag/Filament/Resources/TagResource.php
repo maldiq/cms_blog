@@ -21,6 +21,8 @@ class TagResource extends Resource
 
     protected static ?string $navigationGroup = 'Blog';
 
+    protected static ?int $navigationSort = 3;
+
     protected static ?string $modelLabel = 'Tag';
 
     protected static ?string $slug = 'tags';

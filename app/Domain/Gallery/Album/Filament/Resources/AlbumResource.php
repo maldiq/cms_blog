@@ -21,7 +21,9 @@ class AlbumResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-photo';
 
-    protected static ?string $navigationGroup = 'Galeri';
+    protected static ?string $navigationGroup = 'Gallery';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $modelLabel = 'Album';
 
