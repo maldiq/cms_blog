@@ -2,6 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use App\Domain\Blog\Category\Filament\Resources\CategoryResource;
+use App\Domain\Blog\Post\Filament\Resources\PostResource;
+use App\Domain\Blog\Series\Filament\Resources\SeriesResource;
+use App\Domain\Blog\Tag\Filament\Resources\TagResource;
 use App\Domain\Language\Filament\Resources\LanguageResource;
 use App\Domain\Menu\Filament\Resources\MenuResource;
 use App\Domain\Media\Filament\Resources\MediaResource;
@@ -40,7 +44,12 @@ class AdminPanelProvider extends PanelProvider
                 LanguageResource::class,
                 MediaResource::class,
                 MenuResource::class,
+                PostResource::class,
+                CategoryResource::class,
+                TagResource::class,
+                SeriesResource::class,
             ])
+            ->discoverResources(in: app_path('Domain/Blog'), for: 'App\\Domain\\Blog')
             ->discoverResources(in: app_path('Domain/Menu/Filament/Resources'), for: 'App\\Domain\\Menu\\Filament\\Resources')
             ->discoverResources(in: app_path('Domain/Media/Filament/Resources'), for: 'App\\Domain\\Media\\Filament\\Resources')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')

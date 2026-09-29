@@ -30,6 +30,22 @@ class RolePermissionSeeder extends Seeder
         'menu.create',
         'menu.update',
         'menu.delete',
+        'blog.post.viewAny',
+        'blog.post.create',
+        'blog.post.update',
+        'blog.post.delete',
+        'blog.category.viewAny',
+        'blog.category.create',
+        'blog.category.update',
+        'blog.category.delete',
+        'blog.tag.viewAny',
+        'blog.tag.create',
+        'blog.tag.update',
+        'blog.tag.delete',
+        'blog.series.viewAny',
+        'blog.series.create',
+        'blog.series.update',
+        'blog.series.delete',
     ];
 
     /**
@@ -73,6 +89,19 @@ class RolePermissionSeeder extends Seeder
             'menu.create',
             'menu.update',
             'menu.delete',
+            'blog.post.viewAny',
+            'blog.post.create',
+            'blog.post.update',
+            'blog.post.delete',
+            'blog.category.viewAny',
+            'blog.category.create',
+            'blog.category.update',
+            'blog.tag.viewAny',
+            'blog.tag.create',
+            'blog.tag.update',
+            'blog.series.viewAny',
+            'blog.series.create',
+            'blog.series.update',
         ]);
 
         Role::findByName('editor', 'web')->syncPermissions([
@@ -81,11 +110,19 @@ class RolePermissionSeeder extends Seeder
             'setting.viewAny',
             'media.viewAny',
             'media.upload',
+            'blog.post.viewAny',
+            'blog.post.create',
+            'blog.post.update',
+            'blog.category.viewAny',
+            'blog.tag.viewAny',
         ]);
 
         Role::findByName('author', 'web')->syncPermissions([
             'user.viewAny',
             'setting.viewAny',
+            'blog.post.viewAny',
+            'blog.post.create',
+            'blog.post.update',
         ]);
 
         Role::findByName('contributor', 'web')->syncPermissions([

@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             SuperAdminSeeder::class,
             MenuSeeder::class,
+            BlogSeeder::class,
         ]);
     }
 }

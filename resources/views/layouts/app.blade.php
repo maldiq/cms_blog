@@ -13,6 +13,8 @@
 
     <title>@yield('title', config('app.name', 'CMS Blog'))</title>
 
+    @stack('meta')
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 
