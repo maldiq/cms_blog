@@ -3,21 +3,8 @@
 @php
     $translation = $post->translate($locale, false);
     $title = $translation?->title ?? 'Post';
-    $metaTitle = $translation?->meta_title ?: $title;
-    $metaDescription = $translation?->meta_description ?: $translation?->excerpt;
     $imageUrl = $post->featuredImage?->getFullUrl();
 @endphp
-
-@push('meta')
-    <meta name="description" content="{{ $metaDescription }}" />
-    <meta property="og:title" content="{{ $metaTitle }}" />
-    <meta property="og:description" content="{{ $metaDescription }}" />
-    @if ($imageUrl)
-        <meta property="og:image" content="{{ $imageUrl }}" />
-    @endif
-@endpush
-
-@section('title', $metaTitle)
 
 @section('content')
     <main class="mx-auto max-w-3xl px-6 py-10">

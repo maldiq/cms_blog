@@ -15,7 +15,13 @@ class BlogController extends Controller
     {
         app()->setLocale($locale);
 
-        return view('blog.index', compact('locale'));
+        return view('blog.index', [
+            'locale' => $locale,
+            'seoContext' => [
+                'title' => 'Blog',
+                'canonical' => route('blog.index', ['locale' => $locale]),
+            ],
+        ]);
     }
 
     public function show(string $locale, string $slug): View
@@ -30,7 +36,19 @@ class BlogController extends Controller
 
         $related = $this->postService->getRelated($post);
 
-        return view('blog.show', compact('post', 'related', 'locale'));
+        $translation = $post->translate($locale, false);
+
+        return view('blog.show', [
+            'post' => $post,
+            'related' => $related,
+            'locale' => $locale,
+            'seo' => $post,
+            'breadcrumbs' => [
+                ['name' => setting('site_name', config('app.name')), 'url' => url("/{$locale}")],
+                ['name' => 'Blog', 'url' => route('blog.index', ['locale' => $locale])],
+                ['name' => (string) $translation?->title, 'url' => url()->current()],
+            ],
+        ]);
     }
 
     public function category(string $locale, string $slug, Request $request): View
@@ -46,6 +64,7 @@ class BlogController extends Controller
             'posts' => $posts,
             'locale' => $locale,
             'category' => $category,
+            'seo' => $category,
         ]);
     }
 
@@ -58,7 +77,12 @@ class BlogController extends Controller
 
         $posts = $this->postService->getPublished($locale, ['tag' => $slug]);
 
-        return view('blog.index', compact('posts', 'locale', 'tag'));
+        return view('blog.index', [
+            'posts' => $posts,
+            'locale' => $locale,
+            'tag' => $tag,
+            'seo' => $tag,
+        ]);
     }
 
     public function series(string $locale, string $slug): View
@@ -70,7 +94,12 @@ class BlogController extends Controller
 
         $posts = $this->postService->getBySeries($series, $locale);
 
-        return view('blog.series', compact('series', 'posts', 'locale'));
+        return view('blog.series', [
+            'series' => $series,
+            'posts' => $posts,
+            'locale' => $locale,
+            'seo' => $series,
+        ]);
     }
 
     public function seriesPost(string $locale, string $slug, string $postSlug): View
@@ -91,6 +120,8 @@ class BlogController extends Controller
         $previous = $currentIndex !== false && $currentIndex > 0 ? $posts[$currentIndex - 1] : null;
         $next = $currentIndex !== false && $currentIndex < $posts->count() - 1 ? $posts[$currentIndex + 1] : null;
 
+        $translation = $post->translate($locale, false);
+
         return view('blog.show', [
             'post' => $post,
             'related' => collect(),
@@ -99,6 +130,13 @@ class BlogController extends Controller
             'seriesPosts' => $posts,
             'previousSeriesPost' => $previous,
             'nextSeriesPost' => $next,
+            'seo' => $post,
+            'breadcrumbs' => [
+                ['name' => setting('site_name', config('app.name')), 'url' => url("/{$locale}")],
+                ['name' => 'Blog', 'url' => route('blog.index', ['locale' => $locale])],
+                ['name' => (string) $series->translate($locale, false)?->title, 'url' => route('blog.series', ['locale' => $locale, 'slug' => $series->translate($locale, false)?->slug])],
+                ['name' => (string) $translation?->title, 'url' => url()->current()],
+            ],
         ]);
     }
 }

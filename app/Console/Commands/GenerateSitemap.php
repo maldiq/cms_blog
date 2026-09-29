@@ -2,53 +2,28 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\Blog\Post\Models\Post;
-use App\Domain\Language\Models\Language;
+use App\Domain\Seo\Http\Controllers\SitemapController;
+use App\Domain\Seo\Services\SitemapService;
 use Illuminate\Console\Command;
-use Spatie\Sitemap\Sitemap;
-use Spatie\Sitemap\Tags\Url;
+use Illuminate\Support\Facades\Cache;
 
 class GenerateSitemap extends Command
 {
     protected $signature = 'sitemap:generate';
 
-    protected $description = 'Generate sitemap.xml untuk halaman blog publik';
+    protected $description = 'Regenerate cache sitemap.xml untuk seluruh URL publik';
 
-    public function handle(): int
+    public function handle(SitemapService $sitemapService): int
     {
-        $sitemap = Sitemap::create();
+        SitemapController::forgetCache();
 
-        foreach (Language::getActive() as $language) {
-            $locale = $language->code;
-
-            $sitemap->add(Url::create(url("/{$locale}/blog"))->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY));
-
-            Post::query()
-                ->published()
-                ->whereHas('translations', fn ($q) => $q->where('locale', $locale))
-                ->with(['translations' => fn ($q) => $q->where('locale', $locale)])
-                ->chunk(100, function ($posts) use ($sitemap, $locale): void {
-                    foreach ($posts as $post) {
-                        $slug = $post->translate($locale, false)?->slug;
-
-                        if (blank($slug)) {
-                            continue;
-                        }
-
-                        $sitemap->add(
-                            Url::create(url("/{$locale}/blog/{$slug}"))
-                                ->setLastModificationDate($post->updated_at)
-                                ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
-                                ->setPriority(0.8)
-                        );
-                    }
-                });
-        }
+        $xml = $sitemapService->buildXml();
+        Cache::put('seo.sitemap.xml', $xml, 86400);
 
         $path = storage_path('app/sitemap.xml');
-        $sitemap->writeToFile($path);
+        file_put_contents($path, $xml);
 
-        $this->info("Sitemap ditulis ke {$path}");
+        $this->info("Sitemap di-cache dan disalin ke {$path}");
 
         return self::SUCCESS;
     }

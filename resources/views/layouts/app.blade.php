@@ -11,7 +11,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', config('app.name', 'CMS Blog'))</title>
+    <x-seo-meta
+        :model="$seo ?? null"
+        :locale="$locale ?? null"
+        :breadcrumbs="$breadcrumbs ?? []"
+        :context="$seoContext ?? []"
+        :website-schema="$websiteSchema ?? false"
+    />
 
     @stack('meta')
 

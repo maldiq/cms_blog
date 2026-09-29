@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title', __('messages.welcome') . ' — ' . config('app.name'))
-
 @section('content')
     <main class="mx-auto flex min-h-[calc(100vh-4.5rem)] max-w-3xl flex-col items-center justify-center px-6 py-16">
         <p class="text-sm font-medium uppercase tracking-wide text-emerald-600">

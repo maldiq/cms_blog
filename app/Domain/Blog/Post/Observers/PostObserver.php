@@ -3,6 +3,7 @@
 namespace App\Domain\Blog\Post\Observers;
 
 use App\Domain\Blog\Post\Models\Post;
+use App\Domain\Seo\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -20,11 +21,13 @@ class PostObserver
     public function saved(Post $post): void
     {
         $this->clearPostCaches($post);
+        SitemapController::forgetCache();
     }
 
     public function deleted(Post $post): void
     {
         $this->clearPostCaches($post);
+        SitemapController::forgetCache();
     }
 
     protected function syncReadingTime(Post $post): void

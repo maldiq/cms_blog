@@ -21,10 +21,19 @@ class PageController
             return view('page.show', [
                 'page' => $page,
                 'locale' => $locale,
+                'seo' => $page,
+                'websiteSchema' => true,
+                'breadcrumbs' => [
+                    ['name' => setting('site_name', config('app.name')), 'url' => url("/{$locale}")],
+                    ['name' => (string) $page->translate($locale, false)?->title, 'url' => url()->current()],
+                ],
             ]);
         }
 
-        return view('welcome');
+        return view('welcome', [
+            'locale' => $locale,
+            'websiteSchema' => true,
+        ]);
     }
 
     public function show(string $locale, string $slug): View
@@ -37,6 +46,11 @@ class PageController
         return view('page.show', [
             'page' => $page,
             'locale' => $locale,
+            'seo' => $page,
+            'breadcrumbs' => [
+                ['name' => setting('site_name', config('app.name')), 'url' => url("/{$locale}")],
+                ['name' => (string) $page->translate($locale, false)?->title, 'url' => url()->current()],
+            ],
         ]);
     }
 }

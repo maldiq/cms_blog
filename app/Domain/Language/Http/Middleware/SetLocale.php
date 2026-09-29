@@ -75,6 +75,8 @@ class SetLocale
             'js/*',
             'css/*',
             'favicon.ico',
+            'sitemap.xml',
+            'robots.txt',
         );
     }
 }

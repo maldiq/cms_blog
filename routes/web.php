@@ -4,6 +4,8 @@ use App\Domain\Blog\Post\Http\Controllers\BlogController;
 use App\Domain\Gallery\Album\Http\Controllers\GalleryController;
 use App\Domain\Page\Http\Controllers\PageController;
 use App\Domain\Language\Models\Language;
+use App\Domain\Seo\Http\Controllers\RobotsController;
+use App\Domain\Seo\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/admin/media', '/kelola/media');
@@ -14,13 +16,8 @@ Route::redirect('/admin/comments', '/kelola/comments');
 Route::redirect('/admin/pages', '/kelola/pages');
 Route::redirect('/admin', '/kelola');
 
-Route::get('/sitemap.xml', function () {
-    $path = storage_path('app/sitemap.xml');
-
-    abort_unless(is_file($path), 404);
-
-    return response()->file($path, ['Content-Type' => 'application/xml']);
-})->name('sitemap');
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+Route::get('/robots.txt', RobotsController::class)->name('robots');
 
 Route::get('/', function () {
     $defaultCode = Language::getDefault()?->code ?? 'id';

@@ -20,6 +20,10 @@ class GalleryController
         return view('gallery.index', [
             'albums' => $albums,
             'locale' => $locale,
+            'seoContext' => [
+                'title' => __('Galeri'),
+                'canonical' => route('gallery.index', ['locale' => $locale]),
+            ],
         ]);
     }
 
@@ -33,6 +37,7 @@ class GalleryController
         return view('gallery.show', [
             'album' => $album,
             'locale' => $locale,
+            'seo' => $album,
         ]);
     }
 }
