@@ -7,7 +7,6 @@ use App\Domain\Menu\Models\MenuItem;
 use App\Domain\Menu\Services\HeaderMenuFromContentService;
 use App\Domain\Menu\Services\MenuService;
 use App\Domain\Service\Models\Service;
-use App\Domain\Service\Support\ServiceDemoCatalog;
 use App\Domain\User\Models\User;
 use Database\Seeders\LanguageSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -29,7 +28,19 @@ class HeaderMenuFromContentTest extends TestCase
 
     public function test_sync_builds_layanan_children_from_services_with_content(): void
     {
-        ServiceDemoCatalog::seedIfMissing();
+        foreach (range(1, 3) as $index) {
+            $service = Service::factory()->create([
+                'is_active' => true,
+                'sort_order' => $index,
+            ]);
+
+            $service->translateOrNew('id')->fill([
+                'title' => 'Layanan '.$index,
+                'slug' => 'layanan-'.$index,
+                'excerpt' => 'Ringkasan layanan '.$index,
+                'content' => '<p>Konten layanan '.$index.'</p>',
+            ])->save();
+        }
 
         app(HeaderMenuFromContentService::class)->sync();
 
@@ -37,10 +48,7 @@ class HeaderMenuFromContentTest extends TestCase
         $layanan = $tree->firstWhere('label', 'Layanan');
 
         $this->assertNotNull($layanan);
-        $this->assertGreaterThanOrEqual(5, count($layanan['children']));
-        $this->assertTrue(
-            collect($layanan['children'])->contains(fn (array $child): bool => str_contains($child['label'], 'Backup Website Data')),
-        );
+        $this->assertCount(3, $layanan['children']);
 
         $this->assertDatabaseHas('menu_items', [
             'type' => MenuItem::TYPE_SERVICE,
@@ -49,8 +57,6 @@ class HeaderMenuFromContentTest extends TestCase
 
     public function test_blog_link_appears_when_published_posts_exist(): void
     {
-        ServiceDemoCatalog::seedIfMissing();
-
         $author = User::factory()->create(['is_active' => true]);
 
         Post::query()->create([

@@ -9,6 +9,8 @@
         @class([
             'relative' => ! $isSubmenu && $hasChildren,
             'group/item' => ! $isSubmenu && $hasChildren,
+            // Jembatan hover: li hanya setinggi link; tanpa ini kursor melewati celah mt-2 dan submenu hilang.
+            'lg:before:absolute lg:before:inset-x-0 lg:before:top-full lg:before:block lg:before:h-3 lg:before:content-[""]' => ! $isSubmenu && $hasChildren,
         ])
     >
         <a
@@ -33,9 +35,9 @@
                 @class(
                     $depth === 0
                         ? [
-                            'z-50 mt-2 min-w-[15rem] max-w-[20rem] origin-top-left rounded-xl border border-gray-200/90 bg-white p-2 shadow-xl shadow-gray-300/30 ring-1 ring-black/5',
+                            'z-50 min-w-[15rem] max-w-[20rem] origin-top-left rounded-xl border border-gray-200/90 bg-white p-2 shadow-xl shadow-gray-300/30 ring-1 ring-black/5',
                             'max-lg:static max-lg:mt-2 max-lg:w-full max-lg:min-w-0 max-lg:max-w-none max-lg:translate-y-0 max-lg:opacity-100 max-lg:visible max-lg:bg-gray-50/80',
-                            'lg:absolute lg:left-0 lg:top-full lg:invisible lg:translate-y-1 lg:opacity-0 lg:transition lg:duration-150 lg:ease-out',
+                            'lg:absolute lg:left-0 lg:top-full lg:mt-0 lg:pt-1 lg:invisible lg:translate-y-1 lg:opacity-0 lg:transition lg:duration-150 lg:ease-out',
                             'lg:group-hover/item:visible lg:group-hover/item:translate-y-0 lg:group-hover/item:opacity-100',
                             'lg:group-focus-within/item:visible lg:group-focus-within/item:translate-y-0 lg:group-focus-within/item:opacity-100',
                         ]

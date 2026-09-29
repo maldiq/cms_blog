@@ -1,45 +1,63 @@
 @extends('theme::layouts.app')
 
 @php
-    $coverUrl = media_url($service->cover_id);
-    $consultUrl = route('contact', ['locale' => $locale]);
+    $hasSolusiwebLayout = filled($translation?->content) && str_contains((string) $translation->content, 'sw-service-hero');
 @endphp
 
+@push('styles')
+    @if ($hasSolusiwebLayout && is_file(public_path('themes/servicepro/solusiweb-service.css')))
+        <link rel="stylesheet" href="{{ asset('themes/servicepro/solusiweb-service.css') }}">
+    @endif
+@endpush
+
 @section('content')
-    <x-theme::page-hero :title="$translation?->title" :subtitle="$translation?->excerpt" />
-
-    <section class="py-12 lg:py-16">
-        <div class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 lg:grid-cols-3 lg:px-6">
-            <div class="lg:col-span-2 space-y-6">
-                @if (filled($coverUrl))
-                    <img src="{{ $coverUrl }}" alt="{{ $translation?->title }}" class="w-full rounded-2xl object-cover shadow-md">
-                @endif
-
-                @if (filled($translation?->content))
-                    <div class="prose prose-emerald max-w-none">
-                        {!! $translation->content !!}
-                    </div>
-                @endif
+    @if ($hasSolusiwebLayout)
+        <article class="sw-landing sw-service -mt-px bg-white">
+            <div class="entry-content">
+                {!! $translation->content !!}
             </div>
+        </article>
+    @else
+        @php
+            $coverUrl = media_url($service->cover_id);
+            $consultUrl = route('contact', ['locale' => $locale]);
+        @endphp
 
-            <aside class="space-y-4 rounded-xl border border-gray-200 bg-gray-50 p-6">
-                @if (filled($service->price_from))
-                    <p class="text-sm text-gray-500">{{ __('messages.price_from') }}</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ number_format((float) $service->price_from, 0, ',', '.') }}</p>
-                @endif
+        <x-theme::page-hero :title="$translation?->title" :subtitle="$translation?->excerpt" />
 
-                <a
-                    href="{{ $consultUrl }}"
-                    class="inline-flex w-full justify-center rounded-lg px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90"
-                    style="background-color: var(--color-primary, currentColor)"
-                >
-                    {{ __('messages.consultation_cta') }}
-                </a>
-            </aside>
-        </div>
-    </section>
+        <section class="py-12 lg:py-16">
+            <div class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 lg:grid-cols-3 lg:px-6">
+                <div class="space-y-6 lg:col-span-2">
+                    @if (filled($coverUrl))
+                        <img src="{{ $coverUrl }}" alt="{{ $translation?->title }}" class="w-full rounded-2xl object-cover shadow-md">
+                    @endif
 
-    @if ($relatedServices->isNotEmpty())
+                    @if (filled($translation?->content))
+                        <div class="prose prose-emerald max-w-none">
+                            {!! $translation->content !!}
+                        </div>
+                    @endif
+                </div>
+
+                <aside class="space-y-4 rounded-xl border border-gray-200 bg-gray-50 p-6">
+                    @if (filled($service->price_from))
+                        <p class="text-sm text-gray-500">{{ __('messages.price_from') }}</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ number_format((float) $service->price_from, 0, ',', '.') }}</p>
+                    @endif
+
+                    <a
+                        href="{{ $consultUrl }}"
+                        class="inline-flex w-full justify-center rounded-lg px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+                        style="background-color: var(--color-primary, currentColor)"
+                    >
+                        {{ __('messages.consultation_cta') }}
+                    </a>
+                </aside>
+            </div>
+        </section>
+    @endif
+
+    @if ($relatedServices->isNotEmpty() && ! $hasSolusiwebLayout)
         <section class="border-t border-gray-200 bg-gray-50 py-12">
             <div class="mx-auto max-w-7xl px-4 lg:px-6">
                 <h2 class="mb-6 text-2xl font-bold text-gray-900">{{ __('messages.related_services') }}</h2>
@@ -52,3 +70,9 @@
         </section>
     @endif
 @endsection
+
+@if ($hasSolusiwebLayout)
+    @push('scripts')
+        @vite('resources/js/solusiweb-service-accordion.js')
+    @endpush
+@endif

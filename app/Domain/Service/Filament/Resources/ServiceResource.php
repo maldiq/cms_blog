@@ -46,8 +46,10 @@ class ServiceResource extends Resource
                 Forms\Components\Textarea::make("translations.{$locale}.excerpt")
                     ->label('Excerpt')
                     ->rows(3),
-                Forms\Components\RichEditor::make("translations.{$locale}.content")
-                    ->label('Konten')
+                Forms\Components\Textarea::make("translations.{$locale}.content")
+                    ->label('Konten (HTML)')
+                    ->helperText('Konten impor Solusiweb berupa HTML panjang; pratinjau di halaman publik /layanan/{slug}.')
+                    ->rows(18)
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make("translations.{$locale}.meta_title")->label('Meta title'),
                 Forms\Components\TextInput::make("translations.{$locale}.meta_description")->label('Meta description'),

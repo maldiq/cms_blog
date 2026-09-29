@@ -11,6 +11,34 @@ class ServiceCatalogService
     /**
      * @return Collection<int, Service>
      */
+    /**
+     * Layanan aktif yang punya teks untuk ditampilkan di menu header.
+     *
+     * @return Collection<int, Service>
+     */
+    public function listForHeaderMenu(): Collection
+    {
+        return Service::query()
+            ->active()
+            ->ordered()
+            ->with('translations')
+            ->get()
+            ->filter(function (Service $service): bool {
+                $translation = $service->translate(app()->getLocale(), false)
+                    ?: $service->translate('id', false);
+
+                if ($translation === null) {
+                    return false;
+                }
+
+                $content = trim(strip_tags((string) $translation->content));
+                $excerpt = trim((string) $translation->excerpt);
+
+                return $content !== '' || $excerpt !== '';
+            })
+            ->values();
+    }
+
     public function listActiveForHome(int $limit = 6): Collection
     {
         return Service::query()

@@ -22,6 +22,9 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
+use Livewire\Component as LivewireComponent;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -48,6 +51,24 @@ class AppServiceProvider extends ServiceProvider
         Service::observe(ServiceObserver::class);
 
         Gate::define('manage-settings', fn (User $user): bool => (new SettingsPolicy())->manage($user));
+
+        // Komponen Livewire di App\Domain\* (bukan App\Livewire) perlu resolver agar request /livewire/update tidak 419.
+        Livewire::resolveMissingComponent(function (string $name): ?string {
+            if (! str_starts_with($name, 'app.domain.')) {
+                return null;
+            }
+
+            $relative = substr($name, strlen('app.domain.'));
+            $class = 'App\\Domain\\'.collect(explode('.', $relative))
+                ->map(fn (string $segment): string => Str::studly($segment))
+                ->implode('\\');
+
+            if (class_exists($class) && is_subclass_of($class, LivewireComponent::class)) {
+                return $class;
+            }
+
+            return null;
+        });
 
         // Samakan URL generated (Filament menu, redirect login) dengan host yang dipakai browser.
         if (! $this->app->runningInConsole() && $this->app->environment('local')) {

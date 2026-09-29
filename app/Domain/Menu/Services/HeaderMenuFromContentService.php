@@ -7,13 +7,16 @@ use App\Domain\Menu\Models\Menu;
 use App\Domain\Menu\Models\MenuItem;
 use App\Domain\Page\Models\Page;
 use App\Domain\Service\Models\Service;
-use App\Domain\Service\Support\ServiceDemoCatalog;
+use App\Domain\Service\Services\ServiceCatalogService;
+
 class HeaderMenuFromContentService
 {
+    public function __construct(
+        private readonly ServiceCatalogService $serviceCatalogService,
+    ) {}
+
     public function sync(): void
     {
-        ServiceDemoCatalog::seedIfMissing();
-
         $this->syncHeaderMenu();
         $this->syncHeaderCtaMenu();
 
@@ -44,7 +47,7 @@ class HeaderMenuFromContentService
 
         $childOrder = 1;
 
-        $services = ServiceDemoCatalog::forHeaderMenu();
+        $services = $this->serviceCatalogService->listForHeaderMenu();
 
         if ($services->isNotEmpty()) {
             foreach ($services as $service) {

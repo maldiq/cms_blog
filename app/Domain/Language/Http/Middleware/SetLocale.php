@@ -63,7 +63,7 @@ class SetLocale
 
     private function shouldSkip(Request $request): bool
     {
-        return $request->is(
+        if ($request->is(
             'kelola',
             'kelola/*',
             'admin',
@@ -77,6 +77,11 @@ class SetLocale
             'favicon.ico',
             'sitemap.xml',
             'robots.txt',
-        );
+        )) {
+            return true;
+        }
+
+        // Livewire POST dari halaman /{locale}/... — jangan anggap "livewire" sebagai locale.
+        return $request->segment(2) === 'livewire';
     }
 }

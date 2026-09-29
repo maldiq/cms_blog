@@ -7,7 +7,7 @@ use App\Domain\Menu\Models\MenuItem;
 use App\Domain\Portfolio\Models\Portfolio;
 use App\Domain\Portfolio\Models\PortfolioCategory;
 use App\Domain\Menu\Services\HeaderMenuFromContentService;
-use App\Domain\Service\Support\ServiceDemoCatalog;
+use App\Domain\Service\Services\SolusiwebServiceImportService;
 use App\Domain\Setting\Settings\GeneralSettings;
 use App\Domain\Setting\Settings\SocialSettings;
 use App\Domain\Team\Models\Team;
@@ -24,8 +24,11 @@ class ServiceProDemoSeeder extends Seeder
         $this->call(ServiceProThemeSettingsSeeder::class, false, ['theme' => $theme]);
 
         $this->seedSiteSettings();
-        ServiceDemoCatalog::seedIfMissing();
-        app(HeaderMenuFromContentService::class)->sync();
+        try {
+            app(SolusiwebServiceImportService::class)->import();
+        } catch (\Throwable) {
+            app(HeaderMenuFromContentService::class)->sync();
+        }
         $this->seedFooterMenus();
         $this->seedPortfolios();
         $this->seedTeamMembers();
