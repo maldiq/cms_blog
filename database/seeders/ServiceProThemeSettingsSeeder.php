@@ -51,7 +51,7 @@ class ServiceProThemeSettingsSeeder extends Seeder
             'en' => 'Free Consultation',
         ]);
 
-        ThemeSetting::set($theme->id, 'hero', 'cta_url', '/id/contact');
+        ThemeSetting::set($theme->id, 'hero', 'cta_url', 'https://servicepro.demo/id/contact');
 
         ThemeSetting::set($theme->id, 'hero', 'features', [
             [
@@ -282,7 +282,7 @@ class ServiceProThemeSettingsSeeder extends Seeder
                 'period' => 'proyek',
                 'is_popular' => false,
                 'cta_label' => ['id' => 'Mulai Starter', 'en' => 'Get Starter'],
-                'cta_url' => '/id/contact',
+                'cta_url' => 'https://servicepro.demo/id/contact',
                 'features' => [
                     ['text' => ['id' => 'Landing page responsif', 'en' => 'Responsive landing page']],
                     ['text' => ['id' => 'Form kontak & SEO dasar', 'en' => 'Contact form & basic SEO']],
@@ -295,7 +295,7 @@ class ServiceProThemeSettingsSeeder extends Seeder
                 'period' => 'proyek',
                 'is_popular' => true,
                 'cta_label' => ['id' => 'Pilih Business', 'en' => 'Choose Business'],
-                'cta_url' => '/id/contact',
+                'cta_url' => 'https://servicepro.demo/id/contact',
                 'features' => [
                     ['text' => ['id' => 'Website multi-halaman + CMS', 'en' => 'Multi-page site + CMS']],
                     ['text' => ['id' => 'Integrasi analytics', 'en' => 'Analytics integration']],
@@ -308,7 +308,7 @@ class ServiceProThemeSettingsSeeder extends Seeder
                 'period' => '',
                 'is_popular' => false,
                 'cta_label' => ['id' => 'Hubungi Sales', 'en' => 'Contact Sales'],
-                'cta_url' => '/id/contact',
+                'cta_url' => 'https://servicepro.demo/id/contact',
                 'features' => [
                     ['text' => ['id' => 'Arsitektur skala besar', 'en' => 'Large-scale architecture']],
                     ['text' => ['id' => 'SLA & DevOps dedicated', 'en' => 'SLA & dedicated DevOps']],
@@ -342,6 +342,18 @@ class ServiceProThemeSettingsSeeder extends Seeder
                 'question' => ['id' => 'Apakah ada layanan maintenance?', 'en' => 'Do you offer maintenance?'],
                 'answer' => ['id' => 'Tersedia paket bulanan backup, update, dan monitoring server.', 'en' => 'Monthly packages for backup, updates, and server monitoring.'],
             ],
+            [
+                'question' => ['id' => 'Metode pembayaran apa yang diterima?', 'en' => 'Which payment methods do you accept?'],
+                'answer' => ['id' => 'Transfer bank, invoice per milestone, dan untuk enterprise tersedia PO.', 'en' => 'Bank transfer, milestone invoices, and PO for enterprise clients.'],
+            ],
+            [
+                'question' => ['id' => 'Apakah bisa remote meeting?', 'en' => 'Can we meet remotely?'],
+                'answer' => ['id' => 'Ya, kickoff dan review rutin via Google Meet atau Zoom.', 'en' => 'Yes — kickoffs and reviews via Google Meet or Zoom.'],
+            ],
+            [
+                'question' => ['id' => 'Garansi bug setelah go-live?', 'en' => 'Bug warranty after go-live?'],
+                'answer' => ['id' => '30 hari perbaikan bug kritis included; perpanjangan via paket maintenance.', 'en' => '30 days of critical bug fixes included; extend via maintenance plans.'],
+            ],
         ]);
     }
 
@@ -372,7 +384,7 @@ class ServiceProThemeSettingsSeeder extends Seeder
             'id' => 'Hubungi Kami',
             'en' => 'Contact Us',
         ]);
-        ThemeSetting::set($theme->id, 'cta', 'cta_url', '/id/contact');
+        ThemeSetting::set($theme->id, 'cta', 'cta_url', 'https://servicepro.demo/id/contact');
     }
 
     protected function seedContact(Theme $theme): void

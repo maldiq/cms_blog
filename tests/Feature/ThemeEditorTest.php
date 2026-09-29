@@ -147,11 +147,10 @@ class ThemeEditorTest extends TestCase
             ->call('resetToDefault')
             ->assertHasNoFormErrors();
 
-        $this->assertNull(ThemeSetting::query()
-            ->where('theme_id', $theme->id)
-            ->where('group', 'contact')
-            ->where('key', 'email')
-            ->first());
+        $this->assertSame(
+            'hello@servicepro.demo',
+            ThemeSetting::get($theme->id, 'contact', 'email')
+        );
 
         $this->assertSame(
             ['id' => 'Solusi Profesional untuk Bisnis Anda', 'en' => 'Professional Solutions for Your Business'],
