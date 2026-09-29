@@ -2,6 +2,7 @@
 
 namespace App\Domain\Theme\Filament\Pages;
 
+use App\Domain\Language\Models\Language;
 use App\Domain\Theme\Models\Theme;
 use App\Domain\Theme\Services\ThemeService;
 use Filament\Notifications\Notification;
@@ -15,11 +16,11 @@ class ThemeSelector extends Page
 
     protected static ?string $navigationGroup = 'Appearance';
 
-    protected static ?string $navigationLabel = 'Themes';
+    protected static ?string $navigationLabel = 'Theme Situs';
 
     protected static ?int $navigationSort = 1;
 
-    protected static ?string $title = 'Themes';
+    protected static ?string $title = 'Theme Situs';
 
     protected static ?string $slug = 'themes';
 
@@ -123,15 +124,13 @@ class ThemeSelector extends Page
                 $previewUrl = null;
 
                 if (filled($previewFile)) {
-                    $publicPath = public_path('themes/' . $slug . '/' . ltrim((string) $previewFile, '/'));
-                    $themePath = resource_path('views/themes/' . $slug . '/' . ltrim((string) $previewFile, '/'));
-
-                    if (is_file($publicPath)) {
-                        $previewUrl = asset('themes/' . $slug . '/' . ltrim((string) $previewFile, '/'));
-                    } elseif (is_file($themePath)) {
-                        $previewUrl = asset('themes/' . $slug . '/' . ltrim((string) $previewFile, '/'));
-                    }
+                    $previewUrl = $this->resolvePreviewUrl($slug, (string) $previewFile);
                 }
+
+                $defaultLocale = Language::getDefault()?->code ?? 'id';
+
+                /** @var list<string> $groups */
+                $groups = $manifest['settings_groups'] ?? [];
 
                 return [
                     'slug' => $slug,
@@ -140,6 +139,8 @@ class ThemeSelector extends Page
                     'version' => $manifest['version'] ?? '1.0.0',
                     'description' => $manifest['description'] ?? null,
                     'preview_url' => $previewUrl,
+                    'frontend_url' => url('/'.$defaultLocale),
+                    'settings_groups_count' => count($groups),
                     'is_active' => $activeSlugs->has($slug),
                 ];
             })
@@ -196,5 +197,22 @@ class ThemeSelector extends Page
         }
 
         return $manifests;
+    }
+
+    protected function resolvePreviewUrl(string $slug, string $previewFile): ?string
+    {
+        $file = ltrim(str_replace('\\', '/', $previewFile), '/');
+        $publicPath = public_path('themes/'.$slug.'/'.$file);
+        $themePath = resource_path('views/themes/'.$slug.'/'.$file);
+
+        if (is_file($publicPath)) {
+            return asset('themes/'.$slug.'/'.$file);
+        }
+
+        if (is_file($themePath)) {
+            return route('theme.asset.preview', ['slug' => $slug, 'file' => basename($file)]);
+        }
+
+        return null;
     }
 }

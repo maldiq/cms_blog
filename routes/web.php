@@ -5,6 +5,7 @@ use App\Domain\Gallery\Album\Http\Controllers\GalleryController;
 use App\Domain\Page\Http\Controllers\PageController;
 use App\Domain\Portfolio\Http\Controllers\PortfolioController;
 use App\Domain\Service\Http\Controllers\ServiceController;
+use App\Domain\Theme\Http\Controllers\ThemeAssetController;
 use App\Domain\Theme\Http\Controllers\ThemePageController;
 use App\Domain\Language\Models\Language;
 use App\Domain\Seo\Http\Controllers\RobotsController;
@@ -20,6 +21,10 @@ Route::redirect('/admin/pages', '/kelola/pages');
 Route::redirect('/admin/newsletter-subscribers', '/kelola/newsletter-subscribers');
 Route::redirect('/admin/contact-submissions', '/kelola/contact-submissions');
 Route::redirect('/admin', '/kelola');
+
+Route::get('/themes/{slug}/assets/{file}', ThemeAssetController::class)
+    ->where('file', '.+')
+    ->name('theme.asset.preview');
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/robots.txt', RobotsController::class)->name('robots');
