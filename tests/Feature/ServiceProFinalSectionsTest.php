@@ -147,6 +147,11 @@ class ServiceProFinalSectionsTest extends TestCase
         ])
             ->set('email', 'subscriber@example.com')
             ->call('subscribe')
-            ->assertHasNoErrors();
+            ->assertHasNoErrors()
+            ->assertSet('subscribed', true);
+
+        $this->assertDatabaseHas('newsletter_subscribers', [
+            'email' => 'subscriber@example.com',
+        ]);
     }
 }

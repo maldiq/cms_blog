@@ -15,6 +15,8 @@ return [
     'all_articles' => 'Lihat Semua Artikel',
     'newsletter_success' => 'Terima kasih! Email Anda sudah terdaftar.',
     'newsletter_submit' => 'Berlangganan',
+    'newsletter_submitting' => 'Memproses…',
+    'newsletter_rate_limit' => 'Terlalu banyak percobaan. Coba lagi dalam satu menit.',
     'vision' => 'Visi',
     'mission' => 'Misi',
     'history' => 'Sejarah',

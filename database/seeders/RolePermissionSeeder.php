@@ -73,6 +73,10 @@ class RolePermissionSeeder extends Seeder
         'testimonial.testimonial.create',
         'testimonial.testimonial.update',
         'testimonial.testimonial.delete',
+        'newsletter.subscriber.viewAny',
+        'newsletter.subscriber.update',
+        'newsletter.subscriber.delete',
+        'newsletter.subscriber.export',
     ];
 
     /**
@@ -156,6 +160,10 @@ class RolePermissionSeeder extends Seeder
             'testimonial.testimonial.create',
             'testimonial.testimonial.update',
             'testimonial.testimonial.delete',
+            'newsletter.subscriber.viewAny',
+            'newsletter.subscriber.update',
+            'newsletter.subscriber.delete',
+            'newsletter.subscriber.export',
         ]);
 
         Role::findByName('editor', 'web')->syncPermissions([
@@ -189,6 +197,8 @@ class RolePermissionSeeder extends Seeder
             'testimonial.testimonial.viewAny',
             'testimonial.testimonial.create',
             'testimonial.testimonial.update',
+            'newsletter.subscriber.viewAny',
+            'newsletter.subscriber.update',
         ]);
 
         Role::findByName('author', 'web')->syncPermissions([

@@ -15,6 +15,8 @@ return [
     'all_articles' => 'View all articles',
     'newsletter_success' => 'Thank you! Your email has been subscribed.',
     'newsletter_submit' => 'Subscribe',
+    'newsletter_submitting' => 'Submitting…',
+    'newsletter_rate_limit' => 'Too many attempts. Please try again in a minute.',
     'vision' => 'Vision',
     'mission' => 'Mission',
     'history' => 'History',
