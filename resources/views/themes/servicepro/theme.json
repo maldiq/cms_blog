@@ -1,0 +1,29 @@
+{
+    "name": "ServicePro",
+    "slug": "servicepro",
+    "description": "Template profesional untuk agency & service provider",
+    "author": "CMS Blog",
+    "version": "1.0.0",
+    "preview": "preview.jpg",
+    "requires": {
+        "laravel": "^11.0",
+        "php": "^8.3"
+    },
+    "settings_groups": [
+        "hero",
+        "about",
+        "services",
+        "portfolio",
+        "team",
+        "testimonial",
+        "process",
+        "pricing",
+        "faq",
+        "cta",
+        "stats",
+        "contact",
+        "newsletter",
+        "footer",
+        "branding"
+    ]
+}

@@ -59,7 +59,7 @@ class ThemeService
             return;
         }
 
-        $path = resource_path('themes/' . $theme->slug);
+        $path = resource_path('views/themes/' . $theme->slug);
 
         if (! is_dir($path)) {
             return;
