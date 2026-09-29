@@ -46,6 +46,10 @@ class RolePermissionSeeder extends Seeder
         'blog.series.create',
         'blog.series.update',
         'blog.series.delete',
+        'gallery.album.viewAny',
+        'gallery.album.create',
+        'gallery.album.update',
+        'gallery.album.delete',
     ];
 
     /**
@@ -102,6 +106,10 @@ class RolePermissionSeeder extends Seeder
             'blog.series.viewAny',
             'blog.series.create',
             'blog.series.update',
+            'gallery.album.viewAny',
+            'gallery.album.create',
+            'gallery.album.update',
+            'gallery.album.delete',
         ]);
 
         Role::findByName('editor', 'web')->syncPermissions([
@@ -115,6 +123,9 @@ class RolePermissionSeeder extends Seeder
             'blog.post.update',
             'blog.category.viewAny',
             'blog.tag.viewAny',
+            'gallery.album.viewAny',
+            'gallery.album.create',
+            'gallery.album.update',
         ]);
 
         Role::findByName('author', 'web')->syncPermissions([

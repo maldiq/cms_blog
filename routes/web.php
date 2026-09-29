@@ -1,12 +1,14 @@
 <?php
 
 use App\Domain\Blog\Post\Http\Controllers\BlogController;
+use App\Domain\Gallery\Album\Http\Controllers\GalleryController;
 use App\Domain\Language\Models\Language;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/admin/media', '/kelola/media');
 Route::redirect('/admin/menus', '/kelola/menus');
 Route::redirect('/admin/posts', '/kelola/posts');
+Route::redirect('/admin/albums', '/kelola/albums');
 Route::redirect('/admin', '/kelola');
 
 Route::get('/sitemap.xml', function () {
@@ -36,4 +38,7 @@ Route::prefix('{locale}')
         Route::get('/tag/{slug}', [BlogController::class, 'tag'])->name('blog.tag');
         Route::get('/series/{slug}', [BlogController::class, 'series'])->name('blog.series');
         Route::get('/series/{slug}/{post_slug}', [BlogController::class, 'seriesPost'])->name('blog.series.post');
+
+        Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery.index');
+        Route::get('/gallery/{slug}', [GalleryController::class, 'show'])->name('gallery.show');
     });
