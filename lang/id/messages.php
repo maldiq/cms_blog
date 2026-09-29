@@ -36,6 +36,8 @@ return [
     'contact_subject' => 'Subjek',
     'contact_message' => 'Pesan',
     'contact_submit' => 'Kirim Pesan',
+    'contact_submitting' => 'Mengirim…',
+    'contact_rate_limit' => 'Terlalu banyak percobaan. Coba lagi dalam satu menit.',
     'contact_address' => 'Alamat',
     'contact_phone' => 'Telepon',
     'working_hours' => 'Jam operasional',

@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             PageSeeder::class,
             ServiceProDemoSeeder::class,
             NewsletterSubscriberSeeder::class,
+            ContactSubmissionSeeder::class,
         ]);
     }
 }

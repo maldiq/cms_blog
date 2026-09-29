@@ -18,6 +18,7 @@ Route::redirect('/admin/albums', '/kelola/albums');
 Route::redirect('/admin/comments', '/kelola/comments');
 Route::redirect('/admin/pages', '/kelola/pages');
 Route::redirect('/admin/newsletter-subscribers', '/kelola/newsletter-subscribers');
+Route::redirect('/admin/contact-submissions', '/kelola/contact-submissions');
 Route::redirect('/admin', '/kelola');
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');

@@ -36,6 +36,8 @@ return [
     'contact_subject' => 'Subject',
     'contact_message' => 'Message',
     'contact_submit' => 'Send message',
+    'contact_submitting' => 'Sending…',
+    'contact_rate_limit' => 'Too many attempts. Please try again in a minute.',
     'contact_address' => 'Address',
     'contact_phone' => 'Phone',
     'working_hours' => 'Working hours',
