@@ -424,8 +424,8 @@ class ServiceProThemeSettingsSeeder extends Seeder
         ]);
 
         ThemeSetting::set($theme->id, 'footer', 'copyright', [
-            'id' => '© :year ServicePro Agency. Semua hak dilindungi.',
-            'en' => '© :year ServicePro Agency. All rights reserved.',
+            'id' => 'Copyright © :year :site_name. Semua hak dilindungi.',
+            'en' => 'Copyright © :year :site_name. All Rights Reserved',
         ]);
 
         ThemeSetting::set($theme->id, 'footer', 'columns', [

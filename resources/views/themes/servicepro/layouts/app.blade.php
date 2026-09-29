@@ -11,7 +11,7 @@
         ->unique()
         ->values();
 @endphp
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ $textDirection }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ $textDirection }}" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -69,6 +69,8 @@
     @yield('content')
 
     <x-theme::footer />
+
+    @include('theme::components.back-to-top')
 
     @livewireScripts
     @stack('scripts')

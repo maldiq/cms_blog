@@ -3,7 +3,7 @@
     $logoUrl = media_url(theme('branding.logo_id')) ?? media_url(theme('branding.logo_dark_id'));
     $siteName = setting('site_name');
     $aboutText = theme_locale('footer.about_text');
-    $copyrightText = theme_locale('footer.copyright');
+    $copyrightLine = theme_copyright_line();
 @endphp
 
 <footer class="border-t border-gray-200 bg-gray-900 text-gray-300">
@@ -63,15 +63,9 @@
 
     <div class="border-t border-gray-800">
         <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-6">
-            <p>
-                @if (filled($copyrightText))
-                    {{ $copyrightText }}
-                @endif
-                @if (filled($copyrightText))
-                    ·
-                @endif
-                {{ date('Y') }}
-            </p>
+            @if (filled($copyrightLine))
+                <p>{{ $copyrightLine }}</p>
+            @endif
             <div class="[&_a]:text-gray-400 [&_a:hover]:text-white">
                 <x-menu location="footer-bottom" />
             </div>

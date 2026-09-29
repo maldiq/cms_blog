@@ -41,4 +41,5 @@ return [
     'contact_address' => 'Alamat',
     'contact_phone' => 'Telepon',
     'working_hours' => 'Jam operasional',
+    'back_to_top' => 'Kembali ke atas',
 ];

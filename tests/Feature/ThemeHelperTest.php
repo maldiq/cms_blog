@@ -74,4 +74,23 @@ class ThemeHelperTest extends TestCase
 
         $this->assertStringContainsString('/themes/servicepro/css/theme.css', $url);
     }
+
+    public function test_theme_copyright_line_replaces_year_and_site_name(): void
+    {
+        $theme = $this->seedActiveTheme('servicepro');
+
+        ThemeSetting::set($theme->id, 'footer', 'copyright', [
+            'id' => 'Copyright © :year :site_name. Semua hak dilindungi.',
+            'en' => 'Copyright © :year :site_name. All Rights Reserved',
+        ]);
+
+        app()->setLocale('en');
+
+        $line = theme_copyright_line();
+
+        $this->assertIsString($line);
+        $this->assertStringContainsString((string) date('Y'), $line);
+        $this->assertStringNotContainsString(':year', $line);
+        $this->assertStringContainsString('All Rights Reserved', $line);
+    }
 }

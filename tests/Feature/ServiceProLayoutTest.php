@@ -114,4 +114,13 @@ class ServiceProLayoutTest extends TestCase
 
         $this->get('/id')->assertOk();
     }
+
+    public function test_back_to_top_button_renders(): void
+    {
+        $this->activateServiceProTheme();
+
+        $this->get('/id')
+            ->assertOk()
+            ->assertSee(__('messages.back_to_top'), false);
+    }
 }

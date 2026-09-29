@@ -41,4 +41,5 @@ return [
     'contact_address' => 'Address',
     'contact_phone' => 'Phone',
     'working_hours' => 'Working hours',
+    'back_to_top' => 'Back to top',
 ];

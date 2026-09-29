@@ -62,6 +62,27 @@ if (! function_exists('theme_locale')) {
     }
 }
 
+if (! function_exists('theme_copyright_line')) {
+    /**
+     * Teks copyright footer dengan placeholder :year dan :site_name.
+     */
+    function theme_copyright_line(): ?string
+    {
+        $text = theme_locale('footer.copyright');
+
+        if (! is_string($text) || trim($text) === '') {
+            return null;
+        }
+
+        $replacements = [
+            ':year' => (string) date('Y'),
+            ':site_name' => (string) (setting('site_name') ?? ''),
+        ];
+
+        return str_replace(array_keys($replacements), array_values($replacements), $text);
+    }
+}
+
 if (! function_exists('media_url')) {
     function media_url(mixed $mediaId): ?string
     {

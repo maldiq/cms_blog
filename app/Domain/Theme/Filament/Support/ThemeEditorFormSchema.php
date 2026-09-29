@@ -354,7 +354,10 @@ class ThemeEditorFormSchema
         return [
             $this->themeLocaleTabs('footer', fn (string $locale): array => [
                 Forms\Components\Textarea::make("footer.about_text.{$locale}")->label('About text')->rows(3),
-                Forms\Components\TextInput::make("footer.copyright.{$locale}")->label('Copyright')->maxLength(255),
+                Forms\Components\TextInput::make("footer.copyright.{$locale}")
+                    ->label('Copyright')
+                    ->helperText('Placeholder: :year (tahun), :site_name (nama situs dari pengaturan umum).')
+                    ->maxLength(255),
             ]),
             Forms\Components\Repeater::make('footer.columns')
                 ->label('Columns')
