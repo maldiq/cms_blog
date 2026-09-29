@@ -4,6 +4,9 @@ namespace App\Domain\Theme\Providers;
 
 use App\Domain\Theme\Models\Theme;
 use App\Domain\Theme\Services\ThemeService;
+use App\View\Components\Theme\Sections\CtaSection;
+use App\View\Components\Theme\Sections\Hero;
+use App\View\Components\Theme\Sections\StatsSection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -30,6 +33,9 @@ class ThemeServiceProvider extends ServiceProvider
         });
 
         Blade::componentNamespace('App\\View\\Components\\Theme', 'theme');
+        Blade::component(Hero::class, 'theme::hero');
+        Blade::component(StatsSection::class, 'theme::stats-section');
+        Blade::component(CtaSection::class, 'theme::cta-section');
     }
 
     public function registerThemeViewNamespace(string $slug): void

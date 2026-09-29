@@ -3,7 +3,10 @@
 namespace App\Domain\Page\Http\Controllers;
 
 use App\Domain\Page\Services\PageService;
+use App\Domain\Theme\Models\Theme;
+use App\Domain\Theme\Services\ThemeService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\View as ViewFacade;
 
 class PageController
 {
@@ -28,6 +31,17 @@ class PageController
                     ['name' => (string) $page->translate($locale, false)?->title, 'url' => url()->current()],
                 ],
             ]);
+        }
+
+        if (Theme::current() !== null) {
+            app(ThemeService::class)->applyTheme();
+
+            if (ViewFacade::exists('theme::pages.home')) {
+                return view('theme::pages.home', [
+                    'locale' => $locale,
+                    'websiteSchema' => true,
+                ]);
+            }
         }
 
         return view('welcome', [
