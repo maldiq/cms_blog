@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Domain\Menu\Models\Menu;
+use App\Domain\Menu\Models\MenuItem;
+use App\Domain\Menu\Observers\MenuItemObserver;
+use App\Domain\Menu\Observers\MenuObserver;
 use App\Domain\Setting\Policies\SettingsPolicy;
 use App\Domain\User\Listeners\UpdateLastLoginOnLogin;
 use App\Domain\User\Models\User;
@@ -27,6 +31,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Event::listen(Login::class, UpdateLastLoginOnLogin::class);
+
+        Menu::observe(MenuObserver::class);
+        MenuItem::observe(MenuItemObserver::class);
 
         Gate::define('manage-settings', fn (User $user): bool => (new SettingsPolicy())->manage($user));
 

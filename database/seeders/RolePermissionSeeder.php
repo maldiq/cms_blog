@@ -26,6 +26,10 @@ class RolePermissionSeeder extends Seeder
         'media.viewAny',
         'media.upload',
         'media.delete',
+        'menu.viewAny',
+        'menu.create',
+        'menu.update',
+        'menu.delete',
     ];
 
     /**
@@ -65,6 +69,10 @@ class RolePermissionSeeder extends Seeder
             'media.viewAny',
             'media.upload',
             'media.delete',
+            'menu.viewAny',
+            'menu.create',
+            'menu.update',
+            'menu.delete',
         ]);
 
         Role::findByName('editor', 'web')->syncPermissions([

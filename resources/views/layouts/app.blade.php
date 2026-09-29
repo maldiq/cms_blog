@@ -20,15 +20,22 @@
 </head>
 <body class="min-h-screen bg-gray-50 text-gray-900 antialiased">
     <header class="border-b border-gray-200 bg-white">
-        <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+        <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-4">
             <a href="{{ url('/' . app()->getLocale()) }}" class="text-lg font-semibold text-emerald-700">
                 {{ __('messages.home') }}
             </a>
+            <x-menu location="header" />
             <x-locale-switcher />
         </div>
     </header>
 
     @yield('content')
+
+    <footer class="mt-auto border-t border-gray-200 bg-white">
+        <div class="mx-auto max-w-5xl px-6 py-6">
+            <x-menu location="footer" />
+        </div>
+    </footer>
 
     @livewireScripts
     @stack('scripts')
