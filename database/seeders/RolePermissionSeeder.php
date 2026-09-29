@@ -57,6 +57,10 @@ class RolePermissionSeeder extends Seeder
         'page.create',
         'page.update',
         'page.delete',
+        'service.service.viewAny',
+        'service.service.create',
+        'service.service.update',
+        'service.service.delete',
     ];
 
     /**
@@ -124,6 +128,10 @@ class RolePermissionSeeder extends Seeder
             'page.create',
             'page.update',
             'page.delete',
+            'service.service.viewAny',
+            'service.service.create',
+            'service.service.update',
+            'service.service.delete',
         ]);
 
         Role::findByName('editor', 'web')->syncPermissions([
@@ -145,6 +153,9 @@ class RolePermissionSeeder extends Seeder
             'page.viewAny',
             'page.create',
             'page.update',
+            'service.service.viewAny',
+            'service.service.create',
+            'service.service.update',
         ]);
 
         Role::findByName('author', 'web')->syncPermissions([

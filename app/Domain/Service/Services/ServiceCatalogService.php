@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Domain\Service\Services;
+
+use App\Domain\Service\Models\Service;
+use Illuminate\Database\Eloquent\Collection;
+
+class ServiceCatalogService
+{
+    /**
+     * @return Collection<int, Service>
+     */
+    public function listActiveForHome(int $limit = 6): Collection
+    {
+        return Service::query()
+            ->with(['translations', 'cover'])
+            ->active()
+            ->ordered()
+            ->limit($limit)
+            ->get();
+    }
+
+    public function findBySlug(string $slug, string $locale): ?Service
+    {
+        return Service::query()
+            ->whereHas('translations', function ($query) use ($slug, $locale): void {
+                $query->where('locale', $locale)->where('slug', $slug);
+            })
+            ->with(['translations', 'cover'])
+            ->active()
+            ->first();
+    }
+}

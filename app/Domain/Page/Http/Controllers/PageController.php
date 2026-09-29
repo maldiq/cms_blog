@@ -50,6 +50,11 @@ class PageController
         ]);
     }
 
+    public function about(string $locale): View
+    {
+        return $this->show($locale, 'about');
+    }
+
     public function show(string $locale, string $slug): View
     {
         app()->setLocale($locale);

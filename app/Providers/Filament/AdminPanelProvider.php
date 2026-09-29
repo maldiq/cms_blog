@@ -66,6 +66,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Domain/Blog'), for: 'App\\Domain\\Blog')
             ->discoverResources(in: app_path('Domain/Gallery'), for: 'App\\Domain\\Gallery')
+            ->discoverResources(in: app_path('Domain/Service'), for: 'App\\Domain\\Service')
             ->discoverResources(in: app_path('Domain/Menu/Filament/Resources'), for: 'App\\Domain\\Menu\\Filament\\Resources')
             ->discoverResources(in: app_path('Domain/Media/Filament/Resources'), for: 'App\\Domain\\Media\\Filament\\Resources')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
