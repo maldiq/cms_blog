@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Domain\Language\Filament\Resources\LanguageResource;
+use App\Domain\Media\Filament\Resources\MediaResource;
 use App\Domain\Role\Filament\Resources\RoleResource;
 use App\Domain\User\Filament\Resources\UserResource;
 use Filament\Http\Middleware\Authenticate;
@@ -36,7 +37,9 @@ class AdminPanelProvider extends PanelProvider
                 UserResource::class,
                 RoleResource::class,
                 LanguageResource::class,
+                MediaResource::class,
             ])
+            ->discoverResources(in: app_path('Domain/Media/Filament/Resources'), for: 'App\\Domain\\Media\\Filament\\Resources')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Domain/Setting/Filament/Pages'), for: 'App\\Domain\\Setting\\Filament\\Pages')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

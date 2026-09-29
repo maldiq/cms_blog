@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Setting\Models;
+namespace App\Domain\Media\Models;
 
 use App\Domain\Media\Concerns\RegistersDefaultMediaConversions;
 use Illuminate\Database\Eloquent\Model;
@@ -8,27 +8,37 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class SiteBranding extends Model implements HasMedia
+class MediaLibraryItem extends Model implements HasMedia
 {
     use InteractsWithMedia;
     use RegistersDefaultMediaConversions;
 
-    protected $table = 'site_brandings';
+    protected $table = 'media_library_items';
 
     /**
      * @var list<string>
      */
     protected $fillable = [];
 
-    public static function instance(): self
+    public static function library(): self
     {
-        return static::query()->firstOrCreate(['id' => 1]);
+        $item = static::query()->find(1);
+
+        if ($item !== null) {
+            return $item;
+        }
+
+        $item = new static;
+        $item->id = 1;
+        $item->save();
+
+        return $item;
     }
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('logo')->singleFile();
-        $this->addMediaCollection('favicon')->singleFile();
+        $this->addMediaCollection('library');
+        $this->addMediaCollection('default');
     }
 
     public function registerMediaConversions(?Media $media = null): void

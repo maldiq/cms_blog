@@ -2,9 +2,9 @@
 
 namespace App\Domain\Setting\Services;
 
+use App\Domain\Media\Models\Media;
 use App\Domain\Setting\Models\SiteBranding;
 use Illuminate\Support\Facades\Storage;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class BrandingMediaService
 {
