@@ -27,6 +27,7 @@ class ThemeEditorFormSchema
             'process',
             'pricing',
             'faq',
+            'blog',
             'cta',
             'stats',
             'contact',
@@ -51,6 +52,7 @@ class ThemeEditorFormSchema
             Tab::make('process')->label('Process')->schema($this->processSchema()),
             Tab::make('pricing')->label('Pricing')->schema($this->pricingSchema()),
             Tab::make('faq')->label('FAQ')->schema($this->faqSchema()),
+            Tab::make('blog')->label('Blog')->schema($this->blogSchema()),
             Tab::make('cta')->label('CTA')->schema($this->ctaSchema()),
             Tab::make('stats')->label('Stats')->schema($this->statsSchema()),
             Tab::make('contact')->label('Contact')->schema($this->contactSchema()),
@@ -252,6 +254,11 @@ class ThemeEditorFormSchema
     /**
      * @return list<Forms\Components\Component>
      */
+    protected function blogSchema(): array
+    {
+        return $this->titleSubtitleSchema('blog');
+    }
+
     protected function ctaSchema(): array
     {
         return [
@@ -446,6 +453,10 @@ class ThemeEditorFormSchema
                 'title' => $empty,
                 'subtitle' => $empty,
                 'items' => [],
+            ],
+            'blog' => [
+                'title' => $empty,
+                'subtitle' => $empty,
             ],
             'cta' => [
                 'title' => $empty,

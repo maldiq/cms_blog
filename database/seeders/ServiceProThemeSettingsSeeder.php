@@ -31,5 +31,15 @@ class ServiceProThemeSettingsSeeder extends Seeder
         ThemeSetting::set($theme->id, 'branding', 'font_heading', 'Montserrat');
 
         ThemeSetting::set($theme->id, 'branding', 'font_body', 'Inter');
+
+        ThemeSetting::set($theme->id, 'blog', 'title', [
+            'id' => 'Artikel Terbaru',
+            'en' => 'Latest Articles',
+        ]);
+
+        ThemeSetting::set($theme->id, 'blog', 'subtitle', [
+            'id' => 'Insight dan tips dari tim kami.',
+            'en' => 'Insights and tips from our team.',
+        ]);
     }
 }

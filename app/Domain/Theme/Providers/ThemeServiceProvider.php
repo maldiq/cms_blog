@@ -5,8 +5,12 @@ namespace App\Domain\Theme\Providers;
 use App\Domain\Theme\Models\Theme;
 use App\Domain\Theme\Services\ThemeService;
 use App\View\Components\Theme\Sections\AboutSection;
+use App\View\Components\Theme\Sections\BlogSection;
 use App\View\Components\Theme\Sections\CtaSection;
+use App\View\Components\Theme\Sections\FaqSection;
 use App\View\Components\Theme\Sections\Hero;
+use App\View\Components\Theme\Sections\NewsletterSection;
+use App\View\Components\Theme\Sections\PricingSection;
 use App\View\Components\Theme\Sections\PortfolioSection;
 use App\View\Components\Theme\Sections\ProcessSection;
 use App\View\Components\Theme\Sections\ServicesSection;
@@ -48,6 +52,10 @@ class ThemeServiceProvider extends ServiceProvider
         Blade::component(PortfolioSection::class, 'theme::portfolio-section');
         Blade::component(TeamSection::class, 'theme::team-section');
         Blade::component(TestimonialSection::class, 'theme::testimonial-section');
+        Blade::component(PricingSection::class, 'theme::pricing-section');
+        Blade::component(FaqSection::class, 'theme::faq-section');
+        Blade::component(BlogSection::class, 'theme::blog-section');
+        Blade::component(NewsletterSection::class, 'theme::newsletter-section');
     }
 
     public function registerThemeViewNamespace(string $slug): void
