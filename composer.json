@@ -36,7 +36,8 @@
         },
         "files": [
             "app/Support/Helpers/setting.php",
-            "app/Support/Helpers/theme.php"
+            "app/Support/Helpers/theme.php",
+            "app/Support/Helpers/media.php"
         ]
     },
     "autoload-dev": {

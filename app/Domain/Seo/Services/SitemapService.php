@@ -9,6 +9,8 @@ use App\Domain\Blog\Tag\Models\Tag;
 use App\Domain\Gallery\Album\Models\Album;
 use App\Domain\Language\Models\Language;
 use App\Domain\Page\Models\Page;
+use App\Domain\Portfolio\Models\Portfolio;
+use App\Domain\Service\Models\Service;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
@@ -39,8 +41,12 @@ class SitemapService
                     ->setPriority(0.7)
             );
 
+            $this->addThemeStaticRoutes($sitemap, $locale);
+
             $this->addPosts($sitemap, $locale);
             $this->addPages($sitemap, $locale);
+            $this->addServices($sitemap, $locale);
+            $this->addPortfolios($sitemap, $locale);
             $this->addSeries($sitemap, $locale);
             $this->addCategories($sitemap, $locale);
             $this->addTags($sitemap, $locale);
@@ -48,6 +54,78 @@ class SitemapService
         }
 
         return $sitemap->render();
+    }
+
+    protected function addThemeStaticRoutes(Sitemap $sitemap, string $locale): void
+    {
+        $routes = [
+            ['path' => 'about', 'priority' => 0.75, 'frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
+            ['path' => 'services', 'priority' => 0.85, 'frequency' => Url::CHANGE_FREQUENCY_WEEKLY],
+            ['path' => 'portfolio', 'priority' => 0.8, 'frequency' => Url::CHANGE_FREQUENCY_WEEKLY],
+            ['path' => 'team', 'priority' => 0.7, 'frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
+            ['path' => 'testimonials', 'priority' => 0.65, 'frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
+            ['path' => 'pricing', 'priority' => 0.7, 'frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
+            ['path' => 'faq', 'priority' => 0.65, 'frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
+            ['path' => 'contact', 'priority' => 0.75, 'frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
+        ];
+
+        foreach ($routes as $route) {
+            $sitemap->add(
+                Url::create(url("/{$locale}/{$route['path']}"))
+                    ->setChangeFrequency($route['frequency'])
+                    ->setPriority($route['priority'])
+            );
+        }
+    }
+
+    protected function addServices(Sitemap $sitemap, string $locale): void
+    {
+        Service::query()
+            ->active()
+            ->whereHas('translations', fn ($query) => $query->where('locale', $locale))
+            ->with(['translations' => fn ($query) => $query->where('locale', $locale)])
+            ->orderBy('id')
+            ->chunk(100, function ($services) use ($sitemap, $locale): void {
+                foreach ($services as $service) {
+                    $slug = $service->translate($locale, false)?->slug;
+
+                    if (blank($slug)) {
+                        continue;
+                    }
+
+                    $sitemap->add(
+                        Url::create(url("/{$locale}/services/{$slug}"))
+                            ->setLastModificationDate($service->updated_at)
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                            ->setPriority(0.75)
+                    );
+                }
+            });
+    }
+
+    protected function addPortfolios(Sitemap $sitemap, string $locale): void
+    {
+        Portfolio::query()
+            ->active()
+            ->whereHas('translations', fn ($query) => $query->where('locale', $locale))
+            ->with(['translations' => fn ($query) => $query->where('locale', $locale)])
+            ->orderBy('id')
+            ->chunk(100, function ($portfolios) use ($sitemap, $locale): void {
+                foreach ($portfolios as $portfolio) {
+                    $slug = $portfolio->translate($locale, false)?->slug;
+
+                    if (blank($slug)) {
+                        continue;
+                    }
+
+                    $sitemap->add(
+                        Url::create(url("/{$locale}/portfolio/{$slug}"))
+                            ->setLastModificationDate($portfolio->updated_at)
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                            ->setPriority(0.7)
+                    );
+                }
+            });
     }
 
     protected function addPosts(Sitemap $sitemap, string $locale): void

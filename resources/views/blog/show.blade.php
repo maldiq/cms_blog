@@ -3,7 +3,6 @@
 @php
     $translation = $post->translate($locale, false);
     $title = $translation?->title ?? 'Post';
-    $imageUrl = $post->featuredImage?->getFullUrl();
 @endphp
 
 @section('content')
@@ -26,8 +25,13 @@
         @endif
 
         <article>
-            @if ($imageUrl)
-                <img src="{{ $imageUrl }}" alt="" class="mb-6 aspect-video w-full rounded-xl object-cover" />
+            @if ($post->featuredImage)
+                @include('components.partials.responsive-media-image', [
+                    'media' => $post->featuredImage,
+                    'lazy' => false,
+                    'alt' => $title,
+                    'class' => 'mb-6 aspect-video w-full rounded-xl object-cover',
+                ])
             @endif
 
             <h1 class="text-3xl font-bold text-gray-900">{{ $title }}</h1>

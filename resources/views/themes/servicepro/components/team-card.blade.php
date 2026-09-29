@@ -10,7 +10,7 @@
 @if (filled($name))
     <article class="group overflow-hidden rounded-xl border border-gray-200 bg-white text-center shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
         @if (filled($photoUrl))
-            <img src="{{ $photoUrl }}" alt="{{ $name }}" class="aspect-square w-full object-cover transition duration-500 group-hover:scale-105">
+            <img src="{{ $photoUrl }}" alt="{{ $name }}" class="aspect-square w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" decoding="async">
         @else
             <div class="aspect-square w-full bg-gray-100"></div>
         @endif

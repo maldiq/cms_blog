@@ -2,9 +2,11 @@
 
 namespace App\View\Components\Theme\Sections;
 
+use App\Support\Theme\HomeSectionCache;
 use App\Support\Theme\ThemeValue;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\Component;
 
 class StatsSection extends Component
@@ -19,11 +21,27 @@ class StatsSection extends Component
     public function __construct()
     {
         $this->primaryColor = theme('branding.primary_color');
+        $locale = app()->getLocale();
 
+        /** @var Collection<int, array{number: ?string, label: ?string, suffix: ?string, numeric_target: float}> $items */
+        $items = Cache::remember(
+            HomeSectionCache::key('stats', $locale),
+            HomeSectionCache::TTL_SECONDS,
+            fn (): Collection => $this->buildItems(),
+        );
+
+        $this->items = $items;
+    }
+
+    /**
+     * @return Collection<int, array{number: ?string, label: ?string, suffix: ?string, numeric_target: float}>
+     */
+    protected function buildItems(): Collection
+    {
         $rawItems = theme('stats.items');
         $items = is_array($rawItems) ? $rawItems : [];
 
-        $this->items = collect($items)->map(function (mixed $item): array {
+        return collect($items)->map(function (mixed $item): array {
             if (! is_array($item)) {
                 return [
                     'number' => null,

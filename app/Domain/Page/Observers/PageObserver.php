@@ -3,6 +3,7 @@
 namespace App\Domain\Page\Observers;
 
 use App\Domain\Page\Models\Page;
+use App\Domain\Seo\Http\Controllers\SitemapController;
 
 class PageObserver
 {
@@ -22,5 +23,12 @@ class PageObserver
                 ->where('id', '!=', $page->id)
                 ->update(['is_homepage' => false]);
         }
+
+        SitemapController::forgetCache();
+    }
+
+    public function deleted(Page $page): void
+    {
+        SitemapController::forgetCache();
     }
 }

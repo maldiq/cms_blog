@@ -13,7 +13,7 @@
 @if (filled($title) && filled($portfolioUrl))
     <article class="group relative overflow-hidden rounded-xl bg-gray-100 shadow-sm">
         @if (filled($coverUrl))
-            <img src="{{ $coverUrl }}" alt="{{ $title }}" class="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-105">
+            <img src="{{ $coverUrl }}" alt="{{ $title }}" class="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" decoding="async">
         @else
             <div class="aspect-[4/3] w-full bg-gray-200"></div>
         @endif

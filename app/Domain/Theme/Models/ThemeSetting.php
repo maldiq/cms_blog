@@ -2,6 +2,7 @@
 
 namespace App\Domain\Theme\Models;
 
+use App\Support\Theme\HomeSectionCache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -76,5 +77,9 @@ class ThemeSetting extends Model
         );
 
         Theme::clearCache();
+
+        if (in_array($group, ['stats', 'pricing', 'faq'], true)) {
+            HomeSectionCache::forgetAll();
+        }
     }
 }

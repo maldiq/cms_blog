@@ -10,6 +10,8 @@ use App\Domain\Gallery\Album\Models\Album;
 use App\Domain\Language\Models\Language;
 use App\Domain\Media\Models\Media;
 use App\Domain\Page\Models\Page;
+use App\Domain\Portfolio\Models\Portfolio;
+use App\Domain\Service\Models\Service;
 use App\Domain\Setting\Settings\GeneralSettings;
 use App\Domain\Setting\Settings\SeoSettings;
 use Illuminate\Database\Eloquent\Model;
@@ -48,6 +50,8 @@ class SeoService
             $model instanceof Tag => $this->metaForTag($model, $locale, $base),
             $model instanceof Series => $this->metaForSeries($model, $locale, $base),
             $model instanceof Album => $this->metaForAlbum($model, $locale, $base),
+            $model instanceof Service => $this->metaForService($model, $locale, $base),
+            $model instanceof Portfolio => $this->metaForPortfolio($model, $locale, $base),
             default => $base,
         };
 
@@ -268,6 +272,58 @@ class SeoService
             'og_url' => $canonical,
             'og_image' => $this->mediaUrl($album->cover) ?? $base['og_image'],
             'hreflang' => $this->hreflangForModel($album, $locale, fn (string $loc, ?string $s) => $s ? url("/{$loc}/gallery/{$s}") : null),
+        ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $base
+     * @return array<string, mixed>
+     */
+    protected function metaForService(Service $service, string $locale, array $base): array
+    {
+        $translation = $service->translate($locale, false);
+        $slug = $translation?->slug;
+        $title = $translation?->meta_title ?: $translation?->title ?: $base['title'];
+        $description = $translation?->meta_description ?: $translation?->excerpt ?: $base['description'];
+        $keywords = $translation?->meta_keywords;
+        $canonical = $slug ? url("/{$locale}/services/{$slug}") : $base['canonical'];
+
+        return array_merge($base, [
+            'title' => $title,
+            'description' => $description,
+            'keywords' => $keywords,
+            'canonical' => $canonical,
+            'og_title' => $title,
+            'og_description' => $description,
+            'og_url' => $canonical,
+            'og_image' => $this->mediaUrlFromId($service->cover_id) ?? $base['og_image'],
+            'hreflang' => $this->hreflangForModel($service, $locale, fn (string $loc, ?string $s) => $s ? url("/{$loc}/services/{$s}") : null),
+        ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $base
+     * @return array<string, mixed>
+     */
+    protected function metaForPortfolio(Portfolio $portfolio, string $locale, array $base): array
+    {
+        $translation = $portfolio->translate($locale, false);
+        $slug = $translation?->slug;
+        $title = $translation?->meta_title ?: $translation?->title ?: $base['title'];
+        $description = $translation?->meta_description ?: $translation?->excerpt ?: $base['description'];
+        $keywords = $translation?->meta_keywords;
+        $canonical = $slug ? url("/{$locale}/portfolio/{$slug}") : $base['canonical'];
+
+        return array_merge($base, [
+            'title' => $title,
+            'description' => $description,
+            'keywords' => $keywords,
+            'canonical' => $canonical,
+            'og_title' => $title,
+            'og_description' => $description,
+            'og_url' => $canonical,
+            'og_image' => $this->mediaUrlFromId($portfolio->cover_id) ?? $base['og_image'],
+            'hreflang' => $this->hreflangForModel($portfolio, $locale, fn (string $loc, ?string $s) => $s ? url("/{$loc}/portfolio/{$s}") : null),
         ]);
     }
 

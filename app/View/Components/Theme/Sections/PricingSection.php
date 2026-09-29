@@ -2,9 +2,11 @@
 
 namespace App\View\Components\Theme\Sections;
 
+use App\Support\Theme\HomeSectionCache;
 use App\Support\Theme\ThemeValue;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\Component;
 
 class PricingSection extends Component
@@ -20,13 +22,29 @@ class PricingSection extends Component
 
     public function __construct()
     {
+        $locale = app()->getLocale();
         $this->title = theme_locale('pricing.title');
         $this->subtitle = theme_locale('pricing.subtitle');
 
+        /** @var Collection<int, array<string, mixed>> $plans */
+        $plans = Cache::remember(
+            HomeSectionCache::key('pricing', $locale),
+            HomeSectionCache::TTL_SECONDS,
+            fn (): Collection => $this->buildPlans(),
+        );
+
+        $this->plans = $plans;
+    }
+
+    /**
+     * @return Collection<int, array<string, mixed>>
+     */
+    protected function buildPlans(): Collection
+    {
         $rawPlans = theme('pricing.plans');
         $items = is_array($rawPlans) ? $rawPlans : [];
 
-        $this->plans = collect($items)->map(function (mixed $plan): array {
+        return collect($items)->map(function (mixed $plan): array {
             if (! is_array($plan)) {
                 return [];
             }

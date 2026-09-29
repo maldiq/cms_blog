@@ -40,6 +40,11 @@ class PageController
                 return view('theme::pages.home', [
                     'locale' => $locale,
                     'websiteSchema' => true,
+                    'seoContext' => [
+                        'title' => setting('site_name', config('app.name')),
+                        'description' => setting('site_description'),
+                        'canonical' => url("/{$locale}"),
+                    ],
                 ]);
             }
         }

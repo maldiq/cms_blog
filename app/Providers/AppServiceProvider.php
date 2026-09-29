@@ -10,6 +10,8 @@ use App\Domain\Page\Models\Page;
 use App\Domain\Page\Observers\PageObserver;
 use App\Domain\Service\Models\Service;
 use App\Domain\Service\Observers\ServiceObserver;
+use App\Domain\Theme\Models\ThemeSetting;
+use App\Domain\Theme\Observers\ThemeSettingObserver;
 use App\Domain\Menu\Models\Menu;
 use App\Domain\Menu\Models\MenuItem;
 use App\Domain\Menu\Observers\MenuItemObserver;
@@ -49,6 +51,7 @@ class AppServiceProvider extends ServiceProvider
         Post::observe(PostObserver::class);
         Page::observe(PageObserver::class);
         Service::observe(ServiceObserver::class);
+        ThemeSetting::observe(ThemeSettingObserver::class);
 
         Gate::define('manage-settings', fn (User $user): bool => (new SettingsPolicy())->manage($user));
 

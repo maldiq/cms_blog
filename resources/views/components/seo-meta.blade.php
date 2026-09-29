@@ -33,6 +33,8 @@
     <meta name="twitter:image" content="{{ $meta['og_image'] }}">
 @endif
 
-@foreach ($meta['json_ld'] as $schema)
-    <script type="application/ld+json">{!! json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-@endforeach
+@push('scripts')
+    @foreach ($meta['json_ld'] as $schema)
+        <script type="application/ld+json">{!! json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+    @endforeach
+@endpush

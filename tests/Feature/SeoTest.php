@@ -74,6 +74,10 @@ class SeoTest extends TestCase
         $this->assertStringContainsString(url('/id/category/tech'), $body);
         $this->assertStringContainsString(url('/id/tag/laravel'), $body);
         $this->assertStringContainsString(url('/id/gallery'), $body);
+        $this->assertStringContainsString(url('/id/contact'), $body);
+        $this->assertStringContainsString(url('/id/services'), $body);
+        $this->assertStringContainsString(url('/id/portfolio'), $body);
+        $this->assertStringContainsString(url('/id/faq'), $body);
     }
 
     public function test_meta_tag_rendered_correctly(): void
@@ -102,7 +106,15 @@ class SeoTest extends TestCase
             ->assertSee('<meta name="description" content="Custom meta description">', false)
             ->assertSee('<meta property="og:title" content="Custom Meta Title">', false)
             ->assertSee('<meta name="twitter:card" content="summary_large_image">', false)
-            ->assertSee('BlogPosting', false);
+            ->assertSee('BlogPosting', false)
+            ->assertSee('application/ld+json', false);
+    }
+
+    public function test_homepage_renders_website_json_ld(): void
+    {
+        $this->get('/id')
+            ->assertOk()
+            ->assertSee('WebSite', false);
     }
 
     public function test_hreflang_alternate_rendered(): void
