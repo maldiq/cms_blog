@@ -47,6 +47,7 @@ class AdminPanelProvider extends PanelProvider
                 'Media',
                 'Gallery',
                 'Pengguna',
+                'Appearance',
                 'Sistem',
             ])
             ->resources([
@@ -69,6 +70,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Domain/Media/Filament/Resources'), for: 'App\\Domain\\Media\\Filament\\Resources')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Domain/Setting/Filament/Pages'), for: 'App\\Domain\\Setting\\Filament\\Pages')
+            ->discoverPages(in: app_path('Domain/Theme/Filament/Pages'), for: 'App\\Domain\\Theme\\Filament\\Pages')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
