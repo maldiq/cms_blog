@@ -8,4 +8,5 @@ return [
     'next' => 'Next',
     'prev' => 'Previous',
     'public_intro' => 'Public frontend is ready. Admin panel is available at',
+    'toggle_menu' => 'Open menu',
 ];

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends(theme_layout())
 
 @php
     $translation = $page->translate($locale, false);

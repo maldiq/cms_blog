@@ -15,15 +15,17 @@ class Menu extends Component
     public Collection $items;
 
     public function __construct(
+        MenuService $menuService,
         public string $location,
-        protected MenuService $menuService,
+        public bool $cta = false,
     ) {
-        $tree = $this->menuService->buildTree($location);
-        $this->items = $this->menuService->filterByRole($tree, auth()->user());
+        $tree = $menuService->buildTree($location);
+        $filtered = $menuService->filterByRole($tree, auth()->user());
+        $this->items = $this->cta ? $filtered->take(1) : $filtered;
     }
 
     public function render(): View
     {
-        return view('components.menu');
+        return view($this->cta ? 'components.menu-cta' : 'components.menu');
     }
 }

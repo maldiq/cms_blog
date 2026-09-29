@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends(theme_layout())
 
 @section('content')
     <main class="mx-auto flex min-h-[calc(100vh-4.5rem)] max-w-3xl flex-col items-center justify-center px-6 py-16">

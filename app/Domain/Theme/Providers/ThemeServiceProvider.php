@@ -26,8 +26,10 @@ class ThemeServiceProvider extends ServiceProvider
         }
 
         Blade::directive('theme', function (string $expression): string {
-            return "<?php echo theme({$expression}); ?>";
+            return "<?php echo e(theme_locale({$expression})); ?>";
         });
+
+        Blade::componentNamespace('App\\View\\Components\\Theme', 'theme');
     }
 
     public function registerThemeViewNamespace(string $slug): void
