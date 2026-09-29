@@ -20,6 +20,7 @@ class ThemeEditorFormSchema
         return [
             'hero',
             'about',
+            'about_page',
             'services',
             'portfolio',
             'team',
@@ -45,6 +46,7 @@ class ThemeEditorFormSchema
         return [
             Tab::make('hero')->label('Hero')->schema($this->heroSchema()),
             Tab::make('about')->label('About')->schema($this->aboutSchema()),
+            Tab::make('about_page')->label('About Page')->schema($this->aboutPageSchema()),
             Tab::make('services')->label('Services')->schema($this->servicesSchema()),
             Tab::make('portfolio')->label('Portfolio')->schema($this->portfolioSchema()),
             Tab::make('team')->label('Team')->schema($this->teamSchema()),
@@ -145,6 +147,28 @@ class ThemeEditorFormSchema
     /**
      * @return list<Forms\Components\Component>
      */
+    protected function aboutPageSchema(): array
+    {
+        return [
+            $this->themeLocaleTabs('about_page', fn (string $locale): array => [
+                Forms\Components\Textarea::make("about_page.vision.{$locale}")->label('Vision')->rows(3),
+                Forms\Components\Textarea::make("about_page.mission.{$locale}")->label('Mission')->rows(3),
+                Forms\Components\RichEditor::make("about_page.history.{$locale}")->label('History')->columnSpanFull(),
+            ]),
+            Forms\Components\Repeater::make('about_page.values')
+                ->label('Values')
+                ->schema([
+                    $this->themeLocaleTabs('about_page_value', fn (string $locale): array => [
+                        Forms\Components\TextInput::make("title.{$locale}")->label('Title')->maxLength(255),
+                        Forms\Components\Textarea::make("text.{$locale}")->label('Text')->rows(2),
+                    ]),
+                ])
+                ->defaultItems(0)
+                ->collapsible()
+                ->columnSpanFull(),
+        ];
+    }
+
     protected function servicesSchema(): array
     {
         return $this->titleSubtitleCtaSchema('services');
@@ -420,6 +444,12 @@ class ThemeEditorFormSchema
                 'content' => $empty,
                 'image_id' => null,
                 'points' => [],
+            ],
+            'about_page' => [
+                'vision' => $empty,
+                'mission' => $empty,
+                'history' => $empty,
+                'values' => [],
             ],
             'services' => [
                 'title' => $empty,

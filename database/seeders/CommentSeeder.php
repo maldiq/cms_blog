@@ -19,6 +19,10 @@ class CommentSeeder extends Seeder
             return;
         }
 
+        if (Comment::query()->where('user_agent', 'Seeder')->exists()) {
+            return;
+        }
+
         $statuses = [
             Comment::STATUS_PENDING,
             Comment::STATUS_APPROVED,

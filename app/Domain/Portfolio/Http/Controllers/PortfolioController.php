@@ -3,6 +3,7 @@
 namespace App\Domain\Portfolio\Http\Controllers;
 
 use App\Domain\Portfolio\Services\PortfolioCatalogService;
+use App\Domain\Theme\Services\ThemeService;
 use Illuminate\Contracts\View\View;
 
 class PortfolioController
@@ -14,10 +15,11 @@ class PortfolioController
     public function index(string $locale): View
     {
         app()->setLocale($locale);
+        app(ThemeService::class)->applyTheme();
 
-        return view('portfolio.index', [
+        return view('theme::pages.portfolio', [
             'locale' => $locale,
-            'portfolios' => $this->portfolioCatalogService->listActive(),
+            'portfolios' => $this->portfolioCatalogService->paginateActive(12),
             'seoContext' => [
                 'title' => theme_locale('portfolio.title'),
                 'canonical' => route('portfolio.index', ['locale' => $locale]),
@@ -35,10 +37,13 @@ class PortfolioController
 
         $translation = $portfolio->translate($locale, false);
 
-        return view('portfolio.show', [
+        app(ThemeService::class)->applyTheme();
+
+        return view('theme::pages.portfolio-detail', [
             'portfolio' => $portfolio,
             'locale' => $locale,
             'translation' => $translation,
+            'relatedPortfolios' => $this->portfolioCatalogService->relatedPortfolios($portfolio),
             'seo' => $portfolio,
             'breadcrumbs' => [
                 ['name' => setting('site_name'), 'url' => url("/{$locale}")],

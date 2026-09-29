@@ -87,7 +87,7 @@ class MenuService
                 return [
                     'id' => $item->id,
                     'label' => $label,
-                    'url' => $item->resolveUrl() ?? '#',
+                    'url' => $this->localizeUrl($item->resolveUrl() ?? '#', $locale),
                     'target' => $item->target,
                     'icon' => $item->icon,
                     'roles' => $item->roles,
@@ -126,5 +126,35 @@ class MenuService
         }
 
         return $user->hasAnyRole($roles);
+    }
+
+    /**
+     * Path menu tanpa locale (/blog) atau legacy (/id/blog) disesuaikan locale aktif.
+     */
+    protected function localizeUrl(string $url, string $locale): string
+    {
+        if ($url === '#' || $url === '') {
+            return '#';
+        }
+
+        if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+            return $url;
+        }
+
+        if (preg_match('#^/([a-z]{2})(/.*)?$#i', $url, $matches)) {
+            $path = $matches[2] ?? '';
+
+            return '/'.$locale.($path !== '' ? $path : '');
+        }
+
+        if ($url === '/') {
+            return '/'.$locale;
+        }
+
+        if (str_starts_with($url, '/')) {
+            return '/'.$locale.$url;
+        }
+
+        return $url;
     }
 }

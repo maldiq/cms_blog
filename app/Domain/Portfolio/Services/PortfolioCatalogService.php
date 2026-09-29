@@ -3,6 +3,7 @@
 namespace App\Domain\Portfolio\Services;
 
 use App\Domain\Portfolio\Models\Portfolio;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class PortfolioCatalogService
@@ -43,5 +44,32 @@ class PortfolioCatalogService
             ->with(['translations', 'cover', 'category.translations'])
             ->active()
             ->first();
+    }
+
+    /**
+     * @return LengthAwarePaginator<int, Portfolio>
+     */
+    public function paginateActive(int $perPage = 12): LengthAwarePaginator
+    {
+        return Portfolio::query()
+            ->with(['translations', 'cover', 'category.translations'])
+            ->active()
+            ->ordered()
+            ->paginate($perPage);
+    }
+
+    /**
+     * @return Collection<int, Portfolio>
+     */
+    public function relatedPortfolios(Portfolio $portfolio, int $limit = 3): Collection
+    {
+        return Portfolio::query()
+            ->with(['translations', 'cover', 'category.translations'])
+            ->active()
+            ->ordered()
+            ->when($portfolio->category_id, fn ($query) => $query->where('category_id', $portfolio->category_id))
+            ->where('id', '!=', $portfolio->id)
+            ->limit($limit)
+            ->get();
     }
 }

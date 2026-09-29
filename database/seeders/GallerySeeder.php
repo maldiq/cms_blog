@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Domain\Gallery\Album\Models\Album;
+use App\Domain\Gallery\Album\Models\AlbumTranslation;
 use App\Domain\Media\Services\MediaUploadService;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
@@ -57,6 +58,10 @@ class GallerySeeder extends Seeder
 
     public function run(): void
     {
+        if (AlbumTranslation::query()->where('locale', 'id')->where('slug', 'pemandangan-alam')->exists()) {
+            return;
+        }
+
         $uploadService = app(MediaUploadService::class);
         $sortOrder = 0;
 

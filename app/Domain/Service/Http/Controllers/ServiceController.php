@@ -3,6 +3,7 @@
 namespace App\Domain\Service\Http\Controllers;
 
 use App\Domain\Service\Services\ServiceCatalogService;
+use App\Domain\Theme\Services\ThemeService;
 use Illuminate\Contracts\View\View;
 
 class ServiceController
@@ -14,15 +15,14 @@ class ServiceController
     public function index(string $locale): View
     {
         app()->setLocale($locale);
+        app(ThemeService::class)->applyTheme();
 
-        $services = $this->serviceCatalogService->listActiveForHome(100);
-
-        return view('service.index', [
+        return view('theme::pages.services', [
             'locale' => $locale,
-            'services' => $services,
+            'services' => $this->serviceCatalogService->paginateActive(12),
             'seoContext' => [
                 'title' => theme_locale('services.title'),
-                'canonical' => route('service.index', ['locale' => $locale]),
+                'canonical' => route('services.index', ['locale' => $locale]),
             ],
         ]);
     }
@@ -37,14 +37,17 @@ class ServiceController
 
         $translation = $service->translate($locale, false);
 
-        return view('service.show', [
+        app(ThemeService::class)->applyTheme();
+
+        return view('theme::pages.service-detail', [
             'service' => $service,
             'locale' => $locale,
             'translation' => $translation,
+            'relatedServices' => $this->serviceCatalogService->relatedServices($service),
             'seo' => $service,
             'breadcrumbs' => [
                 ['name' => setting('site_name'), 'url' => url("/{$locale}")],
-                ['name' => (string) theme_locale('services.title'), 'url' => route('service.index', ['locale' => $locale])],
+                ['name' => (string) theme_locale('services.title'), 'url' => route('services.index', ['locale' => $locale])],
                 ['name' => (string) $translation?->title, 'url' => url()->current()],
             ],
         ]);

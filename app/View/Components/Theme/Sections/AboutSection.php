@@ -32,7 +32,7 @@ class AboutSection extends Component
         $this->title = theme_locale('about.title');
         $this->subtitle = theme_locale('about.subtitle');
         $this->content = theme_locale('about.content');
-        $this->aboutUrl = url('/' . $locale . '/about');
+        $this->aboutUrl = route('about', ['locale' => $locale]);
 
         $rawPoints = theme('about.points');
         $items = is_array($rawPoints) ? $rawPoints : [];

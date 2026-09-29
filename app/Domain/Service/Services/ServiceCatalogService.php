@@ -3,6 +3,7 @@
 namespace App\Domain\Service\Services;
 
 use App\Domain\Service\Models\Service;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class ServiceCatalogService
@@ -29,5 +30,31 @@ class ServiceCatalogService
             ->with(['translations', 'cover'])
             ->active()
             ->first();
+    }
+
+    /**
+     * @return LengthAwarePaginator<int, Service>
+     */
+    public function paginateActive(int $perPage = 12): LengthAwarePaginator
+    {
+        return Service::query()
+            ->with(['translations', 'cover'])
+            ->active()
+            ->ordered()
+            ->paginate($perPage);
+    }
+
+    /**
+     * @return Collection<int, Service>
+     */
+    public function relatedServices(Service $service, int $limit = 3): Collection
+    {
+        return Service::query()
+            ->with(['translations', 'cover'])
+            ->active()
+            ->ordered()
+            ->where('id', '!=', $service->id)
+            ->limit($limit)
+            ->get();
     }
 }

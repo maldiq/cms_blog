@@ -37,6 +37,7 @@ class MenuItemsRelationManager extends RelationManager
             MenuItem::TYPE_CATEGORY => 'Kategori',
             MenuItem::TYPE_SERIES => 'Series',
             MenuItem::TYPE_CUSTOM => 'Custom URL',
+            MenuItem::TYPE_SERVICE => 'Layanan',
         ];
 
         return $form
@@ -77,6 +78,7 @@ class MenuItemsRelationManager extends RelationManager
                                 MenuItem::TYPE_PAGE,
                                 MenuItem::TYPE_CATEGORY,
                                 MenuItem::TYPE_SERIES,
+                                MenuItem::TYPE_SERVICE,
                             ], true)),
                         Forms\Components\TextInput::make('url')
                             ->label('URL')

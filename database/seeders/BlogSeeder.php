@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Domain\Blog\Category\Models\Category;
+use App\Domain\Blog\Category\Models\CategoryTranslation;
 use App\Domain\Blog\Post\Models\Post;
 use App\Domain\Blog\Series\Models\Series;
 use App\Domain\Blog\Tag\Models\Tag;
@@ -14,6 +15,10 @@ class BlogSeeder extends Seeder
 {
     public function run(): void
     {
+        if (CategoryTranslation::query()->where('locale', 'id')->where('slug', 'teknologi')->exists()) {
+            return;
+        }
+
         $author = User::query()->where('email', 'admin@admin.com')->first()
             ?? User::factory()->create(['email' => 'author@blog.test', 'is_active' => true]);
 

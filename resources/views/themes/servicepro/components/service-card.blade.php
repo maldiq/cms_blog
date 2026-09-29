@@ -5,7 +5,7 @@
     $title = $translation?->title;
     $excerpt = $translation?->excerpt;
     $serviceUrl = filled($slug)
-        ? route('service.show', ['locale' => $locale, 'slug' => $slug])
+        ? route('services.show', ['locale' => $locale, 'slug' => $slug])
         : null;
 @endphp
 

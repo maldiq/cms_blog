@@ -62,7 +62,7 @@ class ServiceProContentSectionsTest extends TestCase
             ->assertOk()
             ->assertSee('Konsultasi IT', false)
             ->assertSee('Layanan konsultasi teknologi.', false)
-            ->assertSee(route('service.show', ['locale' => 'id', 'slug' => 'konsultasi-it']), false);
+            ->assertSee(route('services.show', ['locale' => 'id', 'slug' => 'konsultasi-it']), false);
     }
 
     public function test_services_section_does_not_render_inactive(): void

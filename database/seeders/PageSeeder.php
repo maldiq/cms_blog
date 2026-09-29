@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Domain\Page\Models\Page;
+use App\Domain\Page\Models\PageTranslation;
 use App\Domain\User\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +14,10 @@ class PageSeeder extends Seeder
         $user = User::query()->first();
 
         if ($user === null) {
+            return;
+        }
+
+        if (PageTranslation::query()->where('locale', 'id')->where('slug', 'about')->exists()) {
             return;
         }
 

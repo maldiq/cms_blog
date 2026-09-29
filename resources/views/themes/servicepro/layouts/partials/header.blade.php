@@ -8,7 +8,7 @@
     x-data="{ scrolled: false, mobileOpen: false }"
     x-init="scrolled = window.scrollY > 20"
     @scroll.window="scrolled = window.scrollY > 20"
-    class="sticky top-0 z-40 transition-colors duration-300"
+    class="sticky top-0 z-40 overflow-visible transition-colors duration-300"
     :class="scrolled ? 'border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur' : 'border-b border-transparent bg-transparent'"
 >
     <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 lg:px-6">

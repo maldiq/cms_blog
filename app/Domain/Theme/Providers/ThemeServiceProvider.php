@@ -4,6 +4,7 @@ namespace App\Domain\Theme\Providers;
 
 use App\Domain\Theme\Models\Theme;
 use App\Domain\Theme\Services\ThemeService;
+use App\View\Components\Theme\PageHero;
 use App\View\Components\Theme\Sections\AboutSection;
 use App\View\Components\Theme\Sections\BlogSection;
 use App\View\Components\Theme\Sections\CtaSection;
@@ -43,6 +44,7 @@ class ThemeServiceProvider extends ServiceProvider
         });
 
         Blade::componentNamespace('App\\View\\Components\\Theme', 'theme');
+        Blade::component(PageHero::class, 'theme::page-hero');
         Blade::component(Hero::class, 'theme::hero');
         Blade::component(StatsSection::class, 'theme::stats-section');
         Blade::component(CtaSection::class, 'theme::cta-section');

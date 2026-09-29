@@ -12,6 +12,7 @@
     "settings_groups": [
         "hero",
         "about",
+        "about_page",
         "services",
         "portfolio",
         "team",

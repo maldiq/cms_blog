@@ -5,6 +5,7 @@ use App\Domain\Gallery\Album\Http\Controllers\GalleryController;
 use App\Domain\Page\Http\Controllers\PageController;
 use App\Domain\Portfolio\Http\Controllers\PortfolioController;
 use App\Domain\Service\Http\Controllers\ServiceController;
+use App\Domain\Theme\Http\Controllers\ThemePageController;
 use App\Domain\Language\Models\Language;
 use App\Domain\Seo\Http\Controllers\RobotsController;
 use App\Domain\Seo\Http\Controllers\SitemapController;
@@ -33,13 +34,20 @@ Route::prefix('{locale}')
         Route::get('/', [PageController::class, 'home'])->name('home');
 
         Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
-        Route::get('/about', [PageController::class, 'about'])->name('about');
 
-        Route::get('/services', [ServiceController::class, 'index'])->name('service.index');
-        Route::get('/services/{slug}', [ServiceController::class, 'show'])->name('service.show');
+        Route::get('/about', [ThemePageController::class, 'about'])->name('about');
+
+        Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+        Route::get('/services/{slug}', [ServiceController::class, 'show'])->name('services.show');
 
         Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');
         Route::get('/portfolio/{slug}', [PortfolioController::class, 'show'])->name('portfolio.show');
+
+        Route::get('/team', [ThemePageController::class, 'team'])->name('team.index');
+        Route::get('/testimonials', [ThemePageController::class, 'testimonials'])->name('testimonial.index');
+        Route::get('/pricing', [ThemePageController::class, 'pricing'])->name('pricing');
+        Route::get('/faq', [ThemePageController::class, 'faq'])->name('faq');
+        Route::get('/contact', [ThemePageController::class, 'contact'])->name('contact');
 
         Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
         Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');

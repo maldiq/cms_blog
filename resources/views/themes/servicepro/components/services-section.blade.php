@@ -22,7 +22,7 @@
         @if (filled($ctaLabel))
             <div class="mt-10 text-center">
                 <a
-                    href="{{ route('service.index', ['locale' => app()->getLocale()]) }}"
+                    href="{{ route('services.index', ['locale' => app()->getLocale()]) }}"
                     class="inline-flex rounded-lg px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
                     style="background-color: var(--color-primary, currentColor)"
                 >

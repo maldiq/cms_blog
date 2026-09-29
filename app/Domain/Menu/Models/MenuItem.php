@@ -2,6 +2,9 @@
 
 namespace App\Domain\Menu\Models;
 
+use App\Domain\Blog\Post\Models\Post;
+use App\Domain\Page\Models\Page;
+use App\Domain\Service\Models\Service;
 use Database\Factories\MenuItemFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,6 +30,8 @@ class MenuItem extends Model
     public const TYPE_SERIES = 'series';
 
     public const TYPE_CUSTOM = 'custom';
+
+    public const TYPE_SERVICE = 'service';
 
     /**
      * @var list<string>
@@ -127,12 +132,9 @@ class MenuItem extends Model
 
         return match ($this->type) {
             self::TYPE_LINK, self::TYPE_CUSTOM => $this->url,
-            self::TYPE_POST => $this->target_id
-                ? url("/{$locale}/posts/{$this->target_id}")
-                : null,
-            self::TYPE_PAGE => $this->target_id
-                ? url("/{$locale}/pages/{$this->target_id}")
-                : null,
+            self::TYPE_POST => $this->resolvePostUrl($locale),
+            self::TYPE_PAGE => $this->resolvePageUrl($locale),
+            self::TYPE_SERVICE => $this->resolveServiceUrl($locale),
             self::TYPE_CATEGORY => $this->target_id
                 ? url("/{$locale}/categories/{$this->target_id}")
                 : null,
@@ -149,5 +151,56 @@ class MenuItem extends Model
     public function getResolvedUrlAttribute(): ?string
     {
         return $this->resolveUrl();
+    }
+
+    protected function resolvePageUrl(string $locale): ?string
+    {
+        if ($this->target_id === null) {
+            return null;
+        }
+
+        $page = Page::query()->find($this->target_id);
+        $slug = $page?->translate($locale, false)?->slug
+            ?: $page?->translate('id', false)?->slug;
+
+        if ($slug === null || $slug === '') {
+            return null;
+        }
+
+        return route('page.show', ['locale' => $locale, 'slug' => $slug]);
+    }
+
+    protected function resolvePostUrl(string $locale): ?string
+    {
+        if ($this->target_id === null) {
+            return null;
+        }
+
+        $post = Post::query()->find($this->target_id);
+        $slug = $post?->translate($locale, false)?->slug
+            ?: $post?->translate('id', false)?->slug;
+
+        if ($slug === null || $slug === '') {
+            return null;
+        }
+
+        return route('blog.show', ['locale' => $locale, 'slug' => $slug]);
+    }
+
+    protected function resolveServiceUrl(string $locale): ?string
+    {
+        if ($this->target_id === null) {
+            return null;
+        }
+
+        $service = Service::query()->find($this->target_id);
+        $slug = $service?->translate($locale, false)?->slug
+            ?: $service?->translate('id', false)?->slug;
+
+        if ($slug === null || $slug === '') {
+            return null;
+        }
+
+        return route('services.show', ['locale' => $locale, 'slug' => $slug]);
     }
 }
