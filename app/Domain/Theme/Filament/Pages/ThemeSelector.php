@@ -4,7 +4,9 @@ namespace App\Domain\Theme\Filament\Pages;
 
 use App\Domain\Language\Models\Language;
 use App\Domain\Theme\Models\Theme;
+use App\Domain\Theme\Models\ThemeSetting;
 use App\Domain\Theme\Services\ThemeService;
+use App\Support\Theme\ThemeDefaultSettingsSeeder;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Collection;
@@ -87,6 +89,10 @@ class ThemeSelector extends Page
         );
 
         $theme->update(['is_active' => true]);
+
+        if (! ThemeSetting::query()->where('theme_id', $theme->id)->exists()) {
+            ThemeDefaultSettingsSeeder::runForTheme($theme);
+        }
 
         app(ThemeService::class)->clearCache();
         Theme::clearCache();

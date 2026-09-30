@@ -59,7 +59,8 @@ Pastikan folder `storage/` dan `bootstrap/cache/` writable.
 
 ## Dokumentasi theme
 
-Panduan lengkap theme ServicePro: **[docs/THEME_SERVICEPRO.md](docs/THEME_SERVICEPRO.md)**
+- Theme **ServicePro** (agency): **[docs/THEME_SERVICEPRO.md](docs/THEME_SERVICEPRO.md)**
+- Theme **CryptoPro** (blockchain/kripto): **[docs/THEME_CRYPTOPRO.md](docs/THEME_CRYPTOPRO.md)**
 
 ## Testing
 

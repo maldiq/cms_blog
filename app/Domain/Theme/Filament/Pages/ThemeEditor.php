@@ -6,7 +6,6 @@ use App\Domain\Theme\Filament\Support\ThemeEditorFormSchema;
 use App\Domain\Theme\Models\Theme;
 use App\Domain\Theme\Models\ThemeSetting;
 use App\Domain\Theme\Services\ThemeService;
-use Database\Seeders\ServiceProThemeSettingsSeeder;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -133,7 +132,7 @@ class ThemeEditor extends Page implements HasForms
         Theme::clearCache();
         app(ThemeService::class)->clearCache();
 
-        (new ServiceProThemeSettingsSeeder)->run($theme);
+        \App\Support\Theme\ThemeDefaultSettingsSeeder::runForTheme($theme);
 
         $this->loadFormState($theme);
 
