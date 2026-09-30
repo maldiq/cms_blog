@@ -79,4 +79,4 @@ Feature tests theme: `tests/Feature/Theme/`.
 
 ## License
 
-MIT (sesuai kebutuhan proyek Anda).
+MIT.
