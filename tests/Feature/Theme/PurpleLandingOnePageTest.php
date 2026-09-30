@@ -2,7 +2,13 @@
 
 namespace Tests\Feature\Theme;
 
+use App\Domain\Theme\Filament\Pages\ThemeSelector;
+use App\Domain\User\Models\User;
+use Database\Seeders\LanguageSeeder;
+use Database\Seeders\RolePermissionSeeder;
+use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Tests\Support\SeedsPurpleLandingTheme;
 use Tests\TestCase;
 
@@ -46,5 +52,26 @@ class PurpleLandingOnePageTest extends TestCase
     public function test_blog_post_detail_still_accessible(): void
     {
         $this->get('/id/blog/membangun-cms-modular-laravel')->assertOk();
+    }
+
+    public function test_can_switch_theme_from_admin_while_purple_landing_active(): void
+    {
+        $this->seed([RolePermissionSeeder::class]);
+
+        $admin = User::factory()->create(['is_active' => true]);
+        $admin->assignRole('admin');
+
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+
+        $this->actingAs($admin);
+
+        Livewire::test(ThemeSelector::class)
+            ->call('activateTheme', 'servicepro')
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('themes', [
+            'slug' => 'servicepro',
+            'is_active' => 1,
+        ]);
     }
 }
