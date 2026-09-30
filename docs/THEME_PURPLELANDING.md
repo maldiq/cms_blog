@@ -37,6 +37,8 @@ Saat theme ini aktif:
 
 Middleware: `RedirectThemeOnePage` · map route: `App\Support\Theme\ThemeOnePage`.
 
+Menu header/footer **global** (bukan per theme). Saat mengaktifkan Purple Landing atau kembali ke ServicePro/CryptoPro, menu disinkronkan otomatis lewat `ThemeNavigationSyncService` di halaman Theme Situs.
+
 ## Urutan homepage
 
 hero → services → process → stats → about → pricing → testimonial → blog → FAQ → contact

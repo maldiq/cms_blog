@@ -32,14 +32,6 @@ class ThemeServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $activeTheme = Theme::current();
-
-        View::share('activeTheme', $activeTheme);
-
-        if ($activeTheme !== null) {
-            $this->registerThemeViewNamespace($activeTheme->slug);
-        }
-
         Blade::directive('theme', function (string $expression): string {
             return "<?php echo e(theme_locale({$expression})); ?>";
         });
@@ -64,12 +56,6 @@ class ThemeServiceProvider extends ServiceProvider
 
     public function registerThemeViewNamespace(string $slug): void
     {
-        $path = resource_path('views/themes/' . $slug);
-
-        if (! is_dir($path)) {
-            return;
-        }
-
-        View::addNamespace('theme', $path);
+        app(ThemeService::class)->registerViewNamespaceForSlug($slug);
     }
 }

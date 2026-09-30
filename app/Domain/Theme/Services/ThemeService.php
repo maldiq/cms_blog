@@ -13,6 +13,17 @@ class ThemeService
         return Theme::current();
     }
 
+    public function registerViewNamespaceForSlug(string $slug): void
+    {
+        $path = resource_path('views/themes/'.$slug);
+
+        if (! is_dir($path)) {
+            return;
+        }
+
+        View::replaceNamespace('theme', [$path]);
+    }
+
     public function getSetting(string $key, mixed $default = null): mixed
     {
         $theme = $this->getCurrentTheme();

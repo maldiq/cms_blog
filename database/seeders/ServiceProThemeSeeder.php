@@ -29,14 +29,18 @@ class ServiceProThemeSeeder extends Seeder
         }
 
         $this->ensureMinimumActiveServices(6);
-        app(HeaderMenuFromContentService::class)->sync();
-
-        $this->seedFooterMenus();
+        $this->syncNavigationMenus();
         $this->seedPortfolios();
         $this->seedTeamMembers();
         $this->seedTestimonials();
 
         Theme::clearCache();
+    }
+
+    public function syncNavigationMenus(): void
+    {
+        app(HeaderMenuFromContentService::class)->sync();
+        $this->seedFooterMenus();
     }
 
     protected function activateServiceProTheme(): Theme

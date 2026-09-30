@@ -20,14 +20,18 @@ class PurpleLandingThemeSeeder extends ServiceProThemeSeeder
         }
 
         $this->ensureMinimumActiveServices(6);
-        $this->seedOnePageMenus();
-
-        $this->seedOnePageFooterMenus();
+        $this->syncNavigationMenus();
         $this->seedPortfolios();
         $this->seedTeamMembers();
         $this->seedTestimonials();
 
         \App\Domain\Theme\Models\Theme::clearCache();
+    }
+
+    public function syncNavigationMenus(): void
+    {
+        $this->seedOnePageMenus();
+        $this->seedOnePageFooterMenus();
     }
 
     protected function seedOnePageMenus(): void

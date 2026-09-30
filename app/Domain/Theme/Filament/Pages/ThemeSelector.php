@@ -5,6 +5,7 @@ namespace App\Domain\Theme\Filament\Pages;
 use App\Domain\Language\Models\Language;
 use App\Domain\Theme\Models\Theme;
 use App\Domain\Theme\Models\ThemeSetting;
+use App\Domain\Theme\Services\ThemeNavigationSyncService;
 use App\Domain\Theme\Services\ThemeService;
 use App\Support\Theme\ThemeDefaultSettingsSeeder;
 use Filament\Notifications\Notification;
@@ -96,6 +97,8 @@ class ThemeSelector extends Page
 
         app(ThemeService::class)->clearCache();
         Theme::clearCache();
+
+        app(ThemeNavigationSyncService::class)->syncForSlug($slug);
 
         $this->activeSlug = $slug;
         $this->refreshThemes();

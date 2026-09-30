@@ -73,5 +73,10 @@ class PurpleLandingOnePageTest extends TestCase
             'slug' => 'servicepro',
             'is_active' => 1,
         ]);
+
+        $this->get('/id')
+            ->assertOk()
+            ->assertSee('/id/services', false)
+            ->assertDontSee('href="#solutions"', false);
     }
 }
