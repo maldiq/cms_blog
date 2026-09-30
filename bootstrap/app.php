@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
             \App\Domain\Language\Http\Middleware\SetLocale::class,
+            \App\Http\Middleware\RedirectThemeOnePage::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

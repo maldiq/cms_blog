@@ -7,6 +7,7 @@ use App\Domain\Theme\Services\ThemeService;
 use App\View\Components\Theme\PageHero;
 use App\View\Components\Theme\Sections\AboutSection;
 use App\View\Components\Theme\Sections\BlogSection;
+use App\View\Components\Theme\Sections\ContactSection;
 use App\View\Components\Theme\Sections\CtaSection;
 use App\View\Components\Theme\Sections\FaqSection;
 use App\View\Components\Theme\Sections\Hero;
@@ -58,6 +59,7 @@ class ThemeServiceProvider extends ServiceProvider
         Blade::component(FaqSection::class, 'theme::faq-section');
         Blade::component(BlogSection::class, 'theme::blog-section');
         Blade::component(NewsletterSection::class, 'theme::newsletter-section');
+        Blade::component(ContactSection::class, 'theme::contact-section');
     }
 
     public function registerThemeViewNamespace(string $slug): void

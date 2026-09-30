@@ -73,6 +73,9 @@ class ThemeEditorFormSchema
             $this->themeLocaleTabs('hero', fn (string $locale): array => [
                 Forms\Components\TextInput::make("hero.title.{$locale}")->label('Title')->maxLength(255),
                 Forms\Components\TextInput::make("hero.subtitle.{$locale}")->label('Subtitle')->maxLength(500),
+                Forms\Components\TextInput::make("hero.lead_form_title.{$locale}")
+                    ->label('Judul form lead (hero)')
+                    ->maxLength(255),
                 Forms\Components\TextInput::make("hero.cta_label.{$locale}")->label('CTA label')->maxLength(255),
             ]),
             Forms\Components\TextInput::make('hero.cta_url')->label('CTA URL')->url()->maxLength(500),
@@ -436,6 +439,7 @@ class ThemeEditorFormSchema
             'hero' => [
                 'title' => $empty,
                 'subtitle' => $empty,
+                'lead_form_title' => $empty,
                 'cta_label' => $empty,
                 'cta_url' => null,
                 'background_image_id' => null,

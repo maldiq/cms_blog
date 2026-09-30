@@ -61,6 +61,7 @@ Pastikan folder `storage/` dan `bootstrap/cache/` writable.
 
 - Theme **ServicePro** (agency): **[docs/THEME_SERVICEPRO.md](docs/THEME_SERVICEPRO.md)**
 - Theme **CryptoPro** (blockchain/kripto): **[docs/THEME_CRYPTOPRO.md](docs/THEME_CRYPTOPRO.md)**
+- Theme **Purple Landing** (SaaS landing + hero form): **[docs/THEME_PURPLELANDING.md](docs/THEME_PURPLELANDING.md)**
 
 ## Testing
 

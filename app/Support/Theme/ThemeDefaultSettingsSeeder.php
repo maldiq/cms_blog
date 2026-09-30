@@ -4,6 +4,7 @@ namespace App\Support\Theme;
 
 use App\Domain\Theme\Models\Theme;
 use Database\Seeders\CryptoProThemeSettingsSeeder;
+use Database\Seeders\PurpleLandingThemeSettingsSeeder;
 use Database\Seeders\ServiceProThemeSettingsSeeder;
 use Illuminate\Database\Seeder;
 
@@ -23,6 +24,7 @@ class ThemeDefaultSettingsSeeder
         return match ($slug) {
             'servicepro' => app(ServiceProThemeSettingsSeeder::class),
             'cryptopro' => app(CryptoProThemeSettingsSeeder::class),
+            'purplelanding' => app(PurpleLandingThemeSettingsSeeder::class),
             default => null,
         };
     }

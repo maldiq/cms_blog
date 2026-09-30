@@ -41,7 +41,12 @@ class ServiceProThemeSeeder extends Seeder
 
     protected function activateServiceProTheme(): Theme
     {
-        $manifestPath = resource_path('views/themes/servicepro/theme.json');
+        return $this->activateThemeBySlug('servicepro');
+    }
+
+    protected function activateThemeBySlug(string $slug): Theme
+    {
+        $manifestPath = resource_path('views/themes/'.$slug.'/theme.json');
         $manifest = is_file($manifestPath)
             ? json_decode((string) file_get_contents($manifestPath), true)
             : [];
@@ -49,9 +54,9 @@ class ServiceProThemeSeeder extends Seeder
         Theme::query()->update(['is_active' => false]);
 
         $theme = Theme::query()->updateOrCreate(
-            ['slug' => 'servicepro'],
+            ['slug' => $slug],
             [
-                'name' => $manifest['name'] ?? 'ServicePro',
+                'name' => $manifest['name'] ?? $slug,
                 'description' => $manifest['description'] ?? null,
                 'author' => $manifest['author'] ?? null,
                 'version' => $manifest['version'] ?? '1.0.0',

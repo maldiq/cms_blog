@@ -39,6 +39,7 @@ class ThemeSelectorTest extends TestCase
         Livewire::test(ThemeSelector::class)
             ->assertSee('ServicePro')
             ->assertSee('CryptoPro')
+            ->assertSee('Purple Landing')
             ->assertSee('CMS Blog');
     }
 
