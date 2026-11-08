@@ -50,6 +50,20 @@ class MediaPickerTest extends TestCase
             ->assertSee('Gunakan gambar');
     }
 
+    public function test_empty_library_offers_upload_action_to_authorized_user(): void
+    {
+        Livewire::test(MediaPicker::class, [
+            'multiple' => false,
+            'selectedMediaIds' => [],
+            'statePath' => 'data.image_id',
+        ])
+            ->call('openModal')
+            ->assertSee('Belum ada gambar di pustaka media server ini.')
+            ->assertSee('Unggah gambar')
+            ->set('activeTab', 'upload')
+            ->assertSee('Pilih gambar untuk diunggah');
+    }
+
     public function test_single_image_selection_is_only_applied_after_confirmation(): void
     {
         $media = app(MediaUploadService::class)->uploadFile(UploadedFile::fake()->image('chosen-image.jpg'));
@@ -86,6 +100,7 @@ class MediaPickerTest extends TestCase
         $media = Media::query()->where('name', 'new-product-image')->firstOrFail();
 
         $component
+            ->assertSee('new-product-image')
             ->assertSet('pendingMediaIds', [$media->id])
             ->call('confirmSelection')
             ->assertDispatched('affiliate-image-picked', mediaId: $media->id);
@@ -94,6 +109,36 @@ class MediaPickerTest extends TestCase
             'name' => 'new-product-image',
             'mime_type' => 'image/jpeg',
         ]);
+    }
+
+    public function test_picker_lists_image_uploads_with_missing_or_generic_mime_type(): void
+    {
+        foreach ([null, 'application/octet-stream'] as $mimeType) {
+            $media = Media::query()->create([
+                'model_type' => User::class,
+                'model_id' => auth()->id(),
+                'collection_name' => 'default',
+                'name' => 'legacy-image',
+                'file_name' => 'legacy-image.jpg',
+                'mime_type' => $mimeType,
+                'disk' => 'public',
+                'conversions_disk' => 'public',
+                'size' => 100,
+                'manipulations' => [],
+                'custom_properties' => [],
+                'generated_conversions' => [],
+                'responsive_images' => [],
+            ]);
+
+            Livewire::test(MediaPicker::class, [
+                'multiple' => false,
+                'selectedMediaIds' => [],
+                'statePath' => 'data.image_id',
+            ])
+                ->call('openModal')
+                ->assertSee('legacy-image')
+                ->call('toggleSelection', $media->id);
+        }
     }
 
     public function test_non_image_files_cannot_be_selected(): void

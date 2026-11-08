@@ -43,6 +43,7 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Emerald,
             ])
             ->navigationGroups([
+                'Affiliate',
                 'Konten',
                 'Blog',
                 'Media',

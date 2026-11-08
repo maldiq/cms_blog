@@ -4,12 +4,12 @@ namespace App\Domain\Role\Filament\Resources;
 
 use App\Domain\Role\Filament\Resources\RoleResource\Pages;
 use App\Domain\Role\Models\Role;
+use App\Domain\Role\Support\PermissionGroups;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Spatie\Permission\Models\Permission;
 
 class RoleResource extends Resource
 {
@@ -25,27 +25,16 @@ class RoleResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Role';
 
-    /**
-     * @var list<string>
-     */
-    protected static array $permissionPrefixes = ['user', 'role', 'setting'];
-
     public static function form(Form $form): Form
     {
         $permissionFields = [];
 
-        foreach (self::$permissionPrefixes as $prefix) {
-            $permissionFields[] = Forms\Components\Fieldset::make(strtoupper($prefix))
+        foreach (PermissionGroups::all() as $group => $permissions) {
+            $permissionFields[] = Forms\Components\Fieldset::make(PermissionGroups::label($group))
                 ->schema([
-                    Forms\Components\CheckboxList::make("permissions_{$prefix}")
+                    Forms\Components\CheckboxList::make(PermissionGroups::fieldKey($group))
                         ->hiddenLabel()
-                        ->options(
-                            Permission::query()
-                                ->where('name', 'like', "{$prefix}.%")
-                                ->orderBy('name')
-                                ->pluck('name', 'id')
-                                ->all()
-                        )
+                        ->options($permissions)
                         ->columns(2)
                         ->bulkToggleable(),
                 ]);

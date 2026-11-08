@@ -97,8 +97,11 @@ npm ci
 npm run build
 php artisan migrate --force
 php artisan migrate --path=database/settings --force
+php artisan db:seed --class=RolePermissionSeeder --force
 php artisan storage:link
 ```
+
+Migrasi affiliate menyiapkan tabel kategori/platform dan mempertahankan produk yang sudah ada dengan memindahkan nilai kategori/platform lama ke tabel baru. Seeder permission menambahkan izin pengelolaan kategori dan platform ke role admin/editor tanpa menjalankan seeder demo atau mengubah password admin.
 
 Pastikan user PHP-FPM aaPanel (sering bernama `www`) dapat menulis ke direktori runtime. Ganti `www:www` jika user/group website Anda berbeda:
 
@@ -182,6 +185,10 @@ Jangan menjalankan worker sebagai proses terminal sementara; Supervisor perlu me
 3. Buat atau aktifkan produk affiliate untuk menampilkannya di beranda. Produk contoh dari seeder memang nonaktif.
 4. Uji unggah media, halaman detail produk, tautan affiliate, HTTPS, dan pengiriman email jika SMTP digunakan.
 5. Jika terjadi error, cek `storage/logs/laravel.log` dan log Nginx/PHP-FPM dari aaPanel. Jangan menampilkan log yang mengandung rahasia secara publik.
+
+### Pustaka gambar kosong setelah deploy
+
+`AffiliateProductSeeder` hanya membuat data produk contoh, bukan file gambar. Pustaka media tidak ikut tersalin bersama source code: metadata media disimpan di database, sedangkan file aslinya berada di `storage/app/public`. Untuk instalasi baru, unggah gambar melalui tab **Unggah berkas** pada pemilih media. Untuk memindahkan pustaka yang sudah ada, salin database beserta isi `storage/app/public` dari server asal, lalu pastikan symbolic link `public/storage` dibuat dengan `php artisan storage:link`. Buat backup database dan file media sebelum pemindahan.
 
 ### Login menampilkan 405 pada `POST /kelola/login`
 

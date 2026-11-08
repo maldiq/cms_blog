@@ -35,10 +35,10 @@
             @foreach ($categories as $category)
                 <li>
                     <a
-                        href="{{ route('products.index', ['locale' => app()->getLocale(), 'category' => $category]) }}"
+                        href="{{ route('products.index', ['locale' => app()->getLocale(), 'category' => $category->slug]) }}"
                         class="block rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-emerald-700"
                     >
-                        {{ $category }}
+                        {{ $category->name }}
                     </a>
                 </li>
             @endforeach
@@ -57,8 +57,8 @@
             </li>
             @forelse ($categories as $category)
                 <li>
-                    <a href="{{ route('products.index', ['locale' => app()->getLocale(), 'category' => $category]) }}" class="block rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-emerald-700">
-                        {{ $category }}
+                    <a href="{{ route('products.index', ['locale' => app()->getLocale(), 'category' => $category->slug]) }}" class="block rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-emerald-700">
+                        {{ $category->name }}
                     </a>
                 </li>
             @empty

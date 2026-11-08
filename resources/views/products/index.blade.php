@@ -19,14 +19,14 @@
             <select id="product-category" name="category" class="rounded-lg border-gray-300 text-sm focus:border-emerald-600 focus:ring-emerald-600">
                 <option value="">Semua kategori</option>
                 @foreach ($categories as $category)
-                    <option value="{{ $category }}" @selected(request('category') === $category)>{{ $category }}</option>
+                    <option value="{{ $category->slug }}" @selected(request('category') === $category->slug)>{{ $category->name }}</option>
                 @endforeach
             </select>
             <label class="sr-only" for="product-platform">Platform</label>
             <select id="product-platform" name="platform" class="rounded-lg border-gray-300 text-sm focus:border-emerald-600 focus:ring-emerald-600">
                 <option value="">Semua platform</option>
-                @foreach (\App\Domain\Affiliate\Models\AffiliateProduct::PLATFORMS as $value => $label)
-                    <option value="{{ $value }}" @selected(request('platform') === $value)>{{ $label }}</option>
+                @foreach ($platforms as $platform)
+                    <option value="{{ $platform->slug }}" @selected(request('platform') === $platform->slug)>{{ $platform->name }}</option>
                 @endforeach
             </select>
             <button type="submit" class="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800 sm:col-span-4">
@@ -54,10 +54,10 @@
                             </div>
                             <div class="p-4">
                                 <span class="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                                    {{ \App\Domain\Affiliate\Models\AffiliateProduct::PLATFORMS[$product->platform] ?? 'Lainnya' }}
+                                    {{ $product->affiliatePlatform?->name ?? 'Lainnya' }}
                                 </span>
                                 <h2 class="mt-1 line-clamp-2 font-semibold text-gray-900">{{ $product->title }}</h2>
-                                <p class="mt-1 text-xs text-gray-500">{{ $product->category }}</p>
+                                <p class="mt-1 text-xs text-gray-500">{{ $product->affiliateCategory?->name }}</p>
                                 @if ($product->price)
                                     <p class="mt-3 font-bold text-gray-900">Rp{{ number_format((float) $product->price, 0, ',', '.') }}</p>
                                 @endif

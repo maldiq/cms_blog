@@ -15,7 +15,7 @@ trait InteractsWithAffiliateProductImage
         if ($mediaId !== null) {
             abort_unless(
                 Media::query()
-                    ->where('mime_type', 'like', 'image/%')
+                    ->images()
                     ->whereKey($mediaId)
                     ->exists(),
                 404,

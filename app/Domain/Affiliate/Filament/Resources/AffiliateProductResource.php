@@ -3,6 +3,8 @@
 namespace App\Domain\Affiliate\Filament\Resources;
 
 use App\Domain\Affiliate\Filament\Resources\AffiliateProductResource\Pages;
+use App\Domain\Affiliate\Models\AffiliateCategory;
+use App\Domain\Affiliate\Models\AffiliatePlatform;
 use App\Domain\Affiliate\Models\AffiliateProduct;
 use App\Domain\Theme\Filament\Forms\Components\MediaImagePickerField;
 use Filament\Forms;
@@ -18,7 +20,7 @@ class AffiliateProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
-    protected static ?string $navigationGroup = 'Konten';
+    protected static ?string $navigationGroup = 'Affiliate';
 
     protected static ?int $navigationSort = 5;
 
@@ -39,10 +41,25 @@ class AffiliateProductResource extends Resource
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug((string) $state))),
                 Forms\Components\TextInput::make('slug')->required()->unique(ignoreRecord: true)->maxLength(255),
-                Forms\Components\TextInput::make('category')->label('Kategori')->required()->maxLength(100),
-                Forms\Components\Select::make('platform')
+                Forms\Components\Select::make('affiliate_category_id')
+                    ->label('Kategori')
+                    ->options(fn (): array => AffiliateCategory::query()
+                        ->where('is_active', true)
+                        ->orderBy('sort_order')
+                        ->orderBy('name')
+                        ->pluck('name', 'id')
+                        ->all())
+                    ->searchable()
+                    ->required(),
+                Forms\Components\Select::make('affiliate_platform_id')
                     ->label('Platform')
-                    ->options(AffiliateProduct::PLATFORMS)
+                    ->options(fn (): array => AffiliatePlatform::query()
+                        ->where('is_active', true)
+                        ->orderBy('sort_order')
+                        ->orderBy('name')
+                        ->pluck('name', 'id')
+                        ->all())
+                    ->searchable()
                     ->required(),
                 Forms\Components\Textarea::make('description')->label('Deskripsi')->rows(4)->columnSpanFull(),
                 MediaImagePickerField::make('image_id')->label('Gambar produk')->columnSpanFull(),
@@ -71,11 +88,8 @@ class AffiliateProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')->label('Produk')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('platform')
-                    ->label('Platform')
-                    ->formatStateUsing(fn (string $state): string => AffiliateProduct::PLATFORMS[$state] ?? 'Lainnya')
-                    ->badge(),
-                Tables\Columns\TextColumn::make('category')->label('Kategori')->sortable(),
+                Tables\Columns\TextColumn::make('affiliatePlatform.name')->label('Platform')->badge(),
+                Tables\Columns\TextColumn::make('affiliateCategory.name')->label('Kategori')->sortable(),
                 Tables\Columns\TextColumn::make('price')->label('Harga')->money('IDR'),
                 Tables\Columns\TextColumn::make('click_count')->label('Klik')->sortable(),
                 Tables\Columns\IconColumn::make('is_active')->label('Aktif')->boolean(),
