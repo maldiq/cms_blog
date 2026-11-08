@@ -12,20 +12,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[UsePolicy(AffiliateProductPolicy::class)]
 class AffiliateProduct extends Model
 {
-    public const PLATFORMS = [
-        'shopee' => 'Shopee',
-        'tiktok_shop' => 'TikTok Shop',
-        'amazon' => 'Amazon',
-        'vps' => 'VPS / Hosting',
-        'other' => 'Lainnya',
-    ];
-
     protected $fillable = [
         'image_id',
         'title',
         'slug',
-        'category',
-        'platform',
+        'affiliate_category_id',
+        'affiliate_platform_id',
         'description',
         'affiliate_url',
         'price',
@@ -52,6 +44,22 @@ class AffiliateProduct extends Model
     public function image(): BelongsTo
     {
         return $this->belongsTo(Media::class, 'image_id');
+    }
+
+    /**
+     * @return BelongsTo<AffiliateCategory, $this>
+     */
+    public function affiliateCategory(): BelongsTo
+    {
+        return $this->belongsTo(AffiliateCategory::class);
+    }
+
+    /**
+     * @return BelongsTo<AffiliatePlatform, $this>
+     */
+    public function affiliatePlatform(): BelongsTo
+    {
+        return $this->belongsTo(AffiliatePlatform::class);
     }
 
     /**

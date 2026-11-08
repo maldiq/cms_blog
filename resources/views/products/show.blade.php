@@ -17,8 +17,8 @@
 
             <div class="flex flex-col justify-center">
                 <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                    {{ \App\Domain\Affiliate\Models\AffiliateProduct::PLATFORMS[$product->platform] ?? 'Lainnya' }}
-                    <span class="px-1 text-gray-300">/</span>{{ $product->category }}
+                    {{ $product->affiliatePlatform?->name ?? 'Lainnya' }}
+                    <span class="px-1 text-gray-300">/</span>{{ $product->affiliateCategory?->name }}
                 </p>
                 <h1 class="mt-3 text-3xl font-bold text-gray-900">{{ $product->title }}</h1>
                 @if ($product->price)
@@ -34,7 +34,7 @@
                 @endif
                 <a href="{{ route('products.redirect', ['locale' => $locale, 'slug' => $product->slug]) }}"
                    rel="sponsored nofollow noopener" class="mt-8 inline-flex justify-center rounded-lg bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800">
-                    Lihat penawaran di {{ ['shopee' => 'Shopee', 'tiktok_shop' => 'TikTok Shop', 'amazon' => 'Amazon', 'vps' => 'penyedia VPS'][$product->platform] ?? 'situs resmi' }}
+                    Lihat penawaran di {{ $product->affiliatePlatform?->name ?? 'situs resmi' }}
                 </a>
                 <p class="mt-3 text-xs leading-5 text-gray-500">
                     Tautan ini adalah tautan affiliate. Kami dapat menerima komisi jika Anda membeli melalui tautan tersebut, tanpa biaya tambahan bagi Anda.

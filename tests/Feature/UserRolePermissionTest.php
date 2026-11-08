@@ -65,4 +65,19 @@ class UserRolePermissionTest extends TestCase
             ->get('/kelola/roles')
             ->assertForbidden();
     }
+
+    public function test_role_form_shows_permissions_for_all_registered_domains(): void
+    {
+        $superAdmin = User::factory()->create(['is_active' => true]);
+        $superAdmin->assignRole('super-admin');
+
+        $this->actingAs($superAdmin)
+            ->get('/kelola/roles/create')
+            ->assertOk()
+            ->assertSee('affiliate.product.create')
+            ->assertSee('affiliate.category.create')
+            ->assertSee('affiliate.platform.delete')
+            ->assertSee('contact.submission.update')
+            ->assertSee('media.upload');
+    }
 }

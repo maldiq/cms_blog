@@ -2,9 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Domain\Affiliate\Models\AffiliateCategory;
+use App\Domain\Affiliate\Models\AffiliatePlatform;
 use App\Domain\Affiliate\Models\AffiliateProduct;
 use App\Domain\Page\Models\Page;
 use App\Domain\User\Models\User;
+use Database\Seeders\AffiliateCategorySeeder;
+use Database\Seeders\AffiliatePlatformSeeder;
 use Database\Seeders\LanguageSeeder;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,6 +25,8 @@ class PageTest extends TestCase
         $this->seed([
             LanguageSeeder::class,
             RolePermissionSeeder::class,
+            AffiliateCategorySeeder::class,
+            AffiliatePlatformSeeder::class,
         ]);
 
         app()->setLocale('id');
@@ -73,8 +79,8 @@ class PageTest extends TestCase
         AffiliateProduct::query()->create([
             'title' => 'Produk Beranda',
             'slug' => 'produk-beranda',
-            'category' => 'Elektronik',
-            'platform' => 'shopee',
+            'affiliate_category_id' => AffiliateCategory::query()->where('slug', 'elektronik')->value('id'),
+            'affiliate_platform_id' => AffiliatePlatform::query()->where('slug', 'shopee')->value('id'),
             'description' => 'Produk pilihan untuk halaman depan.',
             'affiliate_url' => 'https://shopee.co.id/product/123',
             'is_active' => true,
@@ -87,7 +93,7 @@ class PageTest extends TestCase
             ->assertDontSee('Beranda Kustom')
             ->assertSee('Kategori Affiliate')
             ->assertSee('Elektronik')
-            ->assertSee('category=Elektronik');
+            ->assertSee('category=elektronik');
     }
 
     public function test_homepage_shows_empty_catalog_and_affiliate_category_menu_without_active_products(): void

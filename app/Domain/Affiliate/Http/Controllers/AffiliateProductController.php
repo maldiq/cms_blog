@@ -2,6 +2,8 @@
 
 namespace App\Domain\Affiliate\Http\Controllers;
 
+use App\Domain\Affiliate\Models\AffiliateCategory;
+use App\Domain\Affiliate\Models\AffiliatePlatform;
 use App\Domain\Affiliate\Models\AffiliateProduct;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
@@ -25,7 +27,7 @@ class AffiliateProductController extends Controller
         app()->setLocale($locale);
 
         $products = AffiliateProduct::query()
-            ->with('image')
+            ->with(['image', 'affiliateCategory', 'affiliatePlatform'])
             ->active()
             ->when($request->filled('q'), function ($query) use ($request): void {
                 $search = mb_substr($request->string('q')->trim()->value(), 0, 100);
@@ -34,28 +36,36 @@ class AffiliateProductController extends Controller
                         ->orWhere('description', 'like', "%{$search}%");
                 });
             })
-            ->when($request->filled('category'), fn ($query) => $query->where('category', $request->string('category')->value()))
             ->when(
-                is_string($request->input('platform'))
-                    && array_key_exists($request->input('platform'), AffiliateProduct::PLATFORMS),
-                fn ($query) => $query->where('platform', $request->input('platform')),
+                is_string($request->input('category')) && filled($request->input('category')),
+                fn ($query) => $query->whereHas('affiliateCategory', fn ($query) => $query->where('slug', $request->input('category'))),
+            )
+            ->when(
+                is_string($request->input('platform')) && filled($request->input('platform')),
+                fn ($query) => $query->whereHas('affiliatePlatform', fn ($query) => $query->where('slug', $request->input('platform'))),
             )
             ->orderByDesc('is_featured')
             ->orderByDesc('created_at')
             ->paginate(12)
             ->withQueryString();
 
-        $categories = AffiliateProduct::query()
+        $categories = AffiliateCategory::query()
             ->active()
-            ->select('category')
-            ->distinct()
-            ->orderBy('category')
-            ->pluck('category');
+            ->whereHas('products', fn ($query) => $query->active())
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['name', 'slug']);
+        $platforms = AffiliatePlatform::query()
+            ->active()
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['name', 'slug']);
 
         return view('products.index', [
             'locale' => $locale,
             'products' => $products,
             'categories' => $categories,
+            'platforms' => $platforms,
             'seoContext' => [
                 'title' => $isHome ? setting('site_name', 'Rekomendasi Produk') : 'Rekomendasi Produk',
                 'canonical' => $isHome
@@ -72,7 +82,7 @@ class AffiliateProductController extends Controller
         app()->setLocale($locale);
 
         $product = AffiliateProduct::query()
-            ->with('image')
+            ->with(['image', 'affiliateCategory', 'affiliatePlatform'])
             ->active()
             ->where('slug', $slug)
             ->firstOrFail();

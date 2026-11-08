@@ -97,8 +97,11 @@ npm ci
 npm run build
 php artisan migrate --force
 php artisan migrate --path=database/settings --force
+php artisan db:seed --class=RolePermissionSeeder --force
 php artisan storage:link
 ```
+
+Migrasi affiliate menyiapkan tabel kategori/platform dan mempertahankan produk yang sudah ada dengan memindahkan nilai kategori/platform lama ke tabel baru. Seeder permission menambahkan izin pengelolaan kategori dan platform ke role admin/editor tanpa menjalankan seeder demo atau mengubah password admin.
 
 Pastikan user PHP-FPM aaPanel (sering bernama `www`) dapat menulis ke direktori runtime. Ganti `www:www` jika user/group website Anda berbeda:
 

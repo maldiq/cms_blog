@@ -4,10 +4,14 @@ namespace Tests\Feature;
 
 use App\Domain\Affiliate\Filament\Resources\AffiliateProductResource\Pages\CreateAffiliateProduct;
 use App\Domain\Affiliate\Filament\Resources\AffiliateProductResource\Pages\EditAffiliateProduct;
+use App\Domain\Affiliate\Models\AffiliateCategory;
+use App\Domain\Affiliate\Models\AffiliatePlatform;
 use App\Domain\Affiliate\Models\AffiliateProduct;
 use App\Domain\Media\Services\MediaUploadService;
 use App\Domain\Seo\Http\Controllers\SitemapController;
 use App\Domain\User\Models\User;
+use Database\Seeders\AffiliateCategorySeeder;
+use Database\Seeders\AffiliatePlatformSeeder;
 use Database\Seeders\AffiliateProductSeeder;
 use Database\Seeders\LanguageSeeder;
 use Database\Seeders\RolePermissionSeeder;
@@ -29,6 +33,8 @@ class AffiliateProductTest extends TestCase
         $this->seed([
             LanguageSeeder::class,
             RolePermissionSeeder::class,
+            AffiliateCategorySeeder::class,
+            AffiliatePlatformSeeder::class,
         ]);
     }
 
@@ -46,7 +52,7 @@ class AffiliateProductTest extends TestCase
             ->assertSee('Tas Harian')
             ->assertDontSee('Produk tersembunyi');
 
-        $this->get('/id/products?platform=shopee&category=Elektronik')
+        $this->get('/id/products?platform=shopee&category=elektronik')
             ->assertOk()
             ->assertSee('Headphone Wireless')
             ->assertDontSee('Tas Harian')
@@ -124,6 +130,27 @@ class AffiliateProductTest extends TestCase
             ->assertDontSee('name="data[image_id]"');
     }
 
+    public function test_admin_can_manage_affiliate_categories_and_platforms(): void
+    {
+        $admin = User::factory()->create(['is_active' => true]);
+        $admin->assignRole('admin');
+
+        $this->actingAs($admin)
+            ->get('/kelola/affiliate-categories')
+            ->assertOk()
+            ->assertSee('Elektronik');
+
+        $this->actingAs($admin)
+            ->get('/kelola/affiliate-platforms')
+            ->assertOk()
+            ->assertSee('Shopee');
+
+        Livewire::actingAs($admin)
+            ->test(CreateAffiliateProduct::class)
+            ->assertFormFieldExists('affiliate_category_id')
+            ->assertFormFieldExists('affiliate_platform_id');
+    }
+
     public function test_selected_media_updates_create_and_edit_forms(): void
     {
         $admin = User::factory()->create(['is_active' => true]);
@@ -153,7 +180,7 @@ class AffiliateProductTest extends TestCase
         $this->assertSame(13, AffiliateProduct::query()->count());
         $this->assertEqualsCanonicalizing(
             ['shopee', 'tiktok_shop', 'amazon', 'vps', 'other'],
-            AffiliateProduct::query()->distinct()->pluck('platform')->all(),
+            AffiliateProduct::query()->with('affiliatePlatform')->get()->pluck('affiliatePlatform.slug')->unique()->all(),
         );
         $this->assertSame(0, AffiliateProduct::query()->where('is_active', true)->count());
 
@@ -177,8 +204,8 @@ class AffiliateProductTest extends TestCase
         return AffiliateProduct::query()->create([
             'title' => $title,
             'slug' => $slug,
-            'category' => $category,
-            'platform' => $platform,
+            'affiliate_category_id' => AffiliateCategory::query()->where('name', $category)->value('id'),
+            'affiliate_platform_id' => AffiliatePlatform::query()->where('slug', $platform)->value('id'),
             'affiliate_url' => 'https://shopee.co.id/product/123',
             'price' => 100000,
             'is_active' => $active,

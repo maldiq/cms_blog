@@ -2,8 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Domain\Affiliate\Models\AffiliateCategory;
+use App\Domain\Affiliate\Models\AffiliatePlatform;
 use App\Domain\Affiliate\Models\AffiliateProduct;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class AffiliateProductSeeder extends Seeder
 {
@@ -119,11 +122,32 @@ class AffiliateProductSeeder extends Seeder
 
     public function run(): void
     {
+        $this->call([
+            AffiliateCategorySeeder::class,
+            AffiliatePlatformSeeder::class,
+        ]);
+
         foreach ($this->products as $product) {
+            $categoryId = AffiliateCategory::query()
+                ->where('slug', Str::slug($product['category']))
+                ->value('id');
+            $platformId = AffiliatePlatform::query()
+                ->where('slug', $product['platform'])
+                ->value('id');
+
+            if ($categoryId === null || $platformId === null) {
+                throw new \RuntimeException("Kategori atau platform contoh tidak tersedia untuk produk {$product['slug']}.");
+            }
+
+            $attributes = $product;
+            unset($attributes['category'], $attributes['platform']);
+
             AffiliateProduct::query()->firstOrCreate(
                 ['slug' => $product['slug']],
                 [
-                    ...$product,
+                    ...$attributes,
+                    'affiliate_category_id' => $categoryId,
+                    'affiliate_platform_id' => $platformId,
                     'is_active' => false,
                     'is_featured' => false,
                 ],

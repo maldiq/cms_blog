@@ -2,6 +2,7 @@
 
 namespace App\Domain\Role\Filament\Concerns;
 
+use App\Domain\Role\Support\PermissionGroups;
 use Spatie\Permission\Models\Permission;
 
 trait SyncsGroupedPermissions
@@ -19,10 +20,13 @@ trait SyncsGroupedPermissions
     {
         $ids = [];
 
-        foreach (['user', 'role', 'setting'] as $prefix) {
-            $key = "permissions_{$prefix}";
+        foreach (PermissionGroups::all() as $group => $permissions) {
+            $key = PermissionGroups::fieldKey($group);
             if (! empty($data[$key]) && is_array($data[$key])) {
-                $ids = array_merge($ids, $data[$key]);
+                $ids = array_merge($ids, array_intersect(
+                    array_map('intval', $data[$key]),
+                    array_map('intval', array_keys($permissions)),
+                ));
             }
         }
 
@@ -34,7 +38,9 @@ trait SyncsGroupedPermissions
      */
     protected function stripPermissionFields(array $data): array
     {
-        unset($data['permissions_user'], $data['permissions_role'], $data['permissions_setting']);
+        foreach (PermissionGroups::all() as $group => $_permissions) {
+            unset($data[PermissionGroups::fieldKey($group)]);
+        }
 
         return $data;
     }
@@ -46,9 +52,9 @@ trait SyncsGroupedPermissions
     {
         $permissionIds = $this->record->permissions()->pluck('id');
 
-        foreach (['user', 'role', 'setting'] as $prefix) {
-            $data["permissions_{$prefix}"] = Permission::query()
-                ->where('name', 'like', "{$prefix}.%")
+        foreach (PermissionGroups::all() as $group => $permissions) {
+            $data[PermissionGroups::fieldKey($group)] = Permission::query()
+                ->whereIn('name', array_values($permissions))
                 ->whereIn('id', $permissionIds)
                 ->pluck('id')
                 ->all();
