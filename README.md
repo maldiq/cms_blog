@@ -45,18 +45,11 @@ php artisan migrate:fresh --seed
 
 `DefaultContentSeeder` + `ServiceProThemeSeeder` + sample blog/komentar/newsletter/kontak.
 
-## Deploy (ringkas)
+## Deploy ke aaPanel
 
-1. Set `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL` HTTPS.
-2. `composer install --no-dev --optimize-autoloader`
-3. `php artisan migrate --force` dan `php artisan migrate --path=database/settings --force`
-4. `php artisan db:seed --force` (atau seed selektif di staging)
-5. `php artisan storage:link`, `php artisan config:cache`, `php artisan route:cache`, `php artisan view:cache`
-6. `npm ci && npm run build`
-7. Queue worker jika mail/notifikasi di-queue: `php artisan queue:work`
-8. Scheduler: `* * * * * php /path/artisan schedule:run`
+Panduan deployment VPS aaPanel untuk `dev.naintin.com`: **[docs/DEPLOY_AAPANEL.md](docs/DEPLOY_AAPANEL.md)**.
 
-Pastikan folder `storage/` dan `bootstrap/cache/` writable.
+> **Penting:** jangan jalankan `php artisan db:seed` pada produksi. Seeder default membuat akun `admin@admin.com` dengan password `password` dan memuat data demo. Panduan aaPanel menjelaskan bootstrap role dan akun admin dengan password interaktif.
 
 ## Dokumentasi theme
 
