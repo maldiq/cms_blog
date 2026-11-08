@@ -3,15 +3,15 @@
 namespace App\Providers\Filament;
 
 use App\Domain\Blog\Category\Filament\Resources\CategoryResource;
-use App\Domain\Comment\Filament\Resources\CommentResource;
-use App\Domain\Gallery\Album\Filament\Resources\AlbumResource;
-use App\Domain\Page\Filament\Resources\PageResource;
 use App\Domain\Blog\Post\Filament\Resources\PostResource;
 use App\Domain\Blog\Series\Filament\Resources\SeriesResource;
 use App\Domain\Blog\Tag\Filament\Resources\TagResource;
+use App\Domain\Comment\Filament\Resources\CommentResource;
+use App\Domain\Gallery\Album\Filament\Resources\AlbumResource;
 use App\Domain\Language\Filament\Resources\LanguageResource;
-use App\Domain\Menu\Filament\Resources\MenuResource;
 use App\Domain\Media\Filament\Resources\MediaResource;
+use App\Domain\Menu\Filament\Resources\MenuResource;
+use App\Domain\Page\Filament\Resources\PageResource;
 use App\Domain\Role\Filament\Resources\RoleResource;
 use App\Domain\User\Filament\Resources\UserResource;
 use Filament\Http\Middleware\Authenticate;
@@ -38,6 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('kelola')
             ->login()
+            ->darkMode()
             ->colors([
                 'primary' => Color::Emerald,
             ])
@@ -69,6 +70,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Domain/Service'), for: 'App\\Domain\\Service')
             ->discoverResources(in: app_path('Domain/Newsletter'), for: 'App\\Domain\\Newsletter')
             ->discoverResources(in: app_path('Domain/Contact'), for: 'App\\Domain\\Contact')
+            ->discoverResources(in: app_path('Domain/Affiliate'), for: 'App\\Domain\\Affiliate')
             ->discoverResources(in: app_path('Domain/Portfolio'), for: 'App\\Domain\\Portfolio')
             ->discoverResources(in: app_path('Domain/Team'), for: 'App\\Domain\\Team')
             ->discoverResources(in: app_path('Domain/Testimonial'), for: 'App\\Domain\\Testimonial')
