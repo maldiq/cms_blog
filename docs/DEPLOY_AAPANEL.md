@@ -183,6 +183,31 @@ Jangan menjalankan worker sebagai proses terminal sementara; Supervisor perlu me
 4. Uji unggah media, halaman detail produk, tautan affiliate, HTTPS, dan pengiriman email jika SMTP digunakan.
 5. Jika terjadi error, cek `storage/logs/laravel.log` dan log Nginx/PHP-FPM dari aaPanel. Jangan menampilkan log yang mengandung rahasia secara publik.
 
+### Login menampilkan 405 pada `POST /kelola/login`
+
+Halaman login Filament memakai Livewire. Jika JavaScript Livewire tidak termuat, form dapat terkirim sebagai POST biasa ke `/kelola/login`, sedangkan route tersebut memang hanya menerima GET/HEAD. Periksa pemuatan script Livewire di tab Network browser.
+
+Jika script `/livewire/livewire.js` atau `/livewire/livewire.min.js` mengembalikan 404:
+
+1. Pastikan `.env` produksi memakai `APP_ENV=production` dan `APP_DEBUG=false`. Jangan membiarkan halaman exception rinci terlihat pada situs publik.
+2. Dari direktori aplikasi, bersihkan cache lama dan pastikan route script terdaftar:
+
+   ```bash
+   php artisan optimize:clear
+   php artisan route:list --path=livewire
+   ```
+
+   Harus ada route `POST livewire/update` dan route script `GET livewire/livewire.min.js` saat `APP_DEBUG=false`. Jika route script tidak muncul, periksa instalasi dependency Livewire/Filament dengan `composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader`, kemudian ulangi pemeriksaan.
+3. Bangun ulang cache setelah `.env` sudah benar:
+
+   ```bash
+   php artisan config:cache
+   php artisan route:cache
+   php artisan view:cache
+   ```
+
+4. Muat ulang halaman login dan pastikan request script Livewire berhasil sebelum mencoba login kembali. Jika route tercantum di Laravel tetapi URL masih 404, periksa konfigurasi rewrite Nginx aaPanel: request `/livewire/...` harus diteruskan ke `public/index.php`, tidak diblokir atau diarahkan ke file statis.
+
 ## 8. Deployment pembaruan
 
 Sebelum memperbarui aplikasi, buat backup database dan file media dari aaPanel. Kemudian jalankan dari direktori proyek:
