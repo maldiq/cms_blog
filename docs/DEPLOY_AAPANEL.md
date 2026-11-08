@@ -183,6 +183,10 @@ Jangan menjalankan worker sebagai proses terminal sementara; Supervisor perlu me
 4. Uji unggah media, halaman detail produk, tautan affiliate, HTTPS, dan pengiriman email jika SMTP digunakan.
 5. Jika terjadi error, cek `storage/logs/laravel.log` dan log Nginx/PHP-FPM dari aaPanel. Jangan menampilkan log yang mengandung rahasia secara publik.
 
+### Pustaka gambar kosong setelah deploy
+
+`AffiliateProductSeeder` hanya membuat data produk contoh, bukan file gambar. Pustaka media tidak ikut tersalin bersama source code: metadata media disimpan di database, sedangkan file aslinya berada di `storage/app/public`. Untuk instalasi baru, unggah gambar melalui tab **Unggah berkas** pada pemilih media. Untuk memindahkan pustaka yang sudah ada, salin database beserta isi `storage/app/public` dari server asal, lalu pastikan symbolic link `public/storage` dibuat dengan `php artisan storage:link`. Buat backup database dan file media sebelum pemindahan.
+
 ### Login menampilkan 405 pada `POST /kelola/login`
 
 Halaman login Filament memakai Livewire. Jika JavaScript Livewire tidak termuat, form dapat terkirim sebagai POST biasa ke `/kelola/login`, sedangkan route tersebut memang hanya menerima GET/HEAD. Periksa pemuatan script Livewire di tab Network browser.

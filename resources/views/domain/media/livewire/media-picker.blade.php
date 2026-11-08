@@ -42,15 +42,18 @@
 
     @if ($showModal)
         <div
-            class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-950/60 p-3 sm:p-6"
+            class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-950/60 p-2 sm:p-4"
             wire:keydown.escape="closeModal"
             wire:click.self="closeModal"
             role="dialog"
             aria-modal="true"
             aria-label="Pilih gambar"
         >
-            <div class="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl dark:bg-gray-900">
-                <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-700">
+            <div
+                class="flex min-h-0 w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl dark:bg-gray-900"
+                style="height: min(85dvh, 700px); max-height: calc(100dvh - 1rem);"
+            >
+                <div class="flex shrink-0 items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700 sm:px-5">
                     <div>
                         <h2 class="text-lg font-semibold text-gray-950 dark:text-white">Pilih media</h2>
                         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Pustaka gambar untuk produk affiliate.</p>
@@ -65,7 +68,7 @@
                     </button>
                 </div>
 
-                <div class="flex border-b border-gray-200 px-5 dark:border-gray-700">
+                <div class="flex shrink-0 border-b border-gray-200 px-5 dark:border-gray-700">
                     <button
                         type="button"
                         wire:click="$set('activeTab', 'library')"
@@ -93,7 +96,7 @@
                 </div>
 
                 @if ($activeTab === 'library')
-                    <div class="flex flex-wrap items-center gap-3 border-b border-gray-200 p-4 dark:border-gray-700">
+                    <div class="flex shrink-0 flex-wrap items-center gap-3 border-b border-gray-200 p-3 dark:border-gray-700 sm:p-4">
                         <input
                             type="search"
                             wire:model.live.debounce.300ms="search"
@@ -107,19 +110,38 @@
                             class="rounded-lg border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-800"
                         >
                             <option value="">Semua koleksi</option>
-                            @foreach (\App\Domain\Media\Models\Media::query()->where('mime_type', 'like', 'image/%')->select('collection_name')->distinct()->orderBy('collection_name')->pluck('collection_name') as $collection)
+                            @foreach ($this->collections as $collection)
                                 <option value="{{ $collection }}">{{ $collection }}</option>
                             @endforeach
                         </select>
                     </div>
 
-                    <div class="flex min-h-0 flex-1 flex-col md:flex-row">
+                    <div class="flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row">
                         <div class="min-h-0 flex-1 overflow-y-auto p-4">
                             @if ($this->mediaItems->isEmpty())
                                 <div class="rounded-xl border border-dashed border-gray-300 p-10 text-center dark:border-gray-700">
                                     <x-filament::icon icon="heroicon-o-photo" class="mx-auto h-10 w-10 text-gray-400" />
                                     <p class="mt-3 text-sm font-medium text-gray-900 dark:text-white">Tidak ada gambar ditemukan</p>
-                                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Coba ubah pencarian atau unggah gambar baru.</p>
+                                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                        @if (filled($search) || filled($collectionFilter))
+                                            Coba ubah pencarian atau filter koleksi.
+                                        @else
+                                            Belum ada gambar di pustaka media server ini.
+                                        @endif
+                                    </p>
+                                    @if (auth()->user()?->can('media.upload'))
+                                        <button
+                                            type="button"
+                                            wire:click="$set('activeTab', 'upload')"
+                                            class="mt-4 rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-500"
+                                        >
+                                            Unggah gambar
+                                        </button>
+                                    @else
+                                        <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                                            Minta administrator memberikan izin unggah media.
+                                        </p>
+                                    @endif
                                 </div>
                             @else
                                 <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-5">
@@ -163,15 +185,15 @@
                             @endif
                         </div>
 
-                        <aside class="w-full border-t border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-950 md:w-64 md:border-l md:border-t-0">
+                        <aside class="max-h-40 shrink-0 overflow-y-auto border-t border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-950 md:max-h-none md:w-56 md:border-l md:border-t-0">
                             @if ($focusedMedia)
                                 <img
                                     src="{{ $this->previewUrl($focusedMedia) }}"
                                     alt="{{ $focusedMedia->name }}"
-                                    class="aspect-square w-full rounded-lg bg-gray-200 object-contain dark:bg-gray-800"
+                                    class="h-24 w-full rounded-lg bg-gray-200 object-contain dark:bg-gray-800 md:h-40"
                                 >
-                                <h3 class="mt-4 break-words text-sm font-semibold text-gray-900 dark:text-white">{{ $focusedMedia->name }}</h3>
-                                <dl class="mt-3 space-y-2 text-xs">
+                                <h3 class="mt-2 break-words text-sm font-semibold text-gray-900 dark:text-white">{{ $focusedMedia->name }}</h3>
+                                <dl class="mt-2 space-y-1 text-xs">
                                     <div class="flex justify-between gap-3">
                                         <dt class="text-gray-500 dark:text-gray-400">Jenis</dt>
                                         <dd class="text-right text-gray-700 dark:text-gray-300">{{ $focusedMedia->mime_type }}</dd>
@@ -238,7 +260,7 @@
                     </div>
                 @endif
 
-                <div class="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 px-5 py-4 dark:border-gray-700">
+                <div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-900 sm:px-5">
                     <p class="text-sm text-gray-500 dark:text-gray-400">
                         @if ($this->focusedMedia)
                             {{ $this->focusedMedia->name }}
@@ -257,6 +279,8 @@
                         <button
                             type="button"
                             wire:click="confirmSelection"
+                            wire:loading.attr="disabled"
+                            wire:target="confirmSelection"
                             @disabled($pendingMediaIds === [])
                             class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                         >

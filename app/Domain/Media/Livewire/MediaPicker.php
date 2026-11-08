@@ -6,6 +6,7 @@ use App\Domain\Media\Models\Media;
 use App\Domain\Media\Services\MediaUploadService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
@@ -60,6 +61,8 @@ class MediaPicker extends Component
         $this->authorizeMediaAccess();
         $this->showModal = true;
         $this->activeTab = 'library';
+        $this->reset('search', 'collectionFilter');
+        $this->resetPage('mediaPickerPage');
         $this->pendingMediaIds = $this->selectedMediaIds;
         $this->focusedMediaId = $this->pendingMediaIds[0] ?? null;
     }
@@ -69,7 +72,7 @@ class MediaPicker extends Component
         $this->showModal = false;
         $this->reset('newUploads', 'search', 'collectionFilter', 'activeTab');
         $this->pendingMediaIds = $this->selectedMediaIds;
-        $this->resetPage();
+        $this->resetPage('mediaPickerPage');
     }
 
     /**
@@ -78,25 +81,38 @@ class MediaPicker extends Component
     public function getMediaItemsProperty(): LengthAwarePaginator
     {
         return Media::query()
+            ->images()
             ->when(filled($this->search), function ($query): void {
                 $query->where('name', 'like', '%'.$this->search.'%');
             })
             ->when(filled($this->collectionFilter), function ($query): void {
                 $query->where('collection_name', $this->collectionFilter);
             })
-            ->where('mime_type', 'like', 'image/%')
             ->latest()
-            ->paginate(12);
+            ->paginate(12, ['*'], 'mediaPickerPage');
+    }
+
+    /**
+     * @return Collection<int, string>
+     */
+    public function getCollectionsProperty(): Collection
+    {
+        return Media::query()
+            ->images()
+            ->select('collection_name')
+            ->distinct()
+            ->orderBy('collection_name')
+            ->pluck('collection_name');
     }
 
     public function updatedSearch(): void
     {
-        $this->resetPage();
+        $this->resetPage('mediaPickerPage');
     }
 
     public function updatedCollectionFilter(): void
     {
-        $this->resetPage();
+        $this->resetPage('mediaPickerPage');
     }
 
     public function toggleSelection(int $mediaId): void
@@ -138,8 +154,8 @@ class MediaPicker extends Component
 
         $this->focusedMediaId = $this->pendingMediaIds[0] ?? null;
         $this->activeTab = 'library';
-        $this->reset('newUploads');
-        $this->resetPage();
+        $this->reset('newUploads', 'search', 'collectionFilter');
+        $this->resetPage('mediaPickerPage');
     }
 
     public function confirmSelection(): void
@@ -202,7 +218,7 @@ class MediaPicker extends Component
         }
 
         return Media::query()
-            ->where('mime_type', 'like', 'image/%')
+            ->images()
             ->find($mediaId);
     }
 
