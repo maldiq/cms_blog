@@ -2,6 +2,7 @@
 
 namespace App\Domain\Seo\Services;
 
+use App\Domain\Affiliate\Models\AffiliateProduct;
 use App\Domain\Blog\Category\Models\Category;
 use App\Domain\Blog\Post\Models\Post;
 use App\Domain\Blog\Series\Models\Series;
@@ -41,8 +42,15 @@ class SitemapService
                     ->setPriority(0.7)
             );
 
+            $sitemap->add(
+                Url::create(url("/{$locale}/products"))
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+                    ->setPriority(0.85)
+            );
+
             $this->addThemeStaticRoutes($sitemap, $locale);
 
+            $this->addAffiliateProducts($sitemap, $locale);
             $this->addPosts($sitemap, $locale);
             $this->addPages($sitemap, $locale);
             $this->addServices($sitemap, $locale);
@@ -54,6 +62,23 @@ class SitemapService
         }
 
         return $sitemap->render();
+    }
+
+    protected function addAffiliateProducts(Sitemap $sitemap, string $locale): void
+    {
+        AffiliateProduct::query()
+            ->active()
+            ->orderBy('id')
+            ->chunk(100, function ($products) use ($sitemap, $locale): void {
+                foreach ($products as $product) {
+                    $sitemap->add(
+                        Url::create(url("/{$locale}/products/{$product->slug}"))
+                            ->setLastModificationDate($product->updated_at)
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                            ->setPriority(0.75)
+                    );
+                }
+            });
     }
 
     protected function addThemeStaticRoutes(Sitemap $sitemap, string $locale): void

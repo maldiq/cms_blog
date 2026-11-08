@@ -32,7 +32,7 @@
             <a href="{{ url('/' . app()->getLocale()) }}" class="text-lg font-semibold text-emerald-700">
                 {{ __('messages.home') }}
             </a>
-            <x-menu location="header" />
+            <x-affiliate-category-menu />
             <x-locale-switcher />
         </div>
     </header>

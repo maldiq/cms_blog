@@ -35,6 +35,7 @@ Buka:
 
 - Front: `http://localhost:8000/id` dan `/en`
 - Kelola: `http://localhost:8000/kelola` — login **admin@admin.com** / **password** (ubah setelah seed)
+- Tema admin (terang/gelap/sistem): buka menu avatar di kanan atas, lalu pilih ikon matahari, bulan, atau perangkat.
 
 Seed lengkap (reset DB):
 

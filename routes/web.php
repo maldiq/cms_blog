@@ -1,15 +1,16 @@
 <?php
 
+use App\Domain\Affiliate\Http\Controllers\AffiliateProductController;
 use App\Domain\Blog\Post\Http\Controllers\BlogController;
 use App\Domain\Gallery\Album\Http\Controllers\GalleryController;
+use App\Domain\Language\Models\Language;
 use App\Domain\Page\Http\Controllers\PageController;
 use App\Domain\Portfolio\Http\Controllers\PortfolioController;
+use App\Domain\Seo\Http\Controllers\RobotsController;
+use App\Domain\Seo\Http\Controllers\SitemapController;
 use App\Domain\Service\Http\Controllers\ServiceController;
 use App\Domain\Theme\Http\Controllers\ThemeAssetController;
 use App\Domain\Theme\Http\Controllers\ThemePageController;
-use App\Domain\Language\Models\Language;
-use App\Domain\Seo\Http\Controllers\RobotsController;
-use App\Domain\Seo\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/admin/media', '/kelola/media');
@@ -32,13 +33,13 @@ Route::get('/robots.txt', RobotsController::class)->name('robots');
 Route::get('/', function () {
     $defaultCode = Language::getDefault()?->code ?? 'id';
 
-    return redirect('/' . $defaultCode);
+    return redirect('/'.$defaultCode);
 });
 
 Route::prefix('{locale}')
     ->where(['locale' => '[A-Za-z]{2,5}'])
     ->group(function () {
-        Route::get('/', [PageController::class, 'home'])->name('home');
+        Route::get('/', [AffiliateProductController::class, 'home'])->name('home');
 
         Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
 
@@ -65,4 +66,8 @@ Route::prefix('{locale}')
 
         Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery.index');
         Route::get('/gallery/{slug}', [GalleryController::class, 'show'])->name('gallery.show');
+
+        Route::get('/products', [AffiliateProductController::class, 'index'])->name('products.index');
+        Route::get('/products/{slug}', [AffiliateProductController::class, 'show'])->name('products.show');
+        Route::get('/go/{slug}', [AffiliateProductController::class, 'redirect'])->name('products.redirect');
     });

@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             DefaultContentSeeder::class,
+            AffiliateProductSeeder::class,
             PageSeeder::class,
             ServiceProThemeSeeder::class,
             ServiceProBlogSeeder::class,

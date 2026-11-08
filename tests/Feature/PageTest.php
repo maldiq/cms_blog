@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Domain\Affiliate\Models\AffiliateProduct;
 use App\Domain\Page\Models\Page;
 use App\Domain\User\Models\User;
 use Database\Seeders\LanguageSeeder;
@@ -51,7 +52,7 @@ class PageTest extends TestCase
         $this->assertDatabaseHas('page_translations', ['page_id' => $page->id, 'locale' => 'en', 'slug' => 'about']);
     }
 
-    public function test_homepage_renders_correct_page(): void
+    public function test_homepage_displays_affiliate_products_instead_of_cms_homepage(): void
     {
         $user = User::factory()->create(['is_active' => true]);
 
@@ -69,7 +70,34 @@ class PageTest extends TestCase
             'content' => '<p>Ini homepage kustom.</p>',
         ])->save();
 
-        $this->get('/id')->assertOk()->assertSee('Beranda Kustom')->assertSee('Ini homepage kustom.');
+        AffiliateProduct::query()->create([
+            'title' => 'Produk Beranda',
+            'slug' => 'produk-beranda',
+            'category' => 'Elektronik',
+            'platform' => 'shopee',
+            'description' => 'Produk pilihan untuk halaman depan.',
+            'affiliate_url' => 'https://shopee.co.id/product/123',
+            'is_active' => true,
+        ]);
+
+        $this->get('/id')
+            ->assertOk()
+            ->assertSee('Temukan Produk Pilihan')
+            ->assertSee('Produk Beranda')
+            ->assertDontSee('Beranda Kustom')
+            ->assertSee('Kategori Affiliate')
+            ->assertSee('Elektronik')
+            ->assertSee('category=Elektronik');
+    }
+
+    public function test_homepage_shows_empty_catalog_and_affiliate_category_menu_without_active_products(): void
+    {
+        $this->get('/id')
+            ->assertOk()
+            ->assertSee('Temukan Produk Pilihan')
+            ->assertSee('Belum ada produk yang cocok')
+            ->assertSee('Kategori Affiliate')
+            ->assertSee('Kategori akan muncul setelah produk diaktifkan.');
     }
 
     public function test_published_page_visible(): void

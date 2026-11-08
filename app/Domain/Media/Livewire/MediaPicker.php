@@ -9,14 +9,27 @@ use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class MediaPicker extends Component
 {
     use WithFileUploads;
+    use WithPagination;
 
     public bool $showModal = false;
 
     public bool $multiple = true;
+
+    public ?string $statePath = null;
+
+    public string $activeTab = 'library';
+
+    public ?int $focusedMediaId = null;
+
+    /**
+     * @var list<int>
+     */
+    public array $pendingMediaIds = [];
 
     /**
      * @var list<int>
@@ -32,21 +45,31 @@ class MediaPicker extends Component
 
     public ?string $collectionFilter = null;
 
-    public function mount(bool $multiple = true, array $selectedMediaIds = []): void
+    public function mount(bool $multiple = true, array $selectedMediaIds = [], ?string $statePath = null): void
     {
         $this->multiple = $multiple;
         $this->selectedMediaIds = array_values(array_map('intval', $selectedMediaIds));
+        $this->pendingMediaIds = $this->selectedMediaIds;
+        $this->statePath = $statePath;
+
+        abort_unless(auth()->user()?->can('viewAny', Media::class), 403);
     }
 
     public function openModal(): void
     {
+        $this->authorizeMediaAccess();
         $this->showModal = true;
+        $this->activeTab = 'library';
+        $this->pendingMediaIds = $this->selectedMediaIds;
+        $this->focusedMediaId = $this->pendingMediaIds[0] ?? null;
     }
 
     public function closeModal(): void
     {
         $this->showModal = false;
-        $this->reset('newUploads', 'search', 'collectionFilter');
+        $this->reset('newUploads', 'search', 'collectionFilter', 'activeTab');
+        $this->pendingMediaIds = $this->selectedMediaIds;
+        $this->resetPage();
     }
 
     /**
@@ -66,49 +89,101 @@ class MediaPicker extends Component
             ->paginate(12);
     }
 
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedCollectionFilter(): void
+    {
+        $this->resetPage();
+    }
+
     public function toggleSelection(int $mediaId): void
     {
-        if ($this->multiple) {
-            if (in_array($mediaId, $this->selectedMediaIds, true)) {
-                $this->selectedMediaIds = array_values(array_diff($this->selectedMediaIds, [$mediaId]));
-            } else {
-                $this->selectedMediaIds[] = $mediaId;
-            }
+        abort_unless($this->findImage($mediaId) !== null, 404);
 
-            return;
+        if ($this->multiple) {
+            if (in_array($mediaId, $this->pendingMediaIds, true)) {
+                $this->pendingMediaIds = array_values(array_diff($this->pendingMediaIds, [$mediaId]));
+            } else {
+                $this->pendingMediaIds[] = $mediaId;
+            }
+        } else {
+            $this->pendingMediaIds = [$mediaId];
         }
 
-        $this->selectedMediaIds = [$mediaId];
+        $this->focusedMediaId = $mediaId;
     }
 
     public function uploadNew(MediaUploadService $mediaUploadService): void
     {
+        $this->authorizeMediaUpload();
         $this->validate([
-            'newUploads' => ['required', 'array', 'min:1'],
+            'newUploads' => ['required', 'array', 'min:1', 'max:10'],
             'newUploads.*' => ['image', 'max:10240'],
         ]);
 
+        $uploadedIds = [];
         foreach ($this->newUploads as $file) {
             $media = $mediaUploadService->uploadFile($file);
-            $this->selectedMediaIds[] = $media->id;
+            $uploadedIds[] = $media->id;
         }
 
-        $this->selectedMediaIds = array_values(array_unique($this->selectedMediaIds));
-        $this->reset('newUploads');
+        if ($this->multiple) {
+            $this->pendingMediaIds = array_values(array_unique([...$this->pendingMediaIds, ...$uploadedIds]));
+        } elseif ($uploadedIds !== []) {
+            $this->pendingMediaIds = [end($uploadedIds)];
+        }
 
-        $this->dispatch('notify', message: 'Upload selesai');
+        $this->focusedMediaId = $this->pendingMediaIds[0] ?? null;
+        $this->activeTab = 'library';
+        $this->reset('newUploads');
+        $this->resetPage();
     }
 
     public function confirmSelection(): void
     {
-        $ids = array_values(array_unique($this->selectedMediaIds));
+        $ids = array_values(array_unique($this->pendingMediaIds));
+
+        foreach ($ids as $id) {
+            abort_unless($this->findImage($id) !== null, 404);
+        }
 
         if (! $this->multiple && count($ids) > 1) {
             $ids = [reset($ids)];
         }
 
+        $this->selectedMediaIds = $ids;
         $this->dispatch('media-picker-selected', mediaIds: $ids);
+
+        if ($this->statePath !== null && ! $this->multiple) {
+            $this->dispatch('affiliate-image-picked', mediaId: $ids[0] ?? null);
+        }
+
         $this->closeModal();
+    }
+
+    public function clearSelection(): void
+    {
+        $this->selectedMediaIds = [];
+        $this->pendingMediaIds = [];
+        $this->focusedMediaId = null;
+        $this->dispatch('media-picker-selected', mediaIds: []);
+
+        if ($this->statePath !== null && ! $this->multiple) {
+            $this->dispatch('affiliate-image-picked', mediaId: null);
+        }
+    }
+
+    public function getFocusedMediaProperty(): ?Media
+    {
+        return $this->findImage($this->focusedMediaId);
+    }
+
+    public function getSelectedMediaProperty(): ?Media
+    {
+        return $this->findImage($this->selectedMediaIds[0] ?? null);
     }
 
     public function previewUrl(Media $media): string
@@ -118,6 +193,27 @@ class MediaPicker extends Component
         }
 
         return $media->getFullUrl();
+    }
+
+    private function findImage(?int $mediaId): ?Media
+    {
+        if ($mediaId === null) {
+            return null;
+        }
+
+        return Media::query()
+            ->where('mime_type', 'like', 'image/%')
+            ->find($mediaId);
+    }
+
+    private function authorizeMediaAccess(): void
+    {
+        abort_unless(auth()->user()?->can('viewAny', Media::class), 403);
+    }
+
+    private function authorizeMediaUpload(): void
+    {
+        abort_unless(auth()->user()?->can('media.upload'), 403);
     }
 
     public function render(): View
