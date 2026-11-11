@@ -17,7 +17,7 @@ class AffiliateProductSeeder extends Seeder
 
     /**
      * Jumlah produk contoh pertama yang ditandai unggulan agar section
-     * "Pilihan NainPicks" dan kartu hero terisi saat data diaktifkan.
+     * "Pilihan NainPicks" dan kartu hero langsung terisi sejak awal.
      */
     private const FEATURED_DEMO_COUNT = 4;
 
@@ -213,7 +213,7 @@ class AffiliateProductSeeder extends Seeder
                 'price' => $product['price'],
                 'original_price' => $product['original_price'],
                 'is_featured' => $index < self::FEATURED_DEMO_COUNT,
-                'is_active' => false,
+                'is_active' => true,
             ]);
 
             foreach ($locales as $locale) {

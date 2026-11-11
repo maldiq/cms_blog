@@ -177,7 +177,7 @@ class AffiliateProductTest extends TestCase
             ->assertSet('data.image_id', null);
     }
 
-    public function test_affiliate_product_seeder_adds_safe_inactive_examples_and_is_idempotent(): void
+    public function test_affiliate_product_seeder_adds_active_examples_and_is_idempotent(): void
     {
         $this->seed(AffiliateProductSeeder::class);
 
@@ -186,19 +186,19 @@ class AffiliateProductTest extends TestCase
             ['shopee', 'tiktok_shop', 'amazon', 'vps', 'other'],
             AffiliateProduct::query()->with('affiliatePlatform')->get()->pluck('affiliatePlatform.slug')->unique()->all(),
         );
-        $this->assertSame(0, AffiliateProduct::query()->where('is_active', true)->count());
+        $this->assertSame(13, AffiliateProduct::query()->where('is_active', true)->count());
 
         $product = AffiliateProduct::query()
             ->whereHas('translations', fn ($query) => $query->where('slug', 'contoh-headphone-bluetooth-shopee'))
             ->firstOrFail();
         $product->translateOrNew('id')->fill(['title' => 'Produk saya'])->save();
-        $product->update(['is_active' => true]);
+        $product->update(['is_active' => false]);
 
         $this->seed(AffiliateProductSeeder::class);
 
         $this->assertSame(13, AffiliateProduct::query()->count());
         $this->assertSame('Produk saya', $product->fresh()->translate('id', false)?->title);
-        $this->assertTrue($product->fresh()->is_active);
+        $this->assertFalse((bool) $product->fresh()->is_active);
     }
 
     public function test_admin_can_update_product_translations(): void
