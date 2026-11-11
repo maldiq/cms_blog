@@ -4,10 +4,14 @@ namespace Database\Seeders;
 
 use App\Domain\Affiliate\Models\AffiliateBanner;
 use App\Domain\Language\Models\Language;
+use App\Domain\Media\Services\MediaUploadService;
+use Database\Seeders\Concerns\GeneratesDemoImages;
 use Illuminate\Database\Seeder;
 
 class AffiliateBannerSeeder extends Seeder
 {
+    use GeneratesDemoImages;
+
     /**
      * @var array<int, array<string, string>>
      */
@@ -32,10 +36,24 @@ class AffiliateBannerSeeder extends Seeder
         ],
     ];
 
+    /**
+     * Palet warna gambar latar slide, mengikuti tema slide.
+     *
+     * @var array<string, array{0: array{0: int, 1: int, 2: int}, 1: array{0: int, 1: int, 2: int}}>
+     */
+    private array $themePalettes = [
+        'brand' => [[27, 40, 61], [30, 64, 175]],
+        'accent' => [[124, 45, 18], [245, 158, 11]],
+        'emerald' => [[6, 46, 37], [13, 148, 136]],
+        'violet' => [[46, 16, 101], [139, 92, 246]],
+    ];
+
     public function run(): void
     {
         /** @var list<array<string, mixed>> $slides */
         $slides = config('affiliate.hero.fallback_slides', []);
+
+        $uploadService = app(MediaUploadService::class);
 
         $locales = Language::getActive()->pluck('code')->all();
 
@@ -82,6 +100,19 @@ class AffiliateBannerSeeder extends Seeder
                     'subtitle' => $copy['subtitle'],
                     'cta_label' => $copy['cta_label'],
                 ])->save();
+            }
+
+            if ($banner->image_id === null) {
+                $theme = (string) ($slide['theme'] ?? 'brand');
+                [$from, $to] = $this->themePalettes[$theme] ?? $this->themePalettes['brand'];
+                $imagePath = $this->generateDemoImage(
+                    "affiliate-banner-{$index}-{$theme}.jpg",
+                    1600,
+                    900,
+                    $from,
+                    $to,
+                );
+                $banner->update(['image_id' => $uploadService->uploadFromPath($imagePath)->getKey()]);
             }
         }
     }
