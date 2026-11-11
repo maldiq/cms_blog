@@ -109,7 +109,10 @@ class AffiliateProductTest extends TestCase
         $this->get('/sitemap.xml')
             ->assertOk()
             ->assertSee(url('/id/products'))
-            ->assertSee(url('/id/products/produk-seo'));
+            ->assertSee(url('/id/products/produk-seo'))
+            ->assertSee(url('/en/products/produk-seo'))
+            ->assertSee(url('/id/kategori/umum'))
+            ->assertSee(url('/en/category/general'));
     }
 
     public function test_admin_can_manage_affiliate_products(): void
@@ -134,11 +137,12 @@ class AffiliateProductTest extends TestCase
     {
         $admin = User::factory()->create(['is_active' => true]);
         $admin->assignRole('admin');
+        app()->setLocale('en');
 
         $this->actingAs($admin)
             ->get('/kelola/affiliate-categories')
             ->assertOk()
-            ->assertSee('Elektronik');
+            ->assertSee('Electronics');
 
         $this->actingAs($admin)
             ->get('/kelola/affiliate-platforms')
@@ -184,14 +188,52 @@ class AffiliateProductTest extends TestCase
         );
         $this->assertSame(0, AffiliateProduct::query()->where('is_active', true)->count());
 
-        $product = AffiliateProduct::query()->where('slug', 'contoh-headphone-bluetooth-shopee')->firstOrFail();
-        $product->update(['title' => 'Produk saya', 'is_active' => true]);
+        $product = AffiliateProduct::query()
+            ->whereHas('translations', fn ($query) => $query->where('slug', 'contoh-headphone-bluetooth-shopee'))
+            ->firstOrFail();
+        $product->translateOrNew('id')->fill(['title' => 'Produk saya'])->save();
+        $product->update(['is_active' => true]);
 
         $this->seed(AffiliateProductSeeder::class);
 
         $this->assertSame(13, AffiliateProduct::query()->count());
-        $this->assertSame('Produk saya', $product->fresh()->title);
+        $this->assertSame('Produk saya', $product->fresh()->translate('id', false)?->title);
         $this->assertTrue($product->fresh()->is_active);
+    }
+
+    public function test_admin_can_update_product_translations(): void
+    {
+        $admin = User::factory()->create(['is_active' => true]);
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+
+        $product = $this->makeProduct('Judul Lama', 'judul-lama');
+
+        Livewire::test(EditAffiliateProduct::class, ['record' => $product->getKey()])
+            ->fillForm([
+                'translations' => [
+                    'id' => [
+                        'title' => 'Judul Baru',
+                        'slug' => 'judul-baru',
+                        'description' => 'Deskripsi baru',
+                    ],
+                    'en' => [
+                        'title' => 'New Title',
+                        'slug' => 'new-title',
+                        'description' => 'New description',
+                    ],
+                ],
+            ])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $product = $product->fresh();
+
+        $this->assertSame('Judul Baru', $product->translate('id', false)?->title);
+        $this->assertSame('judul-baru', $product->translate('id', false)?->slug);
+        $this->assertSame('New Title', $product->translate('en', false)?->title);
+        $this->assertSame('new-title', $product->translate('en', false)?->slug);
     }
 
     private function makeProduct(
@@ -201,14 +243,26 @@ class AffiliateProductTest extends TestCase
         string $category = 'Umum',
         bool $active = true,
     ): AffiliateProduct {
-        return AffiliateProduct::query()->create([
-            'title' => $title,
-            'slug' => $slug,
-            'affiliate_category_id' => AffiliateCategory::query()->where('name', $category)->value('id'),
+        $product = AffiliateProduct::query()->create([
+            'affiliate_category_id' => AffiliateCategory::query()
+                ->whereHas('translations', fn ($query) => $query
+                    ->where('locale', 'id')
+                    ->where('name', $category))
+                ->value('id'),
             'affiliate_platform_id' => AffiliatePlatform::query()->where('slug', $platform)->value('id'),
             'affiliate_url' => 'https://shopee.co.id/product/123',
             'price' => 100000,
             'is_active' => $active,
         ]);
+
+        foreach (['id', 'en'] as $locale) {
+            $product->translateOrNew($locale)->fill([
+                'title' => $title,
+                'slug' => $slug,
+                'description' => 'Deskripsi produk uji.',
+            ])->save();
+        }
+
+        return $product;
     }
 }

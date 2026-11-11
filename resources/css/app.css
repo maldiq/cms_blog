@@ -9,4 +9,100 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-brand-50: #f2f6fc;
+    --color-brand-100: #e3ecf8;
+    --color-brand-200: #c7d9ef;
+    --color-brand-300: #9dbfe2;
+    --color-brand-400: #6d9ed1;
+    --color-brand-500: #4b82bd;
+    --color-brand-600: #3a68a6;
+    --color-brand-700: #315486;
+    --color-brand-800: #2c476e;
+    --color-brand-900: #293d5b;
+    --color-brand-950: #1b283d;
+
+    --color-accent-50: #fff9ed;
+    --color-accent-100: #fff0d2;
+    --color-accent-200: #ffdda3;
+    --color-accent-300: #ffc565;
+    --color-accent-400: #ffab32;
+    --color-accent-500: #f8991d;
+    --color-accent-600: #e07c0e;
+    --color-accent-700: #ba5f0f;
+    --color-accent-800: #944b14;
+    --color-accent-900: #783f14;
+}
+
+@layer base {
+    [x-cloak] {
+        display: none !important;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        text-rendering: optimizeLegibility;
+    }
+
+    ::selection {
+        background-color: var(--color-accent-200);
+        color: var(--color-brand-950);
+    }
+}
+
+@layer components {
+    .container-page {
+        @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    }
+
+    .btn-accent {
+        @apply inline-flex items-center justify-center gap-2 rounded-full bg-accent-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-accent-500/25 transition hover:bg-accent-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500;
+    }
+
+    .btn-outline {
+        @apply inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-brand-300 hover:text-brand-800;
+    }
+
+    .section-eyebrow {
+        @apply text-xs font-semibold uppercase tracking-[0.18em] text-accent-600;
+    }
+
+    .section-title {
+        @apply text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl;
+    }
+}
+
+/* Hero slider customisation */
+.hero-swiper .swiper-pagination {
+    bottom: 1rem !important;
+    left: 1.5rem !important;
+    width: auto !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hero-swiper .swiper-pagination-bullet {
+    width: 1.5rem;
+    height: 0.3rem;
+    margin: 0 !important;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.45);
+    opacity: 1;
+    transition: width 0.25s ease, background 0.25s ease;
+}
+
+.hero-swiper .swiper-pagination-bullet-active {
+    width: 2.5rem;
+    background: #fff;
+}
+
+@media (min-width: 768px) {
+    .hero-swiper .swiper-pagination {
+        bottom: 1.75rem !important;
+        left: 3rem !important;
+    }
 }

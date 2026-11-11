@@ -25,14 +25,14 @@ class LanguageLocaleTest extends TestCase
 
         $this->get('/id')
             ->assertSuccessful()
-            ->assertSee(__('messages.welcome', [], 'id'), false);
+            ->assertSee(__('messages.affiliate_shop_by_category', [], 'id'), false);
     }
 
     public function test_can_switch_locale_via_url(): void
     {
         $this->get('/en')
             ->assertSuccessful()
-            ->assertSee(__('messages.welcome', [], 'en'), false);
+            ->assertSee(__('messages.affiliate_shop_by_category', [], 'en'), false);
     }
 
     public function test_inactive_language_not_accessible(): void

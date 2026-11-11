@@ -2,6 +2,7 @@
 
 namespace App\Domain\Seo\Services;
 
+use App\Domain\Affiliate\Models\AffiliateCategory;
 use App\Domain\Affiliate\Models\AffiliateProduct;
 use App\Domain\Blog\Category\Models\Category;
 use App\Domain\Blog\Post\Models\Post;
@@ -51,6 +52,7 @@ class SitemapService
             $this->addThemeStaticRoutes($sitemap, $locale);
 
             $this->addAffiliateProducts($sitemap, $locale);
+            $this->addAffiliateCategories($sitemap, $locale);
             $this->addPosts($sitemap, $locale);
             $this->addPages($sitemap, $locale);
             $this->addServices($sitemap, $locale);
@@ -68,14 +70,53 @@ class SitemapService
     {
         AffiliateProduct::query()
             ->active()
+            ->whereHas('translations', fn ($query) => $query->where('locale', $locale))
+            ->with(['translations' => fn ($query) => $query->where('locale', $locale)])
             ->orderBy('id')
             ->chunk(100, function ($products) use ($sitemap, $locale): void {
                 foreach ($products as $product) {
+                    $slug = $product->translate($locale, false)?->slug;
+
+                    if (blank($slug)) {
+                        continue;
+                    }
+
                     $sitemap->add(
-                        Url::create(url("/{$locale}/products/{$product->slug}"))
+                        Url::create(url("/{$locale}/products/{$slug}"))
                             ->setLastModificationDate($product->updated_at)
                             ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
                             ->setPriority(0.75)
+                    );
+                }
+            });
+    }
+
+    protected function addAffiliateCategories(Sitemap $sitemap, string $locale): void
+    {
+        $segment = $locale === 'id' ? 'kategori' : 'category';
+
+        AffiliateCategory::query()
+            ->where('is_active', true)
+            ->whereHas('products', fn ($query) => $query
+                ->where('is_active', true)
+                ->whereHas('translations', fn ($query) => $query->where('locale', $locale)))
+            ->whereHas('translations', fn ($query) => $query->where('locale', $locale))
+            ->with(['translations' => fn ($query) => $query->where('locale', $locale)])
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->chunk(100, function ($categories) use ($sitemap, $locale, $segment): void {
+                foreach ($categories as $category) {
+                    $slug = $category->translate($locale, false)?->slug;
+
+                    if (blank($slug)) {
+                        continue;
+                    }
+
+                    $sitemap->add(
+                        Url::create(url("/{$locale}/{$segment}/{$slug}"))
+                            ->setLastModificationDate($category->updated_at)
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                            ->setPriority(0.7)
                     );
                 }
             });

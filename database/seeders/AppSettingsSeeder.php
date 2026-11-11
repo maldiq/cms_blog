@@ -17,8 +17,8 @@ class AppSettingsSeeder extends Seeder
     public function run(): void
     {
         app(GeneralSettings::class)->fill([
-            'site_name' => 'ServicePro Agency',
-            'site_description' => 'Agency layanan web, server, dan dukungan IT profesional untuk bisnis di Indonesia.',
+            'site_name' => 'NainPicks',
+            'site_description' => 'Kurasi & rekomendasi produk pilihan dari marketplace global dan terpercaya — global finds, picked for you.',
             'site_logo' => null,
             'site_favicon' => null,
             'default_locale' => 'id',
@@ -27,17 +27,17 @@ class AppSettingsSeeder extends Seeder
         ])->save();
 
         app(SocialSettings::class)->fill([
-            'facebook' => 'https://facebook.com/servicepro.demo',
+            'facebook' => 'https://facebook.com/nainpicks',
             'twitter' => null,
-            'instagram' => 'https://instagram.com/servicepro.demo',
-            'youtube' => 'https://youtube.com/@serviceprodemo',
-            'linkedin' => 'https://linkedin.com/company/servicepro-demo',
+            'instagram' => 'https://instagram.com/nainpicks',
+            'youtube' => 'https://youtube.com/@nainpicks',
+            'linkedin' => 'https://linkedin.com/company/nainpicks',
             'tiktok' => null,
         ])->save();
 
         app(SeoSettings::class)->fill([
-            'default_meta_title' => 'ServicePro Agency — Web & IT Services',
-            'default_meta_description' => 'Pengembangan website, infrastruktur cloud, dan maintenance IT dengan tim berpengalaman.',
+            'default_meta_title' => 'NainPicks — Global Finds, Picked for You',
+            'default_meta_description' => 'Kurasi produk dan penawaran terbaik dari Shopee, TikTok Shop, Amazon, dan marketplace global lainnya — global finds, picked for you.',
             'default_og_image' => null,
             'google_analytics_id' => null,
             'google_search_console' => null,
@@ -59,8 +59,8 @@ class AppSettingsSeeder extends Seeder
             'username' => null,
             'password' => null,
             'encryption' => null,
-            'from_address' => 'hello@servicepro.demo',
-            'from_name' => 'ServicePro Agency',
+            'from_address' => 'hello@naintin.my.id',
+            'from_name' => 'NainPicks',
         ])->save();
     }
 }

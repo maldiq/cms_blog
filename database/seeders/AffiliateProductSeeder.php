@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Domain\Affiliate\Models\AffiliateCategory;
 use App\Domain\Affiliate\Models\AffiliatePlatform;
 use App\Domain\Affiliate\Models\AffiliateProduct;
+use App\Domain\Language\Models\Language;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -127,9 +128,19 @@ class AffiliateProductSeeder extends Seeder
             AffiliatePlatformSeeder::class,
         ]);
 
+        $locales = Language::getActive()->pluck('code')->all();
+
+        if ($locales === []) {
+            $locales = [config('app.locale', 'id')];
+        }
+
+        $defaultLocale = Language::getDefault()?->code ?? $locales[0];
+
         foreach ($this->products as $product) {
             $categoryId = AffiliateCategory::query()
-                ->where('slug', Str::slug($product['category']))
+                ->whereHas('translations', fn ($query) => $query
+                    ->where('locale', $defaultLocale)
+                    ->where('slug', Str::slug($product['category'])))
                 ->value('id');
             $platformId = AffiliatePlatform::query()
                 ->where('slug', $product['platform'])
@@ -139,19 +150,29 @@ class AffiliateProductSeeder extends Seeder
                 throw new \RuntimeException("Kategori atau platform contoh tidak tersedia untuk produk {$product['slug']}.");
             }
 
-            $attributes = $product;
-            unset($attributes['category'], $attributes['platform']);
+            $existing = AffiliateProduct::query()
+                ->whereHas('translations', fn ($query) => $query->where('slug', $product['slug']))
+                ->first();
 
-            AffiliateProduct::query()->firstOrCreate(
-                ['slug' => $product['slug']],
-                [
-                    ...$attributes,
-                    'affiliate_category_id' => $categoryId,
-                    'affiliate_platform_id' => $platformId,
-                    'is_active' => false,
-                    'is_featured' => false,
-                ],
-            );
+            $existing ??= AffiliateProduct::query()->create([
+                'affiliate_category_id' => $categoryId,
+                'affiliate_platform_id' => $platformId,
+                'affiliate_url' => $product['affiliate_url'],
+                'is_active' => false,
+                'is_featured' => false,
+            ]);
+
+            foreach ($locales as $locale) {
+                if ($existing->translations()->where('locale', $locale)->exists()) {
+                    continue;
+                }
+
+                $existing->translateOrNew($locale)->fill([
+                    'title' => $product['title'],
+                    'slug' => $product['slug'],
+                    'description' => $product['description'],
+                ])->save();
+            }
         }
     }
 }

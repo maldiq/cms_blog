@@ -148,7 +148,7 @@ class ThemeEditorTest extends TestCase
             ->assertHasNoFormErrors();
 
         $this->assertSame(
-            'hello@servicepro.demo',
+            'hello@naintin.my.id',
             ThemeSetting::get($theme->id, 'contact', 'email')
         );
 

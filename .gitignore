@@ -3,6 +3,10 @@
 /public/build
 /public/hot
 /public/storage
+/.screens
+/.chrome-profile
+/public/sandbox-test.txt
+/storage/app/sandbox-test.txt
 /storage/*.key
 /storage/pail
 /vendor

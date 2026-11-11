@@ -92,6 +92,10 @@ class RolePermissionSeeder extends Seeder
         'affiliate.platform.create',
         'affiliate.platform.update',
         'affiliate.platform.delete',
+        'affiliate.banner.viewAny',
+        'affiliate.banner.create',
+        'affiliate.banner.update',
+        'affiliate.banner.delete',
     ];
 
     /**
@@ -194,6 +198,10 @@ class RolePermissionSeeder extends Seeder
             'affiliate.platform.create',
             'affiliate.platform.update',
             'affiliate.platform.delete',
+            'affiliate.banner.viewAny',
+            'affiliate.banner.create',
+            'affiliate.banner.update',
+            'affiliate.banner.delete',
         ]);
 
         Role::findByName('editor', 'web')->syncPermissions([
@@ -240,6 +248,9 @@ class RolePermissionSeeder extends Seeder
             'affiliate.platform.viewAny',
             'affiliate.platform.create',
             'affiliate.platform.update',
+            'affiliate.banner.viewAny',
+            'affiliate.banner.create',
+            'affiliate.banner.update',
         ]);
 
         Role::findByName('author', 'web')->syncPermissions([

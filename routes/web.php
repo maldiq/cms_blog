@@ -67,6 +67,9 @@ Route::prefix('{locale}')
         Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery.index');
         Route::get('/gallery/{slug}', [GalleryController::class, 'show'])->name('gallery.show');
 
+        Route::get('/kategori/{slug}', [AffiliateProductController::class, 'category'])->name('products.category');
+        Route::get('/category/{slug}', [AffiliateProductController::class, 'category'])->name('products.category.intl');
+
         Route::get('/products', [AffiliateProductController::class, 'index'])->name('products.index');
         Route::get('/products/{slug}', [AffiliateProductController::class, 'show'])->name('products.show');
         Route::get('/go/{slug}', [AffiliateProductController::class, 'redirect'])->name('products.redirect');

@@ -3,19 +3,30 @@
 namespace App\Domain\Affiliate\Models;
 
 use App\Domain\Affiliate\Policies\AffiliatePlatformPolicy;
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[UsePolicy(AffiliatePlatformPolicy::class)]
-class AffiliatePlatform extends Model
+class AffiliatePlatform extends Model implements TranslatableContract
 {
+    use Translatable;
+
+    public array $translatedAttributes = [
+        'name',
+    ];
+
+    protected $translationForeignKey = 'affiliate_platform_id';
+
+    protected $translationModel = AffiliatePlatformTranslation::class;
+
     /**
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'slug',
         'is_active',
         'sort_order',

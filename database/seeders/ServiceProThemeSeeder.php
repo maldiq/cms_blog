@@ -377,25 +377,25 @@ class ServiceProThemeSeeder extends Seeder
         $members = [
             [
                 'sort_order' => 1,
-                'email' => 'budi@servicepro.demo',
+                'email' => 'budi@naintin.my.id',
                 'id' => ['name' => 'Budi Santoso', 'slug' => 'budi-santoso', 'position' => 'Lead Developer', 'bio' => 'Spesialis Laravel dan arsitektur modular.'],
                 'en' => ['name' => 'Budi Santoso', 'slug' => 'budi-santoso', 'position' => 'Lead Developer', 'bio' => 'Laravel and modular architecture specialist.'],
             ],
             [
                 'sort_order' => 2,
-                'email' => 'sari@servicepro.demo',
+                'email' => 'sari@naintin.my.id',
                 'id' => ['name' => 'Sari Wijaya', 'slug' => 'sari-wijaya', 'position' => 'UI/UX Designer', 'bio' => 'Fokus pada desain conversion-oriented.'],
                 'en' => ['name' => 'Sari Wijaya', 'slug' => 'sari-wijaya', 'position' => 'UI/UX Designer', 'bio' => 'Focused on conversion-oriented design.'],
             ],
             [
                 'sort_order' => 3,
-                'email' => 'andi@servicepro.demo',
+                'email' => 'andi@naintin.my.id',
                 'id' => ['name' => 'Andi Pratama', 'slug' => 'andi-pratama', 'position' => 'DevOps Engineer', 'bio' => 'CI/CD, Docker, dan observability.'],
                 'en' => ['name' => 'Andi Pratama', 'slug' => 'andi-pratama', 'position' => 'DevOps Engineer', 'bio' => 'CI/CD, Docker, and observability.'],
             ],
             [
                 'sort_order' => 4,
-                'email' => 'rina@servicepro.demo',
+                'email' => 'rina@naintin.my.id',
                 'id' => ['name' => 'Rina Kusuma', 'slug' => 'rina-kusuma', 'position' => 'Account Manager', 'bio' => 'Menjaga komunikasi klien dan timeline proyek.'],
                 'en' => ['name' => 'Rina Kusuma', 'slug' => 'rina-kusuma', 'position' => 'Account Manager', 'bio' => 'Keeps client communication and project timelines on track.'],
             ],

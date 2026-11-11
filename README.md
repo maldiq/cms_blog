@@ -1,6 +1,8 @@
 # CMS Blog (Modular Laravel)
 
-CMS modular bilingual (Indonesia / English) dengan admin **Filament v3** di `/kelola`, front-end theme **ServicePro**, blog, layanan, portfolio, SEO, newsletter, dan formulir kontak.
+CMS modular bilingual (Indonesia / English) dengan admin **Filament v3** di `/kelola`, front-end theme **ServicePro**, blog, layanan, portfolio, SEO, newsletter, dan formulir kontak. Produk, kategori, platform, dan banner affiliate mendukung terjemahan per locale.
+
+Situs memakai brand **NainPicks** — tagline *"Global finds, picked for you."* — dengan domain `naintin.my.id`. Nama situs, deskripsi, SEO default, email, dan handle sosial diatur di **Kelola → Pengaturan** (di-seed oleh `AppSettingsSeeder`).
 
 ## Requirements
 
@@ -56,6 +58,7 @@ Panduan deployment VPS aaPanel untuk `dev.naintin.com`: **[docs/DEPLOY_AAPANEL.m
 - Theme **ServicePro** (agency): **[docs/THEME_SERVICEPRO.md](docs/THEME_SERVICEPRO.md)**
 - Theme **CryptoPro** (blockchain/kripto): **[docs/THEME_CRYPTOPRO.md](docs/THEME_CRYPTOPRO.md)**
 - Theme **Purple Landing** (SaaS landing + hero form): **[docs/THEME_PURPLELANDING.md](docs/THEME_PURPLELANDING.md)**
+- Storefront **Affiliate** (menu kategori, slider, produk unggulan/baru): **[docs/AFFILIATE_STOREFRONT.md](docs/AFFILIATE_STOREFRONT.md)**
 
 ## Testing
 

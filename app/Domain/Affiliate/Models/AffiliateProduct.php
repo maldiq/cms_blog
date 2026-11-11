@@ -4,21 +4,32 @@ namespace App\Domain\Affiliate\Models;
 
 use App\Domain\Affiliate\Policies\AffiliateProductPolicy;
 use App\Domain\Media\Models\Media;
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[UsePolicy(AffiliateProductPolicy::class)]
-class AffiliateProduct extends Model
+class AffiliateProduct extends Model implements TranslatableContract
 {
-    protected $fillable = [
-        'image_id',
+    use Translatable;
+
+    public array $translatedAttributes = [
         'title',
         'slug',
+        'description',
+    ];
+
+    protected $translationForeignKey = 'affiliate_product_id';
+
+    protected $translationModel = AffiliateProductTranslation::class;
+
+    protected $fillable = [
+        'image_id',
         'affiliate_category_id',
         'affiliate_platform_id',
-        'description',
         'affiliate_url',
         'price',
         'original_price',
@@ -69,5 +80,18 @@ class AffiliateProduct extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Hanya produk yang punya terjemahan pada locale tersebut, sekaligus eager load.
+     *
+     * @param  Builder<AffiliateProduct>  $query
+     * @return Builder<AffiliateProduct>
+     */
+    public function scopeLocalized(Builder $query, string $locale): Builder
+    {
+        return $query
+            ->whereHas('translations', fn (Builder $query) => $query->where('locale', $locale))
+            ->with(['translations' => fn ($query) => $query->where('locale', $locale)]);
     }
 }

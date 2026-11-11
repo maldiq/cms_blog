@@ -124,6 +124,56 @@ class CommentTest extends TestCase
         $this->get('/id/blog/post-approved')->assertOk()->assertSee('Komentar disetujui');
     }
 
+    public function test_approved_nested_replies_render(): void
+    {
+        $post = $this->createPublishedPost('post-nested');
+
+        $root = Comment::query()->create([
+            'commentable_type' => Post::class,
+            'commentable_id' => $post->id,
+            'author_name' => 'Root User',
+            'author_email' => 'root@example.com',
+            'author_ip' => '127.0.0.1',
+            'content' => 'Komentar induk',
+            'status' => Comment::STATUS_APPROVED,
+        ]);
+
+        $reply = Comment::query()->create([
+            'commentable_type' => Post::class,
+            'commentable_id' => $post->id,
+            'parent_id' => $root->id,
+            'author_name' => 'Reply User',
+            'author_email' => 'reply@example.com',
+            'author_ip' => '127.0.0.1',
+            'content' => 'Balasan level 2',
+            'status' => Comment::STATUS_APPROVED,
+        ]);
+
+        Comment::query()->create([
+            'commentable_type' => Post::class,
+            'commentable_id' => $post->id,
+            'parent_id' => $reply->id,
+            'author_name' => 'Deep User',
+            'author_email' => 'deep@example.com',
+            'author_ip' => '127.0.0.1',
+            'content' => 'Balasan level 3',
+            'status' => Comment::STATUS_APPROVED,
+        ]);
+
+        $tree = app(CommentService::class)->getApprovedTree($post);
+
+        $this->assertCount(1, $tree);
+        $this->assertSame('Balasan level 2', $tree->first()->children->first()->content);
+        $this->assertSame('Balasan level 3', $tree->first()->children->first()->children->first()->content);
+
+        Livewire::test(CommentSection::class, [
+            'commentableType' => Post::class,
+            'commentableId' => $post->id,
+        ])->assertSee('Balasan level 3');
+
+        $this->get('/id/blog/post-nested')->assertOk()->assertSee('Balasan level 3');
+    }
+
     public function test_honeypot_blocks_spam(): void
     {
         Mail::fake();
