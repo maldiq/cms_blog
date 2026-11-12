@@ -5,10 +5,12 @@ namespace App\Domain\Blog\Post\Filament\Resources;
 use App\Domain\Blog\Category\Models\Category;
 use App\Domain\Blog\Filament\Concerns\InteractsWithLocaleTabs;
 use App\Domain\Blog\Post\Filament\Resources\PostResource\Pages;
+use App\Domain\Blog\Post\Filament\Resources\PostResource\RelationManagers\GalleryRelationManager;
 use App\Domain\Blog\Post\Models\Post;
 use App\Domain\Blog\Series\Models\Series;
 use App\Domain\Blog\Tag\Models\Tag;
 use App\Domain\Media\Services\MediaUploadService;
+use App\Domain\Theme\Filament\Forms\Components\MediaImagePickerField;
 use App\Domain\User\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -58,10 +60,8 @@ class PostResource extends Resource
                     Forms\Components\TextInput::make("translations.{$locale}.meta_title")->label('Meta title'),
                     Forms\Components\TextInput::make("translations.{$locale}.meta_description")->label('Meta description'),
                     Forms\Components\TextInput::make("translations.{$locale}.meta_keywords")->label('Meta keywords'),
-                    Forms\Components\Select::make("translations.{$locale}.og_image_id")
-                        ->label('OG Image')
-                        ->searchable()
-                        ->options(fn (): array => \App\Domain\Media\Models\Media::query()->latest()->limit(100)->pluck('name', 'id')->all()),
+                    MediaImagePickerField::make("translations.{$locale}.og_image_id")
+                        ->label('OG Image'),
                 ];
             }),
             Forms\Components\Section::make('Post')
@@ -87,16 +87,10 @@ class PostResource extends Resource
                             Post::STATUS_ARCHIVED => 'Archived',
                         ])
                         ->required(),
-                    Forms\Components\Select::make('featured_image_id')
+                    MediaImagePickerField::make('featured_image_id')
                         ->label('Featured image')
-                        ->searchable()
-                        ->options(fn (): array => \App\Domain\Media\Models\Media::query()->latest()->limit(100)->pluck('name', 'id')->all()),
-                    Forms\Components\FileUpload::make('gallery_uploads')
-                        ->label('Gallery')
-                        ->multiple()
-                        ->disk('public')
-                        ->directory('blog-gallery')
-                        ->visibility('public'),
+                        ->helperText('Pilih gambar dari pustaka media. Pratinjau gambar tampil sebelum disimpan.')
+                        ->columnSpanFull(),
                     Forms\Components\Select::make('series_id')
                         ->label('Series')
                         ->options(fn (): array => Series::query()->get()->mapWithKeys(fn (Series $series): array => [
@@ -185,6 +179,13 @@ class PostResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            GalleryRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

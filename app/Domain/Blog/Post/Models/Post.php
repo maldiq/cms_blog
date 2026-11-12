@@ -148,6 +148,18 @@ class Post extends Model implements HasMedia, TranslatableContract
     }
 
     /**
+     * Media koleksi "gallery" milik post (galeri gambar di halaman detail).
+     *
+     * @return MorphMany<Media, $this>
+     */
+    public function galleryMedia(): MorphMany
+    {
+        return $this->morphMany(Media::class, 'model')
+            ->where('collection_name', 'gallery')
+            ->orderBy('order_column');
+    }
+
+    /**
      * @return MorphMany<Comment, $this>
      */
     public function comments(): MorphMany

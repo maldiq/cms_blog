@@ -15,7 +15,7 @@
                 'selectedMediaIds' => $selectedMediaIds,
                 'statePath' => $statePath,
             ],
-            key('affiliate-image-picker-' . $statePath)
+            key('media-image-picker-' . $statePath)
         )
     </div>
 </x-dynamic-component>

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Blog\Post\Filament\Resources\PostResource\Pages;
 
+use App\Domain\Blog\Post\Filament\Concerns\InteractsWithPostImagePicker;
 use App\Domain\Blog\Post\Filament\Concerns\SyncsPostTranslations;
 use App\Domain\Blog\Post\Filament\Resources\PostResource;
 use App\Domain\Blog\Post\Models\Post;
@@ -11,6 +12,7 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditPost extends EditRecord
 {
+    use InteractsWithPostImagePicker;
     use SyncsPostTranslations;
 
     protected static string $resource = PostResource::class;
@@ -40,7 +42,7 @@ class EditPost extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        unset($data['translations'], $data['gallery_uploads']);
+        unset($data['translations']);
 
         return $data;
     }
@@ -49,6 +51,5 @@ class EditPost extends EditRecord
     {
         $state = $this->form->getState();
         $this->syncPostTranslations($this->record, $state);
-        $this->syncPostGallery($this->record, $state);
     }
 }

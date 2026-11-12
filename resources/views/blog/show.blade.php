@@ -3,6 +3,7 @@
 @php
     $translation = $post->translate($locale, false);
     $title = $translation?->title ?? 'Post';
+    $gallery = $post->getMedia('gallery');
 @endphp
 
 @section('content')
@@ -50,6 +51,23 @@
                 {!! $translation?->content !!}
             </div>
         </article>
+
+        @if ($gallery->isNotEmpty())
+            <section class="mt-10 border-t border-slate-100 pt-8">
+                <h2 class="text-xl font-semibold text-slate-900">{{ __('messages.post_gallery') }}</h2>
+                <div class="mt-4 grid grid-cols-2 gap-3 sm:gap-4">
+                    @foreach ($gallery as $media)
+                        <figure class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                            @include('components.partials.responsive-media-image', [
+                                'media' => $media,
+                                'alt' => $title,
+                                'class' => 'aspect-[4/3] w-full object-cover transition duration-300 group-hover:scale-105',
+                            ])
+                        </figure>
+                    @endforeach
+                </div>
+            </section>
+        @endif
 
         @if (! empty($previousSeriesPost) || ! empty($nextSeriesPost))
             <div class="mt-10 flex justify-between gap-4 border-t pt-6 text-sm">

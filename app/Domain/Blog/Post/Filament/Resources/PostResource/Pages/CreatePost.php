@@ -2,19 +2,21 @@
 
 namespace App\Domain\Blog\Post\Filament\Resources\PostResource\Pages;
 
+use App\Domain\Blog\Post\Filament\Concerns\InteractsWithPostImagePicker;
 use App\Domain\Blog\Post\Filament\Concerns\SyncsPostTranslations;
 use App\Domain\Blog\Post\Filament\Resources\PostResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreatePost extends CreateRecord
 {
+    use InteractsWithPostImagePicker;
     use SyncsPostTranslations;
 
     protected static string $resource = PostResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        unset($data['translations'], $data['gallery_uploads']);
+        unset($data['translations']);
 
         return $data;
     }
@@ -23,6 +25,5 @@ class CreatePost extends CreateRecord
     {
         $state = $this->form->getState();
         $this->syncPostTranslations($this->record, $state);
-        $this->syncPostGallery($this->record, $state);
     }
 }

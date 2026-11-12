@@ -125,6 +125,7 @@ return [
     'affiliate_blog_title' => 'Panduan sebelum membeli',
     'blog_page_intro' => 'Kiat belanja, perbandingan produk, dan panduan terbaru dari kurasi kami.',
     'blog_empty' => 'Belum ada artikel yang ditemukan. Coba kata kunci lain atau jelajahi semua artikel.',
+    'post_gallery' => 'Galeri foto',
     'affiliate_min_read' => 'menit baca',
     'affiliate_newsletter_eyebrow' => 'Newsletter',
     'affiliate_newsletter_title' => 'Dapatkan promo terbaik lebih dulu.',

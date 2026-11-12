@@ -125,6 +125,7 @@ return [
     'affiliate_blog_title' => 'Read before you buy',
     'blog_page_intro' => 'Shopping tips, product comparisons, and the latest guides from our curation.',
     'blog_empty' => 'No articles found yet. Try another keyword or browse all articles.',
+    'post_gallery' => 'Photo gallery',
     'affiliate_min_read' => 'min read',
     'affiliate_newsletter_eyebrow' => 'Newsletter',
     'affiliate_newsletter_title' => 'Get the best deals first.',
