@@ -2,6 +2,9 @@
 
 use App\Domain\Media\Models\Media;
 
+// Pastikan helper format tetap dimuat walau autoload composer belum di-dump ulang.
+require_once __DIR__.'/format.php';
+
 if (! function_exists('media_responsive_image')) {
     /**
      * Atribut src/srcset untuk gambar MediaLibrary (konversi medium/large).

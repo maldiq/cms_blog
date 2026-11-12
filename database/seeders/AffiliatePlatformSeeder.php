@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Domain\Affiliate\Models\AffiliatePlatform;
+use App\Domain\Language\Models\Language;
 use Illuminate\Database\Seeder;
 
 class AffiliatePlatformSeeder extends Seeder
@@ -18,17 +19,41 @@ class AffiliatePlatformSeeder extends Seeder
         'other' => 'Lainnya',
     ];
 
+    /**
+     * @var array<string, string>
+     */
+    private array $englishNames = [
+        'other' => 'Others',
+    ];
+
     public function run(): void
     {
+        $locales = Language::getActive()->pluck('code')->all();
+
+        if ($locales === []) {
+            $locales = [config('app.locale', 'id')];
+        }
+
         foreach ($this->platforms as $slug => $name) {
-            AffiliatePlatform::query()->firstOrCreate(
+            $platform = AffiliatePlatform::query()->firstOrCreate(
                 ['slug' => $slug],
                 [
-                    'name' => $name,
                     'is_active' => true,
                     'sort_order' => array_search($slug, array_keys($this->platforms), true),
                 ],
             );
+
+            foreach ($locales as $locale) {
+                if ($platform->translations()->where('locale', $locale)->exists()) {
+                    continue;
+                }
+
+                $localizedName = $locale === 'en'
+                    ? ($this->englishNames[$slug] ?? $name)
+                    : $name;
+
+                $platform->translateOrNew($locale)->fill(['name' => $localizedName])->save();
+            }
         }
     }
 }

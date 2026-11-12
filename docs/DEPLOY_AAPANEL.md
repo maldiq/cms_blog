@@ -136,7 +136,7 @@ $user->assignRole('super-admin');
 exit
 ```
 
-Seeder contoh produk affiliate bersifat opsional. Jika dijalankan, produk contoh tetap nonaktif sampai admin mengaktifkannya dan mengganti URL contoh:
+Seeder contoh produk affiliate bersifat opsional. Jika dijalankan, produk contoh langsung aktif lengkap dengan harga dan gambar demo — ganti judul, URL affiliate, dan gambar contoh dengan data Anda sendiri:
 
 ```bash
 php artisan db:seed --class=AffiliateProductSeeder --force
@@ -182,7 +182,7 @@ Jangan menjalankan worker sebagai proses terminal sementara; Supervisor perlu me
 
 1. Buka `https://dev.naintin.com/id` dan `https://dev.naintin.com/en`.
 2. Buka `https://dev.naintin.com/kelola`, masuk menggunakan akun admin baru, lalu perbarui pengaturan situs.
-3. Buat atau aktifkan produk affiliate untuk menampilkannya di beranda. Produk contoh dari seeder memang nonaktif.
+3. Buat atau kurasi produk affiliate untuk menampilkannya di beranda. Produk contoh dari seeder langsung aktif; tinggal ganti isinya dengan produk Anda sendiri.
 4. Uji unggah media, halaman detail produk, tautan affiliate, HTTPS, dan pengiriman email jika SMTP digunakan.
 5. Jika terjadi error, cek `storage/logs/laravel.log` dan log Nginx/PHP-FPM dari aaPanel. Jangan menampilkan log yang mengandung rahasia secara publik.
 

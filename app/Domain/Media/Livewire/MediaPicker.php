@@ -175,6 +175,7 @@ class MediaPicker extends Component
 
         if ($this->statePath !== null && ! $this->multiple) {
             $this->dispatch('affiliate-image-picked', mediaId: $ids[0] ?? null);
+            $this->dispatch('media-image-picked', mediaId: $ids[0] ?? null, statePath: $this->statePath);
         }
 
         $this->closeModal();
@@ -189,6 +190,7 @@ class MediaPicker extends Component
 
         if ($this->statePath !== null && ! $this->multiple) {
             $this->dispatch('affiliate-image-picked', mediaId: null);
+            $this->dispatch('media-image-picked', mediaId: null, statePath: $this->statePath);
         }
     }
 

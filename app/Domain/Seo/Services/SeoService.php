@@ -2,6 +2,8 @@
 
 namespace App\Domain\Seo\Services;
 
+use App\Domain\Affiliate\Models\AffiliateCategory;
+use App\Domain\Affiliate\Models\AffiliateProduct;
 use App\Domain\Blog\Category\Models\Category;
 use App\Domain\Blog\Post\Models\Post;
 use App\Domain\Blog\Series\Models\Series;
@@ -52,6 +54,8 @@ class SeoService
             $model instanceof Album => $this->metaForAlbum($model, $locale, $base),
             $model instanceof Service => $this->metaForService($model, $locale, $base),
             $model instanceof Portfolio => $this->metaForPortfolio($model, $locale, $base),
+            $model instanceof AffiliateProduct => $this->metaForAffiliateProduct($model, $locale, $base),
+            $model instanceof AffiliateCategory => $this->metaForAffiliateCategory($model, $locale, $base),
             default => $base,
         };
 
@@ -328,6 +332,87 @@ class SeoService
     }
 
     /**
+     * @param  array<string, mixed>  $base
+     * @return array<string, mixed>
+     */
+    protected function metaForAffiliateCategory(AffiliateCategory $category, string $locale, array $base): array
+    {
+        $category->load('translations');
+
+        $translation = $category->translate($locale, false);
+        $slug = $translation?->slug;
+        $segment = $locale === 'id' ? 'kategori' : 'category';
+
+        $title = $translation?->name ?: $base['title'];
+        $canonical = $slug ? url("/{$locale}/{$segment}/{$slug}") : $base['canonical'];
+
+        $alternates = [];
+
+        foreach (Language::getActive() as $language) {
+            $alternate = $category->translate($language->code, false);
+
+            if ($alternate?->slug) {
+                $alternateSegment = $language->code === 'id' ? 'kategori' : 'category';
+
+                $alternates[] = [
+                    'locale' => $language->code,
+                    'url' => url("/{$language->code}/{$alternateSegment}/{$alternate->slug}"),
+                ];
+            }
+        }
+
+        return array_merge($base, [
+            'title' => $title,
+            'canonical' => $canonical,
+            'og_title' => $title,
+            'og_url' => $canonical,
+            'hreflang' => $alternates !== [] ? $alternates : $this->hreflangForSamePath($locale),
+        ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $base
+     * @return array<string, mixed>
+     */
+    protected function metaForAffiliateProduct(AffiliateProduct $product, string $locale, array $base): array
+    {
+        // Muat semua locale: relasi yang sudah di-eager-load untuk satu locale
+        // membuat translate(locale lain) mengembalikan null.
+        $product->load('translations');
+
+        $translation = $product->translate($locale, false);
+        $slug = $translation?->slug;
+
+        $title = $translation?->title ?: $base['title'];
+        $description = $translation?->description ?: $base['description'];
+        $canonical = $slug ? url("/{$locale}/products/{$slug}") : $base['canonical'];
+
+        $alternates = [];
+
+        foreach (Language::getActive() as $language) {
+            $alternate = $product->translate($language->code, false);
+
+            if ($alternate?->slug) {
+                $alternates[] = [
+                    'locale' => $language->code,
+                    'url' => url("/{$language->code}/products/{$alternate->slug}"),
+                ];
+            }
+        }
+
+        return array_merge($base, [
+            'title' => $title,
+            'description' => $description,
+            'canonical' => $canonical,
+            'og_title' => $title,
+            'og_description' => $description,
+            'og_url' => $canonical,
+            'og_image' => $this->mediaUrlFromId($product->image_id) ?? $base['og_image'],
+            'hreflang' => $alternates !== [] ? $alternates : $this->hreflangForSamePath($locale),
+        ]);
+    }
+
+    /**
      * @param  callable(string, ?string): ?string  $urlBuilder
      * @return list<array{locale: string, url: string}>
      */
@@ -370,14 +455,14 @@ class SeoService
             array_shift($segments);
         }
 
-        $suffix = $segments === [] ? '' : '/' . implode('/', $segments);
+        $suffix = $segments === [] ? '' : '/'.implode('/', $segments);
 
         $alternates = [];
 
         foreach (Language::getActive() as $language) {
             $alternates[] = [
                 'locale' => $language->code,
-                'url' => url('/' . $language->code . $suffix),
+                'url' => url('/'.$language->code.$suffix),
             ];
         }
 

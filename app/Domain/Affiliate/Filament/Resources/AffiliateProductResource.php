@@ -6,16 +6,20 @@ use App\Domain\Affiliate\Filament\Resources\AffiliateProductResource\Pages;
 use App\Domain\Affiliate\Models\AffiliateCategory;
 use App\Domain\Affiliate\Models\AffiliatePlatform;
 use App\Domain\Affiliate\Models\AffiliateProduct;
+use App\Domain\Blog\Filament\Concerns\InteractsWithLocaleTabs;
 use App\Domain\Theme\Filament\Forms\Components\MediaImagePickerField;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class AffiliateProductResource extends Resource
 {
+    use InteractsWithLocaleTabs;
+
     protected static ?string $model = AffiliateProduct::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
@@ -33,21 +37,37 @@ class AffiliateProductResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('Informasi produk')->schema([
-                Forms\Components\TextInput::make('title')
+            static::localeTabs(fn (string $locale): array => [
+                Forms\Components\TextInput::make("translations.{$locale}.title")
                     ->label('Nama produk')
-                    ->required()
+                    ->required($locale === 'id')
                     ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug((string) $state))),
-                Forms\Components\TextInput::make('slug')->required()->unique(ignoreRecord: true)->maxLength(255),
+                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set("translations.{$locale}.slug", Str::slug((string) $state))),
+                Forms\Components\TextInput::make("translations.{$locale}.slug")
+                    ->label('Slug')
+                    ->maxLength(255)
+                    ->helperText('Kosongkan untuk dibuat otomatis dari nama produk.'),
+                Forms\Components\Textarea::make("translations.{$locale}.description")
+                    ->label('Deskripsi')
+                    ->rows(4)
+                    ->columnSpanFull(),
+            ]),
+            Forms\Components\Section::make('Informasi produk')->schema([
                 Forms\Components\Select::make('affiliate_category_id')
                     ->label('Kategori')
                     ->options(fn (): array => AffiliateCategory::query()
                         ->where('is_active', true)
+                        ->with(['translations' => fn ($query) => $query->where('locale', app()->getLocale())])
                         ->orderBy('sort_order')
-                        ->orderBy('name')
-                        ->pluck('name', 'id')
+                        ->orderBy('id')
+                        ->get()
+                        ->mapWithKeys(fn (AffiliateCategory $category): array => [
+                            $category->getKey() => (string) (
+                                $category->translate(app()->getLocale(), false)?->name
+                                ?? $category->translate('id', false)?->name
+                            ),
+                        ])
                         ->all())
                     ->searchable()
                     ->required(),
@@ -55,18 +75,38 @@ class AffiliateProductResource extends Resource
                     ->label('Platform')
                     ->options(fn (): array => AffiliatePlatform::query()
                         ->where('is_active', true)
+                        ->with(['translations' => fn ($query) => $query->where('locale', app()->getLocale())])
                         ->orderBy('sort_order')
-                        ->orderBy('name')
-                        ->pluck('name', 'id')
+                        ->orderBy('id')
+                        ->get()
+                        ->mapWithKeys(fn (AffiliatePlatform $platform): array => [
+                            $platform->getKey() => (string) (
+                                $platform->translate(app()->getLocale(), false)?->name
+                                ?? $platform->translate('id', false)?->name
+                            ),
+                        ])
                         ->all())
                     ->searchable()
                     ->required(),
-                Forms\Components\Textarea::make('description')->label('Deskripsi')->rows(4)->columnSpanFull(),
-                MediaImagePickerField::make('image_id')->label('Gambar produk')->columnSpanFull(),
+                MediaImagePickerField::make('image_id')
+                    ->label('Gambar produk')
+                    ->columnSpanFull(),
             ])->columns(2),
             Forms\Components\Section::make('Harga dan tautan affiliate')->schema([
-                Forms\Components\TextInput::make('price')->label('Harga saat ini')->numeric()->minValue(0)->prefix('Rp')->nullable(),
-                Forms\Components\TextInput::make('original_price')->label('Harga sebelum diskon')->numeric()->minValue(0)->prefix('Rp')->nullable(),
+                Forms\Components\TextInput::make('price')
+                    ->label('Harga saat ini')
+                    ->numeric()
+                    ->minValue(0)
+                    ->prefix('Rp')
+                    ->helperText('Harga disimpan dalam IDR. Tampilan situs dikonversi sesuai mata uang bahasa.')
+                    ->nullable(),
+                Forms\Components\TextInput::make('original_price')
+                    ->label('Harga sebelum diskon')
+                    ->numeric()
+                    ->minValue(0)
+                    ->prefix('Rp')
+                    ->helperText('Harga disimpan dalam IDR.')
+                    ->nullable(),
                 Forms\Components\TextInput::make('affiliate_url')
                     ->label('Tautan affiliate')
                     ->url()
@@ -87,9 +127,17 @@ class AffiliateProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')->label('Produk')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Produk')
+                    ->getStateUsing(fn (AffiliateProduct $record): string => (string) (
+                        $record->translate(app()->getLocale(), false)?->title
+                        ?? $record->translate('id', false)?->title
+                    ))
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('translations', fn (Builder $query) => $query->where('title', 'like', "%{$search}%"));
+                    }),
                 Tables\Columns\TextColumn::make('affiliatePlatform.name')->label('Platform')->badge(),
-                Tables\Columns\TextColumn::make('affiliateCategory.name')->label('Kategori')->sortable(),
+                Tables\Columns\TextColumn::make('affiliateCategory.name')->label('Kategori'),
                 Tables\Columns\TextColumn::make('price')->label('Harga')->money('IDR'),
                 Tables\Columns\TextColumn::make('click_count')->label('Klik')->sortable(),
                 Tables\Columns\IconColumn::make('is_active')->label('Aktif')->boolean(),

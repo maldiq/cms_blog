@@ -51,7 +51,7 @@ class ServiceProThemeSettingsSeeder extends Seeder
             'en' => 'Free Consultation',
         ]);
 
-        ThemeSetting::set($theme->id, 'hero', 'cta_url', 'https://servicepro.demo/id/contact');
+        ThemeSetting::set($theme->id, 'hero', 'cta_url', 'https://naintin.my.id/id/contact');
 
         ThemeSetting::set($theme->id, 'hero', 'features', [
             [
@@ -128,8 +128,8 @@ class ServiceProThemeSettingsSeeder extends Seeder
     protected function seedAbout(Theme $theme): void
     {
         ThemeSetting::set($theme->id, 'about', 'title', [
-            'id' => 'Tentang ServicePro',
-            'en' => 'About ServicePro',
+            'id' => 'Tentang NainPicks',
+            'en' => 'About NainPicks',
         ]);
 
         ThemeSetting::set($theme->id, 'about', 'subtitle', [
@@ -162,8 +162,8 @@ class ServiceProThemeSettingsSeeder extends Seeder
         ]);
 
         ThemeSetting::set($theme->id, 'about_page', 'history', [
-            'id' => '<p>ServicePro dimulai sebagai layanan jasa IT lokal pada 2018. Seiring permintaan klien, kami berkembang menjadi agency full-stack: development, DevOps, dan managed support.</p>',
-            'en' => '<p>ServicePro started as a local IT services shop in 2018. As client demand grew, we became a full-stack agency: development, DevOps, and managed support.</p>',
+            'id' => '<p>NainPicks lahir dari kebiasaan memilah produk yang benar-benar layak dibeli dari berbagai marketplace. Seiring waktu, kurasi itu tumbuh menjadi katalog rekomendasi yang terus diperbarui — global finds, picked for you.</p>',
+            'en' => '<p>NainPicks grew out of a habit of sorting out products truly worth buying from marketplaces around the world. Over time, that curation became a constantly refreshed catalog of recommendations — global finds, picked for you.</p>',
         ]);
 
         ThemeSetting::set($theme->id, 'about_page', 'values', [
@@ -215,8 +215,8 @@ class ServiceProThemeSettingsSeeder extends Seeder
             'en' => 'Our Team',
         ]);
         ThemeSetting::set($theme->id, 'team', 'subtitle', [
-            'id' => 'Orang-orang di balik layanan ServicePro.',
-            'en' => 'The people behind ServicePro.',
+            'id' => 'Orang-orang di balik kurasi NainPicks.',
+            'en' => 'The people behind NainPicks.',
         ]);
 
         ThemeSetting::set($theme->id, 'testimonial', 'title', [
@@ -282,7 +282,7 @@ class ServiceProThemeSettingsSeeder extends Seeder
                 'period' => 'proyek',
                 'is_popular' => false,
                 'cta_label' => ['id' => 'Mulai Starter', 'en' => 'Get Starter'],
-                'cta_url' => 'https://servicepro.demo/id/contact',
+                'cta_url' => 'https://naintin.my.id/id/contact',
                 'features' => [
                     ['text' => ['id' => 'Landing page responsif', 'en' => 'Responsive landing page']],
                     ['text' => ['id' => 'Form kontak & SEO dasar', 'en' => 'Contact form & basic SEO']],
@@ -295,7 +295,7 @@ class ServiceProThemeSettingsSeeder extends Seeder
                 'period' => 'proyek',
                 'is_popular' => true,
                 'cta_label' => ['id' => 'Pilih Business', 'en' => 'Choose Business'],
-                'cta_url' => 'https://servicepro.demo/id/contact',
+                'cta_url' => 'https://naintin.my.id/id/contact',
                 'features' => [
                     ['text' => ['id' => 'Website multi-halaman + CMS', 'en' => 'Multi-page site + CMS']],
                     ['text' => ['id' => 'Integrasi analytics', 'en' => 'Analytics integration']],
@@ -308,7 +308,7 @@ class ServiceProThemeSettingsSeeder extends Seeder
                 'period' => '',
                 'is_popular' => false,
                 'cta_label' => ['id' => 'Hubungi Sales', 'en' => 'Contact Sales'],
-                'cta_url' => 'https://servicepro.demo/id/contact',
+                'cta_url' => 'https://naintin.my.id/id/contact',
                 'features' => [
                     ['text' => ['id' => 'Arsitektur skala besar', 'en' => 'Large-scale architecture']],
                     ['text' => ['id' => 'SLA & DevOps dedicated', 'en' => 'SLA & dedicated DevOps']],
@@ -384,14 +384,14 @@ class ServiceProThemeSettingsSeeder extends Seeder
             'id' => 'Hubungi Kami',
             'en' => 'Contact Us',
         ]);
-        ThemeSetting::set($theme->id, 'cta', 'cta_url', 'https://servicepro.demo/id/contact');
+        ThemeSetting::set($theme->id, 'cta', 'cta_url', 'https://naintin.my.id/id/contact');
     }
 
     protected function seedContact(Theme $theme): void
     {
         ThemeSetting::set($theme->id, 'contact', 'address', 'Jl. Teknologi No. 88, Jakarta Selatan 12730');
         ThemeSetting::set($theme->id, 'contact', 'phone', '+62 812-3456-7890');
-        ThemeSetting::set($theme->id, 'contact', 'email', 'hello@servicepro.demo');
+        ThemeSetting::set($theme->id, 'contact', 'email', 'hello@naintin.my.id');
         ThemeSetting::set($theme->id, 'contact', 'working_hours', 'Senin–Jumat, 09:00–18:00 WIB');
         ThemeSetting::set($theme->id, 'contact', 'map_embed', '<iframe src="https://maps.google.com/maps?q=Jakarta&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="320" style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>');
     }
@@ -419,8 +419,8 @@ class ServiceProThemeSettingsSeeder extends Seeder
     protected function seedFooter(Theme $theme): void
     {
         ThemeSetting::set($theme->id, 'footer', 'about_text', [
-            'id' => 'ServicePro membantu bisnis tumbuh dengan layanan web, server, dan dukungan IT terpadu.',
-            'en' => 'ServicePro helps businesses grow with web, server, and integrated IT support.',
+            'id' => 'NainPicks mengkurasi produk dan penawaran terbaik dari marketplace global dan terpercaya — global finds, picked for you.',
+            'en' => 'NainPicks curates standout products and deals from trusted global marketplaces — global finds, picked for you.',
         ]);
 
         ThemeSetting::set($theme->id, 'footer', 'copyright', [

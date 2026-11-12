@@ -6,7 +6,6 @@ use App\Domain\Blog\Post\Models\Post;
 use App\Domain\Language\Models\Language;
 use App\Domain\Media\Services\MediaUploadService;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
 trait SyncsPostTranslations
 {
@@ -23,10 +22,19 @@ trait SyncsPostTranslations
                 continue;
             }
 
+            $title = trim((string) ($bucket['title'] ?? ''));
+            $slug = trim((string) ($bucket['slug'] ?? ''));
+
+            // Lewati tab bahasa yang belum diisi agar tidak membuat baris
+            // terjemahan kosong (slug NOT NULL akan membuat simpanan gagal).
+            if ($title === '' && $slug === '') {
+                continue;
+            }
+
             $translation = $post->translateOrNew($locale);
             $translation->fill([
-                'title' => $bucket['title'] ?? '',
-                'slug' => $bucket['slug'] ?? null,
+                'title' => $title,
+                'slug' => $slug !== '' ? $slug : null,
                 'excerpt' => $bucket['excerpt'] ?? null,
                 'content' => $bucket['content'] ?? null,
                 'meta_title' => $bucket['meta_title'] ?? null,
@@ -40,28 +48,6 @@ trait SyncsPostTranslations
         $post->load('translations');
         $post->recalculateReadingTime();
         $post->saveQuietly();
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     */
-    protected function syncPostGallery(Post $post, array $data): void
-    {
-        $paths = (array) ($data['gallery_uploads'] ?? []);
-
-        if ($paths === []) {
-            return;
-        }
-
-        $disk = Storage::disk('public');
-
-        foreach ($paths as $path) {
-            if (blank($path) || ! $disk->exists($path)) {
-                continue;
-            }
-
-            $post->addMedia($disk->path($path))->toMediaCollection('gallery');
-        }
     }
 
     /**

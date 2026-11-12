@@ -76,34 +76,40 @@ class PageTest extends TestCase
             'content' => '<p>Ini homepage kustom.</p>',
         ])->save();
 
-        AffiliateProduct::query()->create([
-            'title' => 'Produk Beranda',
-            'slug' => 'produk-beranda',
-            'affiliate_category_id' => AffiliateCategory::query()->where('slug', 'elektronik')->value('id'),
+        $product = AffiliateProduct::query()->create([
+            'affiliate_category_id' => AffiliateCategory::query()
+                ->whereHas('translations', fn ($query) => $query
+                    ->where('locale', 'id')
+                    ->where('slug', 'elektronik'))
+                ->value('id'),
             'affiliate_platform_id' => AffiliatePlatform::query()->where('slug', 'shopee')->value('id'),
-            'description' => 'Produk pilihan untuk halaman depan.',
             'affiliate_url' => 'https://shopee.co.id/product/123',
             'is_active' => true,
         ]);
 
+        $product->translateOrNew('id')->fill([
+            'title' => 'Produk Beranda',
+            'slug' => 'produk-beranda',
+            'description' => 'Produk pilihan untuk halaman depan.',
+        ])->save();
+
         $this->get('/id')
             ->assertOk()
-            ->assertSee('Temukan Produk Pilihan')
             ->assertSee('Produk Beranda')
             ->assertDontSee('Beranda Kustom')
-            ->assertSee('Kategori Affiliate')
+            ->assertSee('Belanja sesuai kebutuhan')
             ->assertSee('Elektronik')
-            ->assertSee('category=elektronik');
+            ->assertSee('kategori/elektronik');
     }
 
     public function test_homepage_shows_empty_catalog_and_affiliate_category_menu_without_active_products(): void
     {
         $this->get('/id')
             ->assertOk()
-            ->assertSee('Temukan Produk Pilihan')
-            ->assertSee('Belum ada produk yang cocok')
-            ->assertSee('Kategori Affiliate')
-            ->assertSee('Kategori akan muncul setelah produk diaktifkan.');
+            ->assertSee('Belanja sesuai kebutuhan')
+            ->assertSee('Belum ada produk yang ditampilkan.')
+            ->assertSee('Produk Baru')
+            ->assertSee('Elektronik');
     }
 
     public function test_published_page_visible(): void

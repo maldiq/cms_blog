@@ -86,9 +86,11 @@ class ThemePageController
 
     public function contact(string $locale): View
     {
+        app()->setLocale($locale);
+
         return $this->render($locale, 'contact', [
             'seoContext' => [
-                'title' => theme_locale('contact.email') ?? setting('site_name'),
+                'title' => __('messages.contact_us'),
                 'canonical' => route('contact', ['locale' => $locale]),
             ],
         ]);

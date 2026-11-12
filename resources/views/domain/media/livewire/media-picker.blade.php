@@ -56,7 +56,7 @@
                 <div class="flex shrink-0 items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700 sm:px-5">
                     <div>
                         <h2 class="text-lg font-semibold text-gray-950 dark:text-white">Pilih media</h2>
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Pustaka gambar untuk produk affiliate.</p>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Pustaka gambar dari media library.</p>
                     </div>
                     <button
                         type="button"
@@ -151,7 +151,7 @@
                                         @endphp
                                         <button
                                             type="button"
-                                            wire:key="affiliate-media-{{ $media->id }}"
+                                            wire:key="media-picker-media-{{ $media->id }}"
                                             wire:click="toggleSelection({{ $media->id }})"
                                             @class([
                                                 'group relative overflow-hidden rounded-lg border-2 bg-gray-100 text-left transition dark:bg-gray-800',

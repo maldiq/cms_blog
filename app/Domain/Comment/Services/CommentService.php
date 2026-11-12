@@ -110,7 +110,9 @@ class CommentService
             'children' => fn ($query) => $query->approved()->orderByDesc('is_pinned')->orderBy('created_at'),
         ]);
 
-        $children = $comments->pluck('children')->flatten();
+        $children = new Collection(
+            $comments->flatMap(fn (Comment $comment) => $comment->children->all())->all()
+        );
 
         if ($children->isNotEmpty()) {
             $this->loadApprovedChildren($children, $currentDepth + 1, $maxDepth);
