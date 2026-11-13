@@ -17,6 +17,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use FilamentTiptapEditor\Enums\TiptapOutput;
+use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
@@ -49,10 +51,17 @@ class PostResource extends Resource
                         ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set("translations.{$locale}.slug", \Illuminate\Support\Str::slug((string) $state))),
                     Forms\Components\TextInput::make("translations.{$locale}.slug")->label('Slug'),
                     Forms\Components\Textarea::make("translations.{$locale}.excerpt")->label('Excerpt')->rows(3),
-                    Forms\Components\RichEditor::make("translations.{$locale}.content")
+                    TiptapEditor::make("translations.{$locale}.content")
                         ->label('Konten')
                         ->columnSpanFull()
-                        ->saveUploadedFileAttachmentsUsing(function (TemporaryUploadedFile $file): string {
+                        ->output(TiptapOutput::Html)
+                        ->tools([
+                            'heading', 'bullet-list', 'ordered-list', '|',
+                            'bold', 'italic', 'underline', 'strike', 'code', '|',
+                            'link', 'media', 'table', '|',
+                            'blockquote', 'hr', 'code-block',
+                        ])
+                        ->saveUploadedFileUsing(function (TemporaryUploadedFile $file): string {
                             $media = app(MediaUploadService::class)->uploadFile($file);
 
                             return $media->getFullUrl();

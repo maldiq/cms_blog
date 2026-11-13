@@ -73,6 +73,28 @@
     .section-title {
         @apply text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl;
     }
+
+    /* Konten artikel dari editor (TipTap) — tabel butuh gaya eksplisit. */
+    .prose table {
+        @apply my-6 w-full border-collapse text-left text-sm;
+    }
+
+    .prose table th,
+    .prose table td {
+        @apply border border-slate-200 px-3 py-2 align-top;
+    }
+
+    .prose table th {
+        @apply bg-slate-50 font-semibold text-slate-900;
+    }
+
+    .prose table tr:nth-child(even) td {
+        @apply bg-slate-50/60;
+    }
+
+    .prose table p {
+        @apply my-0;
+    }
 }
 
 /* Hero slider customisation */
