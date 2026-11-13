@@ -7,6 +7,7 @@ use App\Domain\Affiliate\Models\AffiliateCategory;
 use App\Domain\Affiliate\Models\AffiliatePlatform;
 use App\Domain\Affiliate\Models\AffiliateProduct;
 use App\Domain\Blog\Filament\Concerns\InteractsWithLocaleTabs;
+use App\Domain\Media\Filament\Forms\Components\RichContentEditor;
 use App\Domain\Theme\Filament\Forms\Components\MediaImagePickerField;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -48,9 +49,15 @@ class AffiliateProductResource extends Resource
                     ->label('Slug')
                     ->maxLength(255)
                     ->helperText('Kosongkan untuk dibuat otomatis dari nama produk.'),
-                Forms\Components\Textarea::make("translations.{$locale}.description")
+                Forms\Components\Textarea::make("translations.{$locale}.excerpt")
+                    ->label('Ringkasan singkat')
+                    ->helperText('Tampil di atas tombol beli. Cukup 1–2 kalimat.')
+                    ->rows(2)
+                    ->maxLength(500)
+                    ->columnSpanFull(),
+                RichContentEditor::make("translations.{$locale}.description")
                     ->label('Deskripsi')
-                    ->rows(4)
+                    ->helperText('Tampil di bagian "Deskripsi produk" di bawah halaman.')
                     ->columnSpanFull(),
             ]),
             Forms\Components\Section::make('Informasi produk')->schema([

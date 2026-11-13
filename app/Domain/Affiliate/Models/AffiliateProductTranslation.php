@@ -20,6 +20,7 @@ class AffiliateProductTranslation extends Model
         'locale',
         'title',
         'slug',
+        'excerpt',
         'description',
     ];
 

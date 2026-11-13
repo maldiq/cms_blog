@@ -19,6 +19,7 @@ class AffiliateProduct extends Model implements TranslatableContract
     public array $translatedAttributes = [
         'title',
         'slug',
+        'excerpt',
         'description',
     ];
 

@@ -27,6 +27,11 @@
             'class' => 'bg-slate-500/95 text-white',
         ]);
         $platformBadgeClass = $platformBadge['class'] ?? 'bg-slate-500/95 text-white';
+
+        $description = trim((string) $product->description);
+        $plainDescription = trim(strip_tags($description));
+        $descriptionIsHtml = $description !== ''
+            && preg_match('/<[a-z][\s\S]*>/i', $description) === 1;
     @endphp
 
     @push('meta')
@@ -35,7 +40,7 @@
                 '@context' => 'https://schema.org',
                 '@type' => 'Product',
                 'name' => $product->title,
-                'description' => $product->description,
+                'description' => $product->excerpt ?: $plainDescription,
                 'image' => $imageUrl,
                 'category' => $product->affiliateCategory?->name,
                 'offers' => [
@@ -143,10 +148,8 @@
                     @endif
                 </div>
 
-                @if ($product->description)
-                    <div class="mt-6 text-sm leading-7 text-slate-600">
-                        <p class="whitespace-pre-line">{{ $product->description }}</p>
-                    </div>
+                @if ($product->excerpt)
+                    <p class="mt-6 text-sm leading-7 text-slate-600">{{ $product->excerpt }}</p>
                 @endif
 
                 <div class="mt-7">
@@ -199,10 +202,16 @@
             </div>
         </div>
 
-        @if ($product->description)
+        @if ($description !== '')
             <section class="mt-12 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8" aria-labelledby="product-description">
                 <h2 id="product-description" class="text-lg font-bold text-slate-900">{{ __('messages.affiliate_description') }}</h2>
-                <div class="mt-4 max-w-none whitespace-pre-line text-sm leading-7 text-slate-600">{{ $product->description }}</div>
+                <div class="prose prose-emerald mt-4 max-w-none text-sm leading-7 text-slate-600">
+                    @if ($descriptionIsHtml)
+                        {!! $description !!}
+                    @else
+                        {!! nl2br(e($description)) !!}
+                    @endif
+                </div>
             </section>
         @endif
 

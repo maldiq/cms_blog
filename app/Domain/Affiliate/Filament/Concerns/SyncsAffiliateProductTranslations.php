@@ -30,6 +30,7 @@ trait SyncsAffiliateProductTranslations
             $product->translateOrNew($locale)->fill([
                 'title' => $title,
                 'slug' => $slug !== '' ? $slug : null,
+                'excerpt' => $bucket['excerpt'] ?? null,
                 'description' => $bucket['description'] ?? null,
             ])->save();
         }
