@@ -2,6 +2,7 @@
 
 namespace App\Domain\Theme\Filament\Support;
 
+use App\Domain\Media\Filament\Forms\Components\RichContentEditor;
 use App\Domain\Theme\Filament\Concerns\InteractsWithThemeLocaleTabs;
 use App\Domain\Theme\Filament\Forms\Components\MediaPickerField;
 use Filament\Forms;
@@ -104,7 +105,7 @@ class ThemeEditorFormSchema
             $this->themeLocaleTabs('about', fn (string $locale): array => [
                 Forms\Components\TextInput::make("about.title.{$locale}")->label('Title')->maxLength(255),
                 Forms\Components\TextInput::make("about.subtitle.{$locale}")->label('Subtitle')->maxLength(500),
-                Forms\Components\RichEditor::make("about.content.{$locale}")->label('Content')->columnSpanFull(),
+                RichContentEditor::make("about.content.{$locale}")->label('Content')->columnSpanFull(),
             ]),
             MediaPickerField::make('about.image_id')->label('Image'),
             Forms\Components\Repeater::make('about.points')
@@ -156,7 +157,7 @@ class ThemeEditorFormSchema
             $this->themeLocaleTabs('about_page', fn (string $locale): array => [
                 Forms\Components\Textarea::make("about_page.vision.{$locale}")->label('Vision')->rows(3),
                 Forms\Components\Textarea::make("about_page.mission.{$locale}")->label('Mission')->rows(3),
-                Forms\Components\RichEditor::make("about_page.history.{$locale}")->label('History')->columnSpanFull(),
+                RichContentEditor::make("about_page.history.{$locale}")->label('History')->columnSpanFull(),
             ]),
             Forms\Components\Repeater::make('about_page.values')
                 ->label('Values')

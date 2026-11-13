@@ -3,7 +3,7 @@
 namespace App\Domain\Page\Filament\Resources;
 
 use App\Domain\Blog\Filament\Concerns\InteractsWithLocaleTabs;
-use App\Domain\Media\Services\MediaUploadService;
+use App\Domain\Media\Filament\Forms\Components\RichContentEditor;
 use App\Domain\Page\Filament\Resources\PageResource\Pages;
 use App\Domain\Page\Models\Page;
 use App\Domain\User\Models\User;
@@ -12,7 +12,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class PageResource extends Resource
 {
@@ -47,14 +46,9 @@ class PageResource extends Resource
                 Forms\Components\TextInput::make("translations.{$locale}.slug")
                     ->label('Slug')
                     ->maxLength(255),
-                Forms\Components\RichEditor::make("translations.{$locale}.content")
+                RichContentEditor::make("translations.{$locale}.content")
                     ->label('Konten')
-                    ->columnSpanFull()
-                    ->saveUploadedFileAttachmentsUsing(function (TemporaryUploadedFile $file): string {
-                        $media = app(MediaUploadService::class)->uploadFile($file);
-
-                        return $media->getFullUrl();
-                    }),
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make("translations.{$locale}.meta_title")
                     ->label('Meta title')
                     ->maxLength(255),
