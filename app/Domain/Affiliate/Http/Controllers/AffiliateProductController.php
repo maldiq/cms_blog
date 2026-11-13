@@ -142,6 +142,23 @@ class AffiliateProductController extends Controller
 
         $category = $product->affiliateCategory;
 
+        $metaDescription = trim((string) ($translation?->excerpt ?? ''));
+
+        if ($metaDescription === '') {
+            $metaDescription = trim((string) preg_replace(
+                '/\s+/u',
+                ' ',
+                strip_tags((string) ($translation?->description ?? '')),
+            ));
+        }
+
+        if ($metaDescription === '') {
+            $metaDescription = __('messages.affiliate_seo_product_description', [
+                'title' => $translation?->title ?? $product->title,
+                'platform' => $product->affiliatePlatform?->name ?? 'marketplace',
+            ]);
+        }
+
         return view('products.show', [
             'locale' => $locale,
             'product' => $product,
@@ -149,11 +166,7 @@ class AffiliateProductController extends Controller
             'seo' => $product,
             'seoContext' => [
                 'title' => $translation?->title ?? $product->title,
-                'description' => $translation?->description
-                    ?: __('messages.affiliate_seo_product_description', [
-                        'title' => $translation?->title ?? $product->title,
-                        'platform' => $product->affiliatePlatform?->name ?? 'marketplace',
-                    ]),
+                'description' => $metaDescription,
                 'canonical' => route('products.show', ['locale' => $locale, 'slug' => $translation?->slug ?? $product->slug]),
                 'og_image' => $this->productImageUrl($product),
             ],

@@ -9,7 +9,7 @@ use App\Domain\Blog\Post\Filament\Resources\PostResource\RelationManagers\Galler
 use App\Domain\Blog\Post\Models\Post;
 use App\Domain\Blog\Series\Models\Series;
 use App\Domain\Blog\Tag\Models\Tag;
-use App\Domain\Media\Services\MediaUploadService;
+use App\Domain\Media\Filament\Forms\Components\RichContentEditor;
 use App\Domain\Theme\Filament\Forms\Components\MediaImagePickerField;
 use App\Domain\User\Models\User;
 use Filament\Forms;
@@ -17,10 +17,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use FilamentTiptapEditor\Enums\TiptapOutput;
-use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class PostResource extends Resource
 {
@@ -51,21 +48,9 @@ class PostResource extends Resource
                         ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set("translations.{$locale}.slug", \Illuminate\Support\Str::slug((string) $state))),
                     Forms\Components\TextInput::make("translations.{$locale}.slug")->label('Slug'),
                     Forms\Components\Textarea::make("translations.{$locale}.excerpt")->label('Excerpt')->rows(3),
-                    TiptapEditor::make("translations.{$locale}.content")
+                    RichContentEditor::make("translations.{$locale}.content")
                         ->label('Konten')
-                        ->columnSpanFull()
-                        ->output(TiptapOutput::Html)
-                        ->tools([
-                            'heading', 'bullet-list', 'ordered-list', '|',
-                            'bold', 'italic', 'underline', 'strike', 'code', '|',
-                            'link', 'media', 'table', '|',
-                            'blockquote', 'hr', 'code-block',
-                        ])
-                        ->saveUploadedFileUsing(function (TemporaryUploadedFile $file): string {
-                            $media = app(MediaUploadService::class)->uploadFile($file);
-
-                            return $media->getFullUrl();
-                        }),
+                        ->columnSpanFull(),
                     Forms\Components\TextInput::make("translations.{$locale}.meta_title")->label('Meta title'),
                     Forms\Components\TextInput::make("translations.{$locale}.meta_description")->label('Meta description'),
                     Forms\Components\TextInput::make("translations.{$locale}.meta_keywords")->label('Meta keywords'),

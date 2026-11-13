@@ -3,6 +3,7 @@
 namespace App\Domain\Portfolio\Filament\Resources;
 
 use App\Domain\Blog\Filament\Concerns\InteractsWithLocaleTabs;
+use App\Domain\Media\Filament\Forms\Components\RichContentEditor;
 use App\Domain\Portfolio\Filament\Resources\PortfolioResource\Pages;
 use App\Domain\Portfolio\Models\Portfolio;
 use App\Domain\Portfolio\Models\PortfolioCategory;
@@ -40,7 +41,7 @@ class PortfolioResource extends Resource
                     ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set("translations.{$locale}.slug", \Illuminate\Support\Str::slug((string) $state))),
                 Forms\Components\TextInput::make("translations.{$locale}.slug")->label('Slug'),
                 Forms\Components\Textarea::make("translations.{$locale}.excerpt")->label('Excerpt')->rows(3),
-                Forms\Components\RichEditor::make("translations.{$locale}.content")->label('Konten')->columnSpanFull(),
+                RichContentEditor::make("translations.{$locale}.content")->label('Konten')->columnSpanFull(),
             ]),
             Forms\Components\Section::make('Pengaturan')->schema([
                 MediaPickerField::make('cover_id')->label('Cover'),

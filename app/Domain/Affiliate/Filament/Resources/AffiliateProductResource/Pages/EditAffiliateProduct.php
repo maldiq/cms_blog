@@ -36,7 +36,7 @@ class EditAffiliateProduct extends EditRecord
 
             if ($translation !== null) {
                 $data['translations'][$language->code] = $translation->only([
-                    'title', 'slug', 'description',
+                    'title', 'slug', 'excerpt', 'description',
                 ]);
             }
         }
