@@ -157,4 +157,22 @@ return [
     'affiliate_price_note' => 'Harga dan ketersediaan dapat berubah sewaktu-waktu mengikuti kebijakan marketplace.',
     'affiliate_rights' => 'Hak cipta dilindungi.',
     'affiliate_footer_credit' => 'Dibuat dengan teliti untuk pembeli yang cermat.',
+    'affiliate_link_unavailable' => 'Tautan produk sedang tidak tersedia. Silakan pilih produk lain atau coba lagi nanti.',
+
+    // Kebijakan privasi
+    'privacy_title' => 'Kebijakan Privasi',
+    'privacy_meta_title' => 'Kebijakan Privasi - :site',
+    'privacy_meta_description' => 'Cara NainPicks mencatat sumber kunjungan, cookie, dan data klik.',
+    'privacy_intro' => 'Kebijakan ini menjelaskan data apa yang dicatat saat Anda mengunjungi situs, terutama untuk mengukur sumber kunjungan dan tautan affiliate.',
+    'privacy_tracking_title' => 'Pelacakan sumber kunjungan',
+    'privacy_tracking_text' => 'Jika Anda membuka tautan dengan parameter seperti ?src=fb_grup_gadget, kami menyimpan sumber tersebut di session dan cookie first-party selama 30 hari. Saat Anda menekan tombol beli, sumber itu diteruskan ke marketplace sebagai sub-ID agar kami tahu konten mana yang menghasilkan klik.',
+    'privacy_cookies_title' => 'Cookie dan session',
+    'privacy_cookies_text' => 'Cookie hanya menyimpan kode sumber traffic (misalnya fb_reels), bukan nama, email, atau data pribadi. Anda dapat menghapus cookie melalui pengaturan browser kapan saja.',
+    'privacy_data_title' => 'Data klik',
+    'privacy_data_text' => 'Kami mencatat waktu klik, produk, locale, sumber, domain perujuk, jenis browser, dan hash IP. Alamat IP asli tidak disimpan. Log klik mentah disimpan maksimal 90 hari, lalu dihapus atau diringkas.',
+    'privacy_marketplace_title' => 'Marketplace',
+    'privacy_marketplace_text' => 'Transaksi terjadi di marketplace pihak ketiga dan tunduk pada kebijakan privasi masing-masing marketplace.',
+    'privacy_contact_title' => 'Pertanyaan',
+    'privacy_contact_text' => 'Hubungi kami melalui halaman kontak jika Anda ingin bertanya tentang data yang kami catat.',
+    'privacy_link' => 'Kebijakan Privasi',
 ];

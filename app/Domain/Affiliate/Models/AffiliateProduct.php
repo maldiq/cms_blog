@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[UsePolicy(AffiliateProductPolicy::class)]
 class AffiliateProduct extends Model implements TranslatableContract
@@ -72,6 +73,70 @@ class AffiliateProduct extends Model implements TranslatableContract
     public function affiliatePlatform(): BelongsTo
     {
         return $this->belongsTo(AffiliatePlatform::class);
+    }
+
+    /**
+     * @return HasMany<AffiliateDestination, $this>
+     */
+    public function destinations(): HasMany
+    {
+        return $this->hasMany(AffiliateDestination::class)
+            ->orderByDesc('is_primary')
+            ->orderBy('priority')
+            ->orderBy('id');
+    }
+
+    /**
+     * @return HasMany<AffiliateClick, $this>
+     */
+    public function clicks(): HasMany
+    {
+        return $this->hasMany(AffiliateClick::class);
+    }
+
+    /**
+     * Produk baru otomatis punya satu tujuan utama agar resolver tidak jatuh
+     * ke kolom lama. Perubahan affiliate_url juga disinkronkan ke tujuan utama.
+     */
+    protected static function booted(): void
+    {
+        static::created(function (self $product): void {
+            if (blank($product->affiliate_url)) {
+                return;
+            }
+
+            $product->destinations()->create([
+                'label' => 'Tujuan utama',
+                'url' => $product->affiliate_url,
+                'status' => AffiliateDestination::STATUS_ACTIVE,
+                'is_primary' => true,
+                'priority' => 0,
+            ]);
+        });
+
+        static::updated(function (self $product): void {
+            if (! $product->wasChanged('affiliate_url') || blank($product->affiliate_url)) {
+                return;
+            }
+
+            $primary = $product->destinations()->where('is_primary', true)->first();
+
+            if ($primary !== null) {
+                if ($primary->url !== $product->affiliate_url) {
+                    $primary->update(['url' => $product->affiliate_url]);
+                }
+
+                return;
+            }
+
+            $product->destinations()->create([
+                'label' => 'Tujuan utama',
+                'url' => $product->affiliate_url,
+                'status' => AffiliateDestination::STATUS_ACTIVE,
+                'is_primary' => true,
+                'priority' => 0,
+            ]);
+        });
     }
 
     /**

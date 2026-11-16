@@ -1,0 +1,14 @@
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/*
+ * Filament memakai class `dark` di <html>, bukan prefers-color-scheme.
+ * Utility tambahan ini hanya berisi theme + utilities (tanpa preflight)
+ * supaya tidak menimpa style bawaan panel.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@source '../../../app/Domain/Affiliate/Filament';
+@source '../../views/filament';

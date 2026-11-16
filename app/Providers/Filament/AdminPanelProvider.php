@@ -28,6 +28,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -43,6 +44,10 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Emerald,
             ])
+            ->renderHook(
+                PanelsRenderHook::STYLES_AFTER,
+                fn (): string => Blade::render("@vite('resources/css/filament/admin.css')"),
+            )
             ->navigationGroups([
                 'Affiliate',
                 'Konten',
@@ -81,6 +86,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Domain/Setting/Filament/Pages'), for: 'App\\Domain\\Setting\\Filament\\Pages')
             ->discoverPages(in: app_path('Domain/Theme/Filament/Pages'), for: 'App\\Domain\\Theme\\Filament\\Pages')
+            ->discoverPages(in: app_path('Domain/Affiliate/Filament/Pages'), for: 'App\\Domain\\Affiliate\\Filament\\Pages')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([])

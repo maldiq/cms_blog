@@ -6,7 +6,7 @@ use App\Domain\Blog\Filament\Concerns\InteractsWithLocaleTabs;
 use App\Domain\Blog\Series\Filament\Resources\SeriesResource\Pages;
 use App\Domain\Blog\Series\Filament\Resources\SeriesResource\RelationManagers\PostsRelationManager;
 use App\Domain\Blog\Series\Models\Series;
-use App\Domain\Media\Models\Media;
+use App\Domain\Theme\Filament\Forms\Components\MediaImagePickerField;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -45,10 +45,10 @@ class SeriesResource extends Resource
             ]),
             Forms\Components\Section::make('Pengaturan')
                 ->schema([
-                    Forms\Components\Select::make('cover_id')
+                    MediaImagePickerField::make('cover_id')
                         ->label('Cover')
-                        ->searchable()
-                        ->options(fn (): array => Media::query()->latest()->limit(100)->pluck('name', 'id')->all()),
+                        ->helperText('Pilih gambar dari pustaka media. Pratinjau gambar tampil sebelum disimpan.')
+                        ->columnSpanFull(),
                     Forms\Components\Toggle::make('is_active')->label('Aktif')->default(true),
                 ])
                 ->columns(2),

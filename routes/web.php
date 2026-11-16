@@ -56,6 +56,7 @@ Route::prefix('{locale}')
         Route::get('/pricing', [ThemePageController::class, 'pricing'])->name('pricing');
         Route::get('/faq', [ThemePageController::class, 'faq'])->name('faq');
         Route::get('/contact', [ThemePageController::class, 'contact'])->name('contact');
+        Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
 
         Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
         Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');

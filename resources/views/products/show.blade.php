@@ -76,6 +76,12 @@
     </div>
 
     <div class="container-page py-8 sm:py-10">
+        @if (session('affiliate_link_unavailable'))
+            <div class="mb-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900" role="alert">
+                {{ session('affiliate_link_unavailable') }}
+            </div>
+        @endif
+
         <div class="grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:gap-12">
             <div class="lg:sticky lg:top-32 lg:self-start">
                 <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-2 shadow-sm">

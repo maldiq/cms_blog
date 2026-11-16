@@ -7,6 +7,10 @@ use App\Domain\Affiliate\Models\AffiliateCategory;
 use App\Domain\Affiliate\Models\AffiliatePlatform;
 use App\Domain\Affiliate\Models\AffiliateProduct;
 use App\Domain\Affiliate\Models\AffiliateProductTranslation;
+use App\Domain\Affiliate\Services\AffiliateClickLogger;
+use App\Domain\Affiliate\Services\AffiliateDestinationResolver;
+use App\Domain\Affiliate\Services\AffiliateOutboundUrlBuilder;
+use App\Domain\Affiliate\Services\TrafficSource;
 use App\Domain\Blog\Post\Models\Post;
 use App\Domain\Media\Models\Media;
 use App\Http\Controllers\Controller;
@@ -179,24 +183,66 @@ class AffiliateProductController extends Controller
         ]);
     }
 
-    public function redirect(string $locale, string $slug): RedirectResponse
+    public function redirect(Request $request, string $locale, string $slug): RedirectResponse
     {
         $product = AffiliateProduct::query()
             ->active()
+            ->with('affiliatePlatform')
             ->whereHas('translations', fn (Builder $query) => $query->where('locale', $locale)->where('slug', $slug))
             ->firstOrFail();
-        $url = parse_url($product->affiliate_url);
 
-        abort_unless(
-            is_array($url)
-                && in_array(strtolower($url['scheme'] ?? ''), ['http', 'https'], true)
-                && filled($url['host'] ?? null),
-            404,
+        $resolver = app(AffiliateDestinationResolver::class);
+        $destination = $resolver->resolve($product);
+
+        // Produk sudah punya tujuan, tetapi semuanya sedang tidak tersedia.
+        // Kembalikan ke halaman produk, jangan mengirim ke link yang mati.
+        if ($destination === null && $resolver->hasDestinations($product)) {
+            return redirect()
+                ->route('products.show', ['locale' => $locale, 'slug' => $slug])
+                ->with('affiliate_link_unavailable', __('messages.affiliate_link_unavailable'));
+        }
+
+        $targetUrl = $destination?->url ?? $product->affiliate_url;
+
+        $this->assertSafeUrl($targetUrl);
+
+        $traffic = app(TrafficSource::class);
+        $source = $traffic->last($request);
+        $firstSource = $traffic->first($request);
+
+        $outboundUrl = app(AffiliateOutboundUrlBuilder::class)
+            ->build($targetUrl, $product->affiliatePlatform?->slug, $source);
+
+        $this->assertSafeUrl($outboundUrl);
+
+        app(AffiliateClickLogger::class)->log(
+            $request,
+            $product,
+            $destination,
+            $locale,
+            $source,
+            $firstSource,
         );
 
-        $product->increment('click_count');
+        return redirect()
+            ->away($outboundUrl, 302)
+            ->withHeaders([
+                'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+            ]);
+    }
 
-        return redirect()->away($product->affiliate_url);
+    private function assertSafeUrl(string $url): void
+    {
+        $parts = parse_url($url);
+
+        abort_unless(
+            is_array($parts)
+                && in_array(strtolower($parts['scheme'] ?? ''), ['http', 'https'], true)
+                && filled($parts['host'] ?? null),
+            404,
+        );
     }
 
     private function catalog(string $locale, Request $request, ?AffiliateCategory $selectedCategory = null): View

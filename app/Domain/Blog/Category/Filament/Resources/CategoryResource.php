@@ -5,7 +5,7 @@ namespace App\Domain\Blog\Category\Filament\Resources;
 use App\Domain\Blog\Category\Filament\Resources\CategoryResource\Pages;
 use App\Domain\Blog\Category\Models\Category;
 use App\Domain\Blog\Filament\Concerns\InteractsWithLocaleTabs;
-use App\Domain\Media\Models\Media;
+use App\Domain\Theme\Filament\Forms\Components\MediaImagePickerField;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -55,11 +55,10 @@ class CategoryResource extends Resource
             ]),
             Forms\Components\Section::make('Pengaturan')
                 ->schema([
-                    Forms\Components\Select::make('cover_id')
+                    MediaImagePickerField::make('cover_id')
                         ->label('Cover')
-                        ->searchable()
-                        ->options(fn (): array => Media::query()->latest()->limit(100)->pluck('name', 'id')->all())
-                        ->nullable(),
+                        ->helperText('Pilih gambar dari pustaka media. Pratinjau gambar tampil sebelum disimpan.')
+                        ->columnSpanFull(),
                     Forms\Components\Toggle::make('is_active')->label('Aktif')->default(true),
                     Forms\Components\TextInput::make('sort_order')->label('Urutan')->numeric()->default(0),
                 ])

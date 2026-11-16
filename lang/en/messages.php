@@ -157,4 +157,22 @@ return [
     'affiliate_price_note' => 'Prices and availability may change at any time according to marketplace policies.',
     'affiliate_rights' => 'All rights reserved.',
     'affiliate_footer_credit' => 'Carefully curated for thoughtful shoppers.',
+    'affiliate_link_unavailable' => 'This product link is currently unavailable. Please choose another product or try again later.',
+
+    // Privacy policy
+    'privacy_title' => 'Privacy Policy',
+    'privacy_meta_title' => 'Privacy Policy - :site',
+    'privacy_meta_description' => 'How NainPicks records traffic sources, cookies, and click data.',
+    'privacy_intro' => 'This policy explains what data is recorded when you visit the site, especially to measure traffic sources and affiliate links.',
+    'privacy_tracking_title' => 'Traffic source tracking',
+    'privacy_tracking_text' => 'If you open a link with a parameter such as ?src=fb_grup_gadget, we store that source in a session and a first-party cookie for 30 days. When you press a buy button, the source is forwarded to the marketplace as a sub-ID so we can see which content generated the click.',
+    'privacy_cookies_title' => 'Cookies and sessions',
+    'privacy_cookies_text' => 'The cookie only stores a traffic source code (for example fb_reels), not your name, email, or personal data. You can delete cookies from your browser settings at any time.',
+    'privacy_data_title' => 'Click data',
+    'privacy_data_text' => 'We record the click time, product, locale, source, referring domain, browser family, and a hashed IP address. The raw IP address is not stored. Raw click logs are kept for up to 90 days, then deleted or aggregated.',
+    'privacy_marketplace_title' => 'Marketplaces',
+    'privacy_marketplace_text' => 'Transactions happen on third-party marketplaces and are subject to each marketplace privacy policy.',
+    'privacy_contact_title' => 'Questions',
+    'privacy_contact_text' => 'Contact us through the contact page if you have questions about the data we record.',
+    'privacy_link' => 'Privacy Policy',
 ];

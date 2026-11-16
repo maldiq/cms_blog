@@ -60,6 +60,24 @@ class PageController
         return $this->show($locale, 'about');
     }
 
+    public function privacy(string $locale): View
+    {
+        app()->setLocale($locale);
+
+        return view('legal.privacy', [
+            'locale' => $locale,
+            'seoContext' => [
+                'title' => __('messages.privacy_meta_title', ['site' => setting('site_name', config('app.name'))]),
+                'description' => __('messages.privacy_meta_description'),
+                'canonical' => route('privacy', ['locale' => $locale]),
+            ],
+            'breadcrumbs' => [
+                ['name' => setting('site_name', config('app.name')), 'url' => route('home', ['locale' => $locale])],
+                ['name' => __('messages.privacy_title'), 'url' => route('privacy', ['locale' => $locale])],
+            ],
+        ]);
+    }
+
     public function show(string $locale, string $slug): View
     {
         app()->setLocale($locale);

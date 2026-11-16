@@ -5,10 +5,14 @@ namespace App\Domain\Gallery\Album\Filament\Resources\AlbumResource\Pages;
 use App\Domain\Gallery\Album\Filament\Resources\AlbumResource;
 use App\Domain\Gallery\Album\Models\Album;
 use App\Domain\Language\Models\Language;
+use App\Domain\Media\Filament\Concerns\InteractsWithMediaImagePicker;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Arr;
 
 class CreateAlbum extends CreateRecord
 {
+    use InteractsWithMediaImagePicker;
+
     protected static string $resource = AlbumResource::class;
 
     /**
@@ -38,11 +42,13 @@ class CreateAlbum extends CreateRecord
             $locale = $language->code;
             $bucket = $state['translations'][$locale] ?? null;
 
-            if (! is_array($bucket)) {
+            if (! is_array($bucket) || blank($bucket['title'] ?? null)) {
                 continue;
             }
 
-            $album->translateOrNew($locale)->fill($bucket)->save();
+            $album->translateOrNew($locale)->fill(Arr::only($bucket, [
+                'title', 'slug', 'description',
+            ]))->save();
         }
     }
 }

@@ -5,11 +5,15 @@ namespace App\Domain\Blog\Category\Filament\Resources\CategoryResource\Pages;
 use App\Domain\Blog\Category\Filament\Resources\CategoryResource;
 use App\Domain\Blog\Category\Models\Category;
 use App\Domain\Language\Models\Language;
+use App\Domain\Media\Filament\Concerns\InteractsWithMediaImagePicker;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Arr;
 
 class EditCategory extends EditRecord
 {
+    use InteractsWithMediaImagePicker;
+
     protected static string $resource = CategoryResource::class;
 
     protected function getHeaderActions(): array
@@ -66,11 +70,13 @@ class EditCategory extends EditRecord
             $locale = $language->code;
             $bucket = $state['translations'][$locale] ?? null;
 
-            if (! is_array($bucket)) {
+            if (! is_array($bucket) || blank($bucket['name'] ?? null)) {
                 continue;
             }
 
-            $category->translateOrNew($locale)->fill($bucket)->save();
+            $category->translateOrNew($locale)->fill(Arr::only($bucket, [
+                'name', 'slug', 'description', 'meta_title', 'meta_description',
+            ]))->save();
         }
     }
 }

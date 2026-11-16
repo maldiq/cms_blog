@@ -3,6 +3,7 @@
 namespace App\Domain\Affiliate\Filament\Resources;
 
 use App\Domain\Affiliate\Filament\Resources\AffiliateProductResource\Pages;
+use App\Domain\Affiliate\Filament\Resources\AffiliateProductResource\RelationManagers\DestinationsRelationManager;
 use App\Domain\Affiliate\Models\AffiliateCategory;
 use App\Domain\Affiliate\Models\AffiliatePlatform;
 use App\Domain\Affiliate\Models\AffiliateProduct;
@@ -120,7 +121,7 @@ class AffiliateProductResource extends Resource
                     ->rules(['url:http,https'])
                     ->required()
                     ->maxLength(2048)
-                    ->helperText('Gunakan URL produk atau kampanye affiliate Anda. Produk contoh dari seeder nonaktif sampai Anda mengaktifkannya.')
+                    ->helperText('Tautan utama. Perubahan di sini ikut memperbarui tujuan utama. Tambahkan tujuan cadangan dari tab "Tujuan Link".')
                     ->columnSpanFull(),
             ])->columns(2),
             Forms\Components\Section::make('Publikasi')->schema([
@@ -154,6 +155,13 @@ class AffiliateProductResource extends Resource
                 Tables\Actions\DeleteAction::make(),
             ])
             ->defaultSort('created_at', 'desc');
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            DestinationsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

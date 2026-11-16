@@ -116,6 +116,8 @@
                 <span aria-hidden="true" class="text-slate-300">·</span>
                 <a href="{{ $contactUrl }}" class="transition hover:text-slate-800">{{ __('messages.contact_us') }}</a>
                 <span aria-hidden="true" class="text-slate-300">·</span>
+                <a href="{{ route('privacy', ['locale' => $locale]) }}" class="transition hover:text-slate-800">{{ __('messages.privacy_link') }}</a>
+                <span aria-hidden="true" class="text-slate-300">·</span>
                 <span>{{ __('messages.affiliate_footer_credit') }}</span>
             </p>
         </div>

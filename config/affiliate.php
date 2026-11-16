@@ -118,4 +118,48 @@ return [
         'vps' => ['label' => 'VPS / Hosting', 'class' => 'bg-indigo-600/95 text-white'],
         'other' => ['label' => 'Lainnya', 'class' => 'bg-slate-500/95 text-white'],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pelacakan sumber traffic & sub-ID marketplace
+    |--------------------------------------------------------------------------
+    |
+    | Sumber disimpan di session + cookie first-party. Nilai `src` dinormalisasi
+    | menjadi lowercase dan hanya boleh berisi huruf, angka, garis bawah, dan
+    | tanda hubung. Parameter sub-ID berbeda per marketplace; Amazon memakai
+    | `ascsubtag` dan parameter `tag` tidak boleh ditimpa.
+    |
+    */
+    'tracking' => [
+        'cookie_days' => 30,
+        'max_source_length' => 64,
+        'source_suggestions' => [
+            'fb_grup_gadget',
+            'fb_grup_promo',
+            'fb_page',
+            'fb_profile',
+            'fb_reels',
+            'ig_bio',
+            'ig_story',
+            'tiktok_bio',
+            'newsletter',
+            'website',
+        ],
+        'platforms' => [
+            'shopee' => ['param' => 'sub_id', 'max_length' => 64],
+            'tiktok_shop' => ['param' => 'sub_id', 'max_length' => 64],
+            'amazon' => ['param' => 'ascsubtag', 'max_length' => 64],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Perilaku pencatatan klik
+    |--------------------------------------------------------------------------
+    */
+    'click' => [
+        'dedupe_seconds' => 3,
+        'rate_limit_per_minute' => 30,
+        'retention_days' => 90,
+    ],
 ];

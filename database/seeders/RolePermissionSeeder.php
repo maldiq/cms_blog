@@ -96,6 +96,17 @@ class RolePermissionSeeder extends Seeder
         'affiliate.banner.create',
         'affiliate.banner.update',
         'affiliate.banner.delete',
+        'affiliate.click.viewAny',
+        'affiliate.click.export',
+        'affiliate.link-builder.view',
+        'affiliate.source.viewAny',
+        'affiliate.source.create',
+        'affiliate.source.update',
+        'affiliate.source.delete',
+        'affiliate.destination.viewAny',
+        'affiliate.destination.create',
+        'affiliate.destination.update',
+        'affiliate.destination.delete',
     ];
 
     /**
@@ -202,6 +213,17 @@ class RolePermissionSeeder extends Seeder
             'affiliate.banner.create',
             'affiliate.banner.update',
             'affiliate.banner.delete',
+            'affiliate.click.viewAny',
+            'affiliate.click.export',
+            'affiliate.link-builder.view',
+            'affiliate.source.viewAny',
+            'affiliate.source.create',
+            'affiliate.source.update',
+            'affiliate.source.delete',
+            'affiliate.destination.viewAny',
+            'affiliate.destination.create',
+            'affiliate.destination.update',
+            'affiliate.destination.delete',
         ]);
 
         Role::findByName('editor', 'web')->syncPermissions([
@@ -251,6 +273,15 @@ class RolePermissionSeeder extends Seeder
             'affiliate.banner.viewAny',
             'affiliate.banner.create',
             'affiliate.banner.update',
+            'affiliate.click.viewAny',
+            'affiliate.click.export',
+            'affiliate.link-builder.view',
+            'affiliate.source.viewAny',
+            'affiliate.source.create',
+            'affiliate.source.update',
+            'affiliate.destination.viewAny',
+            'affiliate.destination.create',
+            'affiliate.destination.update',
         ]);
 
         Role::findByName('author', 'web')->syncPermissions([

@@ -10,10 +10,15 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withCommands([
+        \App\Domain\Affiliate\Console\Commands\CheckAffiliateDestinations::class,
+        \App\Domain\Affiliate\Console\Commands\PruneAffiliateClicks::class,
+    ])
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
             \App\Domain\Theme\Http\Middleware\RegisterActiveTheme::class,
             \App\Domain\Language\Http\Middleware\SetLocale::class,
+            \App\Domain\Affiliate\Http\Middleware\CaptureTrafficSource::class,
             \App\Http\Middleware\RedirectThemeOnePage::class,
         ]);
     })
