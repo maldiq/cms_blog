@@ -1,5 +1,12 @@
 <?php
 
+use App\Domain\Affiliate\Console\Commands\CheckAffiliateDestinations;
+use App\Domain\Affiliate\Console\Commands\ImportAffiliateProductLinks;
+use App\Domain\Affiliate\Console\Commands\PruneAffiliateClicks;
+use App\Domain\Affiliate\Http\Middleware\CaptureTrafficSource;
+use App\Domain\Language\Http\Middleware\SetLocale;
+use App\Domain\Theme\Http\Middleware\RegisterActiveTheme;
+use App\Http\Middleware\RedirectThemeOnePage;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -11,15 +18,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withCommands([
-        \App\Domain\Affiliate\Console\Commands\CheckAffiliateDestinations::class,
-        \App\Domain\Affiliate\Console\Commands\PruneAffiliateClicks::class,
+        CheckAffiliateDestinations::class,
+        PruneAffiliateClicks::class,
+        ImportAffiliateProductLinks::class,
     ])
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
-            \App\Domain\Theme\Http\Middleware\RegisterActiveTheme::class,
-            \App\Domain\Language\Http\Middleware\SetLocale::class,
-            \App\Domain\Affiliate\Http\Middleware\CaptureTrafficSource::class,
-            \App\Http\Middleware\RedirectThemeOnePage::class,
+            RegisterActiveTheme::class,
+            SetLocale::class,
+            CaptureTrafficSource::class,
+            RedirectThemeOnePage::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -140,6 +140,30 @@ class AffiliateProduct extends Model implements TranslatableContract
     }
 
     /**
+     * Tautan pencarian marketplace dipakai sebagai placeholder sampai link
+     * affiliate asli diisi admin. Dipakai untuk menandai produk di admin.
+     */
+    public function usesPlaceholderSearchLink(): bool
+    {
+        $url = (string) $this->affiliate_url;
+
+        if ($url === '') {
+            return false;
+        }
+
+        $host = strtolower((string) parse_url($url, PHP_URL_HOST));
+        $path = (string) parse_url($url, PHP_URL_PATH);
+        $query = (string) parse_url($url, PHP_URL_QUERY);
+
+        if (! str_contains($host, 'shopee') && ! str_contains($host, 'tiktok')) {
+            return false;
+        }
+
+        return str_contains($path, '/search')
+            && (str_contains($query, 'keyword=') || str_contains($query, 'q='));
+    }
+
+    /**
      * @param  Builder<AffiliateProduct>  $query
      * @return Builder<AffiliateProduct>
      */

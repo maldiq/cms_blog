@@ -8,6 +8,7 @@
 /public/sandbox-test.txt
 /storage/app/sandbox-test.txt
 /storage/*.key
+/storage/media-library
 /storage/pail
 /vendor
 .env

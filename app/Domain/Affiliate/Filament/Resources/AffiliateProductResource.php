@@ -147,6 +147,16 @@ class AffiliateProductResource extends Resource
                 Tables\Columns\TextColumn::make('affiliatePlatform.name')->label('Platform')->badge(),
                 Tables\Columns\TextColumn::make('affiliateCategory.name')->label('Kategori'),
                 Tables\Columns\TextColumn::make('price')->label('Harga')->money('IDR'),
+                Tables\Columns\TextColumn::make('affiliate_url')
+                    ->label('Tujuan link')
+                    ->badge()
+                    ->getStateUsing(fn (AffiliateProduct $record): string => $record->usesPlaceholderSearchLink()
+                        ? 'Pencarian'
+                        : 'Link asli')
+                    ->color(fn (string $state): string => $state === 'Pencarian' ? 'warning' : 'success')
+                    ->tooltip(fn (AffiliateProduct $record): string => $record->usesPlaceholderSearchLink()
+                        ? 'Masih placeholder. Impor link affiliate asli lewat tombol "Impor link".'
+                        : (string) $record->affiliate_url),
                 Tables\Columns\TextColumn::make('click_count')->label('Klik')->sortable(),
                 Tables\Columns\IconColumn::make('is_active')->label('Aktif')->boolean(),
             ])

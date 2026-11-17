@@ -177,28 +177,72 @@ class AffiliateProductTest extends TestCase
             ->assertSet('data.image_id', null);
     }
 
-    public function test_affiliate_product_seeder_adds_active_examples_and_is_idempotent(): void
+    public function test_affiliate_product_seeder_adds_curated_catalog_and_is_idempotent(): void
     {
         $this->seed(AffiliateProductSeeder::class);
 
-        $this->assertSame(13, AffiliateProduct::query()->count());
+        $this->assertSame(46, AffiliateProduct::query()->count());
         $this->assertEqualsCanonicalizing(
-            ['shopee', 'tiktok_shop', 'amazon', 'vps', 'other'],
+            ['shopee', 'tiktok_shop', 'vps'],
             AffiliateProduct::query()->with('affiliatePlatform')->get()->pluck('affiliatePlatform.slug')->unique()->all(),
         );
-        $this->assertSame(13, AffiliateProduct::query()->where('is_active', true)->count());
+        $this->assertSame(46, AffiliateProduct::query()->where('is_active', true)->count());
 
         $product = AffiliateProduct::query()
-            ->whereHas('translations', fn ($query) => $query->where('slug', 'contoh-headphone-bluetooth-shopee'))
+            ->whereHas('translations', fn ($query) => $query->where('slug', 'wardah-cushion-series'))
             ->firstOrFail();
         $product->translateOrNew('id')->fill(['title' => 'Produk saya'])->save();
         $product->update(['is_active' => false]);
 
         $this->seed(AffiliateProductSeeder::class);
 
-        $this->assertSame(13, AffiliateProduct::query()->count());
+        $this->assertSame(46, AffiliateProduct::query()->count());
         $this->assertSame('Produk saya', $product->fresh()->translate('id', false)?->title);
         $this->assertFalse((bool) $product->fresh()->is_active);
+    }
+
+    public function test_affiliate_product_seeder_removes_untouched_legacy_demo_rows(): void
+    {
+        $category = AffiliateCategory::query()
+            ->whereHas('translations', fn ($query) => $query->where('locale', 'id')->where('name', 'Umum'))
+            ->firstOrFail();
+        $platform = AffiliatePlatform::query()->where('slug', 'shopee')->firstOrFail();
+
+        $legacy = AffiliateProduct::query()->create([
+            'affiliate_category_id' => $category->getKey(),
+            'affiliate_platform_id' => $platform->getKey(),
+            'affiliate_url' => 'https://shopee.co.id/',
+            'price' => 100000,
+            'is_active' => true,
+        ]);
+
+        $legacy->translateOrNew('id')->fill([
+            'title' => 'Contoh: Headphone Bluetooth',
+            'slug' => 'contoh-headphone-bluetooth-shopee',
+            'description' => 'Data contoh untuk katalog Shopee. Ganti dengan produk dan tautan affiliate milik Anda.',
+        ])->save();
+
+        $this->seed(AffiliateProductSeeder::class);
+
+        $this->assertDatabaseMissing('affiliate_products', ['id' => $legacy->getKey()]);
+        $this->assertSame(46, AffiliateProduct::query()->count());
+    }
+
+    public function test_product_flags_marketplace_search_links_as_placeholder(): void
+    {
+        $product = $this->makeProduct('Produk Placeholder', 'produk-placeholder');
+
+        $product->update(['affiliate_url' => 'https://shopee.co.id/search?keyword=wardah']);
+        $this->assertTrue($product->fresh()->usesPlaceholderSearchLink());
+
+        $product->update(['affiliate_url' => 'https://www.tiktok.com/search?q=wardah']);
+        $this->assertTrue($product->fresh()->usesPlaceholderSearchLink());
+
+        $product->update(['affiliate_url' => 'https://s.shopee.co.id/abc123']);
+        $this->assertFalse($product->fresh()->usesPlaceholderSearchLink());
+
+        $product->update(['affiliate_url' => 'https://www.tiktok.com/@toko/video/123']);
+        $this->assertFalse($product->fresh()->usesPlaceholderSearchLink());
     }
 
     public function test_admin_can_update_product_translations(): void

@@ -108,6 +108,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Gambar demo untuk data awal
+    |--------------------------------------------------------------------------
+    |
+    | Seeder produk membuat gambar gradient sebagai placeholder. Matikan di
+    | lingkungan tes agar seeding tidak menghabiskan waktu membuat 46 gambar.
+    |
+    */
+    'seed_demo_images' => filter_var(env('AFFILIATE_SEED_DEMO_IMAGES', true), FILTER_VALIDATE_BOOL),
+
+    /*
+    |--------------------------------------------------------------------------
     | Tampilan kartu produk
     |--------------------------------------------------------------------------
     */
