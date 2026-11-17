@@ -9,6 +9,7 @@ use App\Domain\Blog\Series\Models\Series;
 use App\Domain\Blog\Tag\Models\Tag;
 use App\Domain\User\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class BlogSeeder extends Seeder
@@ -19,8 +20,18 @@ class BlogSeeder extends Seeder
             return;
         }
 
-        $author = User::query()->where('email', 'admin@admin.com')->first()
-            ?? User::factory()->create(['email' => 'author@blog.test', 'is_active' => true]);
+        $author = User::query()->where('email', 'admin@admin.com')->first();
+
+        if ($author === null) {
+            $author = User::query()->create([
+                'name' => 'Blog Author',
+                'email' => 'author@blog.test',
+                'email_verified_at' => now(),
+                'password' => Hash::make(Str::random(32)),
+                'locale' => 'id',
+                'is_active' => true,
+            ]);
+        }
 
         $categories = [
             ['id' => ['Teknologi', 'teknologi'], 'en' => ['Technology', 'technology']],

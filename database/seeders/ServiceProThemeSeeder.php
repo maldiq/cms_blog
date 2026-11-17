@@ -141,7 +141,10 @@ class ServiceProThemeSeeder extends Seeder
         }
 
         while ($activeCount < $minimum) {
-            $service = Service::factory()->create([
+            $service = Service::query()->create([
+                'icon' => '🛠️',
+                'cover_id' => null,
+                'price_from' => 2500000,
                 'is_active' => true,
                 'sort_order' => 100 + $activeCount,
             ]);
