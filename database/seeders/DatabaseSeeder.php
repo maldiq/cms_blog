@@ -20,9 +20,8 @@ class DatabaseSeeder extends Seeder
             AffiliateBannerSeeder::class,
             PageSeeder::class,
             ServiceProThemeSeeder::class,
-            ServiceProBlogSeeder::class,
+            AffiliateBlogSeeder::class,
             GallerySeeder::class,
-            CommentSeeder::class,
             NewsletterSubscriberSeeder::class,
             ContactSubmissionSeeder::class,
         ]);

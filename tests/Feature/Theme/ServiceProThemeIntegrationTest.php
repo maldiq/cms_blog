@@ -28,7 +28,7 @@ class ServiceProThemeIntegrationTest extends TestCase
         $response->assertSee('Paket Harga', false);
         $response->assertSee('Pertanyaan Umum', false);
         $response->assertSee('Artikel Terbaru', false);
-        $response->assertSee('Migrasi VPS ke Cloud tanpa Downtime', false);
+        $response->assertSee('Rekomendasi Skincare Lokal untuk Kulit Sensitif', false);
         $response->assertSee('Portal E-commerce Nusantara', false);
         $response->assertSee('Budi Santoso', false);
         $response->assertSee('Siti Rahma', false);
@@ -54,7 +54,7 @@ class ServiceProThemeIntegrationTest extends TestCase
         }
 
         $this->get('/id/portfolio/portal-ecommerce-nusantara')->assertOk();
-        $this->get('/id/blog/membangun-cms-modular-laravel')->assertOk();
+        $this->get('/id/blog/rekomendasi-skincare-lokal-kulit-sensitif')->assertOk();
     }
 
     public function test_multilanguage_all_pages(): void
