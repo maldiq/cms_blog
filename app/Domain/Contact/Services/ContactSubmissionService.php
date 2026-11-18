@@ -38,7 +38,14 @@ class ContactSubmissionService
         $adminEmail = theme('contact.email');
 
         if (filled($adminEmail)) {
-            Mail::to($adminEmail)->queue(new NewContactSubmissionMail($submission));
+            try {
+                Mail::to($adminEmail)->sendNow(new NewContactSubmissionMail($submission));
+            } catch (\Throwable $exception) {
+                Log::error('Contact notification failed to send.', [
+                    'submission_id' => $submission->id,
+                    'error' => $exception->getMessage(),
+                ]);
+            }
         } else {
             Log::warning('Contact submission saved but theme contact.email is empty; admin notification skipped.', [
                 'submission_id' => $submission->id,

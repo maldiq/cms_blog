@@ -18,6 +18,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -305,6 +306,9 @@ class ManageSettings extends Page implements HasForms
         $mail->from_name = $state['from_name'] ?? null;
         $mail->save();
 
+        // Worker antrean perlu restart agar konfigurasi mail terbaru dipakai.
+        Artisan::call('queue:restart');
+
         Notification::make()
             ->title('Settings berhasil disimpan')
             ->success()
@@ -325,7 +329,7 @@ class ManageSettings extends Page implements HasForms
             return;
         }
 
-        $mailerName = 'settings_test_' . Str::random(6);
+        $mailerName = 'settings_test_'.Str::random(6);
 
         config([
             "mail.mailers.{$mailerName}" => [

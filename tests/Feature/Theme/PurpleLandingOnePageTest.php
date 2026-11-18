@@ -50,7 +50,7 @@ class PurpleLandingOnePageTest extends TestCase
 
     public function test_blog_post_detail_still_accessible(): void
     {
-        $this->get('/id/blog/rekomendasi-skincare-lokal-kulit-sensitif')->assertOk();
+        $this->get('/id/blog/skincare-lokal-terbaik-kulit-sensitif')->assertOk();
     }
 
     public function test_can_switch_theme_from_admin_while_purple_landing_active(): void

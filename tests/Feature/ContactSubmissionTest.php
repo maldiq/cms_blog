@@ -98,7 +98,7 @@ class ContactSubmissionTest extends TestCase
             ->assertSet('submitted', true);
 
         $this->assertDatabaseCount('contact_submissions', 0);
-        Mail::assertNothingQueued();
+        Mail::assertNothingSent();
     }
 
     public function test_rate_limit_blocks_flood(): void
@@ -127,7 +127,7 @@ class ContactSubmissionTest extends TestCase
             ->assertSet('errorMessage', __('messages.contact_rate_limit'));
 
         $this->assertSame(3, ContactSubmission::query()->count());
-        Mail::assertQueued(NewContactSubmissionMail::class, 3);
+        Mail::assertSent(NewContactSubmissionMail::class, 3);
     }
 
     public function test_email_sent_to_admin(): void
@@ -138,7 +138,7 @@ class ContactSubmissionTest extends TestCase
             ->set($this->validPayload())
             ->call('submit');
 
-        Mail::assertQueued(NewContactSubmissionMail::class, function (NewContactSubmissionMail $mail): bool {
+        Mail::assertSent(NewContactSubmissionMail::class, function (NewContactSubmissionMail $mail): bool {
             return $mail->hasTo('admin-notify@example.com');
         });
     }
