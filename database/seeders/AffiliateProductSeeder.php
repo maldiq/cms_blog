@@ -465,20 +465,48 @@ class AffiliateProductSeeder extends Seeder
             'slug' => 'hostinger-vps',
             'category' => 'Hosting & VPS',
             'platform' => 'vps',
-            'price' => 65000,
-            'original_price' => 82000,
-            'description' => 'VPS untuk website dan aplikasi kecil. Program affiliate hosting umumnya memberi komisi lebih besar daripada produk fisik.',
+            'price' => 104000,
+            'original_price' => 312000,
+            'legacy_price' => 65000,
+            'description' => 'VPS KVM untuk website dan aplikasi kecil. Paket entry-level sudah mendapat 4 GB RAM dan penyimpanan NVMe, cukup untuk beberapa aplikasi ringan sekaligus. Harga promo mengikuti pembayaran di muka 24 bulan.',
             'url' => 'https://www.hostinger.com/vps-hosting',
+            'specs' => [
+                'billing_period' => 'monthly',
+                'cpu_cores' => 1,
+                'ram_mb' => 4096,
+                'storage_gb' => 50,
+                'storage_type' => 'NVMe',
+                'bandwidth_tb' => 4,
+                'ipv4_count' => 1,
+                'ipv6_support' => null,
+                'port_speed' => '1Gbps',
+                'location' => '10 lokasi (termasuk Jakarta)',
+            ],
+            'last_checked_at' => '2026-11-20',
         ],
         [
             'title' => 'DigitalOcean Droplets',
             'slug' => 'digitalocean-droplets',
             'category' => 'Hosting & VPS',
             'platform' => 'vps',
-            'price' => 88000,
-            'original_price' => 105000,
-            'description' => 'Cloud VPS dengan harga per jam untuk developer. Cocok untuk artikel tutorial deployment dan panduan biaya.',
+            'price' => 96000,
+            'original_price' => null,
+            'legacy_price' => 88000,
+            'description' => 'Cloud VPS dengan tagihan per jam untuk developer. Cocok untuk tutorial deployment, eksperimen singkat, dan panduan biaya server.',
             'url' => 'https://www.digitalocean.com/pricing/droplets',
+            'specs' => [
+                'billing_period' => 'monthly',
+                'cpu_cores' => 1,
+                'ram_mb' => 1024,
+                'storage_gb' => 25,
+                'storage_type' => 'SSD',
+                'bandwidth_tb' => 1,
+                'ipv4_count' => 1,
+                'ipv6_support' => true,
+                'port_speed' => null,
+                'location' => 'Singapore',
+            ],
+            'last_checked_at' => '2026-11-20',
         ],
     ];
 
@@ -555,6 +583,17 @@ class AffiliateProductSeeder extends Seeder
 
             $changes = [];
 
+            // Lengkapi spesifikasi hanya bila baris belum punya data spek sama
+            // sekali, agar angka yang sudah dikoreksi admin tidak tertimpa.
+            $hasSpecs = collect(['cpu_cores', 'ram_mb', 'storage_gb', 'bandwidth_tb'])
+                ->contains(fn (string $field): bool => $existing->{$field} !== null);
+
+            if (! $hasSpecs && isset($product['specs'])) {
+                $changes = array_merge($changes, $product['specs'], [
+                    'last_checked_at' => $product['last_checked_at'] ?? now(),
+                ]);
+            }
+
             if (config('affiliate.seed_demo_images', true) && $existing->image_id === null) {
                 [$from, $to] = $this->imagePalettes[$index % count($this->imagePalettes)];
                 $imagePath = $this->generateDemoImage(
@@ -576,6 +615,11 @@ class AffiliateProductSeeder extends Seeder
                 if ((bool) ($product['featured'] ?? false)) {
                     $changes['is_featured'] = true;
                 }
+            }
+
+            if (isset($product['legacy_price']) && (float) $existing->price === (float) $product['legacy_price']) {
+                $changes['price'] = $product['price'];
+                $changes['original_price'] = $product['original_price'];
             }
 
             if ($changes !== []) {

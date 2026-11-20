@@ -1,5 +1,9 @@
 <title>{{ $meta['title'] }}</title>
 
+@if (! empty($meta['robots']))
+    <meta name="robots" content="{{ $meta['robots'] }}">
+@endif
+
 @if (! empty($meta['description']))
     <meta name="description" content="{{ $meta['description'] }}">
 @endif

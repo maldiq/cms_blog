@@ -69,7 +69,9 @@ Route::prefix('{locale}')
         Route::get('/gallery/{slug}', [GalleryController::class, 'show'])->name('gallery.show');
 
         Route::get('/kategori/{slug}', [AffiliateProductController::class, 'category'])->name('products.category');
-        Route::get('/category/{slug}', [AffiliateProductController::class, 'category'])->name('products.category.intl');
+        // URI /category/{slug} dipakai bersama; BlogController meneruskan ke
+        // katalog produk bila tidak ada kategori blog dengan slug tersebut.
+        Route::get('/category/{slug}', [BlogController::class, 'category'])->name('products.category.intl');
 
         Route::get('/products', [AffiliateProductController::class, 'index'])->name('products.index');
         Route::get('/products/{slug}', [AffiliateProductController::class, 'show'])->name('products.show');

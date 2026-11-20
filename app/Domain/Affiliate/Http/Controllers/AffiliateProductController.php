@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class AffiliateProductController extends Controller
 {
@@ -323,6 +324,22 @@ class AffiliateProductController extends Controller
             'sort' => $sort === 'latest' ? null : $sort,
         ])->filter(fn ($value): bool => is_string($value) && filled($value))->all();
 
+        $categoryTranslation = $selectedCategory?->translate($locale, false);
+
+        $lastUpdatedAt = $products->getCollection()
+            ->pluck('last_checked_at')
+            ->filter()
+            ->max();
+
+        $showSpecs = $selectedCategory !== null
+            && $products->getCollection()->contains(fn (AffiliateProduct $product): bool => $product->hasSpecs());
+
+        // Halaman hasil filter/sort tidak perlu diindeks; versi kanoniknya
+        // adalah halaman katalog/kategori tanpa parameter.
+        $hasFilterQuery = collect(['q', 'platform', 'min_price', 'max_price', 'featured'])
+            ->contains(fn (string $key): bool => $request->filled($key))
+            || ($request->filled('sort') && $request->input('sort') !== 'latest');
+
         return view('products.index', [
             'locale' => $locale,
             'products' => $products,
@@ -330,16 +347,29 @@ class AffiliateProductController extends Controller
             'platforms' => $platforms,
             'seo' => $selectedCategory,
             'selectedCategory' => $selectedCategory,
+            'categoryIntro' => $categoryTranslation?->intro,
+            'categoryFaq' => $categoryTranslation?->faq ?? [],
+            'lastUpdatedAt' => $lastUpdatedAt,
+            'showSpecs' => $showSpecs,
+            'hasFilterQuery' => $hasFilterQuery,
             'activeFilters' => $activeFilters,
             'sort' => $sort,
             'sortOptions' => $this->sortOptions(),
+            'breadcrumbs' => $selectedCategory !== null ? [
+                ['name' => setting('site_name', config('app.name')), 'url' => route('home', ['locale' => $locale])],
+                ['name' => __('messages.affiliate_products'), 'url' => route('products.index', ['locale' => $locale])],
+                ['name' => $selectedCategory->name, 'url' => affiliate_category_url($locale, $selectedCategory->slug)],
+            ] : [],
             'seoContext' => [
                 'title' => $selectedCategory !== null
-                    ? __('messages.affiliate_category_meta_title', ['category' => $selectedCategory->name])
+                    ? ($categoryTranslation?->meta_title ?: __('messages.affiliate_category_meta_title', ['category' => $selectedCategory->name]))
                     : __('messages.affiliate_all_products'),
                 'description' => $selectedCategory !== null
-                    ? __('messages.affiliate_category_meta_description', ['category' => $selectedCategory->name])
+                    ? ($categoryTranslation?->meta_description
+                        ?: ($categoryTranslation?->intro ? Str::limit(strip_tags($categoryTranslation->intro), 155) : null)
+                        ?: __('messages.affiliate_category_meta_description', ['category' => $selectedCategory->name]))
                     : __('messages.affiliate_catalog_meta_description'),
+                'robots' => $hasFilterQuery ? 'noindex, follow' : null,
                 'canonical' => $selectedCategory !== null
                     ? affiliate_category_url($locale, $selectedCategory->slug)
                     : route('products.index', ['locale' => $locale]),
@@ -394,7 +424,9 @@ class AffiliateProductController extends Controller
                 ->whereHas('translations', fn (Builder $query) => $query->where('locale', $locale))])
             ->orderBy('sort_order')
             ->orderBy('id')
-            ->get();
+            ->get()
+            ->filter(fn (AffiliateCategory $category): bool => $category->products_count > 0)
+            ->values();
     }
 
     /**

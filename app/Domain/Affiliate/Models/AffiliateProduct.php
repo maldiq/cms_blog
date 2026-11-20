@@ -35,6 +35,17 @@ class AffiliateProduct extends Model implements TranslatableContract
         'affiliate_url',
         'price',
         'original_price',
+        'billing_period',
+        'cpu_cores',
+        'ram_mb',
+        'storage_gb',
+        'storage_type',
+        'bandwidth_tb',
+        'ipv4_count',
+        'ipv6_support',
+        'port_speed',
+        'location',
+        'last_checked_at',
         'is_featured',
         'is_active',
         'click_count',
@@ -45,10 +56,27 @@ class AffiliateProduct extends Model implements TranslatableContract
         return [
             'price' => 'decimal:2',
             'original_price' => 'decimal:2',
+            'cpu_cores' => 'integer',
+            'ram_mb' => 'integer',
+            'storage_gb' => 'integer',
+            'bandwidth_tb' => 'decimal:2',
+            'ipv4_count' => 'integer',
+            'last_checked_at' => 'datetime',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
             'click_count' => 'integer',
         ];
+    }
+
+    /**
+     * Apakah produk punya data spesifikasi yang layak ditampilkan.
+     */
+    public function hasSpecs(): bool
+    {
+        return $this->cpu_cores !== null
+            || $this->ram_mb !== null
+            || $this->storage_gb !== null
+            || $this->bandwidth_tb !== null;
     }
 
     /**

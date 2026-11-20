@@ -115,6 +115,23 @@ class AffiliateProductTest extends TestCase
             ->assertSee(url('/en/category/general'));
     }
 
+    public function test_empty_affiliate_category_is_noindex_and_hidden_from_navigation(): void
+    {
+        $this->makeProduct('Produk SEO', 'produk-seo', 'shopee', 'Elektronik');
+
+        $this->get('/id/kategori/software')
+            ->assertOk()
+            ->assertSee('<meta name="robots" content="noindex, follow">', false);
+
+        $this->get('/id/kategori/elektronik')
+            ->assertOk()
+            ->assertDontSee('<meta name="robots" content="noindex, follow">', false);
+
+        $this->get('/id')
+            ->assertOk()
+            ->assertDontSee(url('/id/kategori/software'), false);
+    }
+
     public function test_admin_can_manage_affiliate_products(): void
     {
         $admin = User::factory()->create(['is_active' => true]);
@@ -280,12 +297,66 @@ class AffiliateProductTest extends TestCase
         $this->assertSame('new-title', $product->translate('en', false)?->slug);
     }
 
+    public function test_hosting_category_shows_spec_table_faq_and_schema(): void
+    {
+        $category = AffiliateCategory::query()
+            ->whereHas('translations', fn ($query) => $query->where('locale', 'id')->where('slug', 'hosting-vps'))
+            ->firstOrFail();
+
+        $category->translateOrNew('id')->fill([
+            'intro' => 'Panduan memilih VPS untuk website kecil dan aplikasi internal.',
+            'meta_title' => 'Hosting & VPS untuk Website Kecil',
+            'meta_description' => 'Bandingkan paket VPS berdasarkan RAM, vCPU, dan bandwidth.',
+            'faq' => [
+                ['question' => 'Berapa RAM untuk VPS website?', 'answer' => 'Satu sampai dua GB biasanya cukup.'],
+            ],
+        ])->save();
+
+        $this->makeProduct('Hostinger VPS KVM 1', 'hostinger-vps-kvm-1', 'vps', 'Hosting & VPS', true, [
+            'billing_period' => 'monthly',
+            'cpu_cores' => 1,
+            'ram_mb' => 4096,
+            'storage_gb' => 50,
+            'storage_type' => 'NVMe',
+            'bandwidth_tb' => 4,
+            'ipv4_count' => 1,
+            'ipv6_support' => true,
+            'port_speed' => '1Gbps',
+            'location' => 'Jakarta',
+            'last_checked_at' => '2026-11-20',
+        ]);
+
+        $this->get('/id/kategori/hosting-vps')
+            ->assertOk()
+            ->assertSee('Panduan memilih VPS untuk website kecil')
+            ->assertSee('Spesifikasi &amp; harga', false)
+            ->assertSee('1 vCore')
+            ->assertSee('4 GB')
+            ->assertSee('50 GB NVMe')
+            ->assertSee('4 TB')
+            ->assertSee('1Gbps')
+            ->assertSee('Jakarta')
+            ->assertSee('Rp 100.000')
+            ->assertSee('/bulan')
+            ->assertSee('Berapa RAM untuk VPS website?')
+            ->assertSee('"@type":"FAQPage"', false)
+            ->assertSee('"@type":"ItemList"', false)
+            ->assertDontSee('<meta name="robots" content="noindex, follow">', false);
+
+        $this->get('/id/products/hostinger-vps-kvm-1')
+            ->assertOk()
+            ->assertSee('Spesifikasi &amp; harga', false)
+            ->assertSee('50 GB NVMe')
+            ->assertSee('Terakhir diperbarui');
+    }
+
     private function makeProduct(
         string $title,
         string $slug,
         string $platform = 'shopee',
         string $category = 'Umum',
         bool $active = true,
+        array $specs = [],
     ): AffiliateProduct {
         $product = AffiliateProduct::query()->create([
             'affiliate_category_id' => AffiliateCategory::query()
@@ -297,6 +368,7 @@ class AffiliateProductTest extends TestCase
             'affiliate_url' => 'https://shopee.co.id/product/123',
             'price' => 100000,
             'is_active' => $active,
+            ...$specs,
         ]);
 
         foreach (['id', 'en'] as $locale) {

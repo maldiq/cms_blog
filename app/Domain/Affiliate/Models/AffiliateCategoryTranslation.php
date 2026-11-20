@@ -20,7 +20,18 @@ class AffiliateCategoryTranslation extends Model
         'locale',
         'name',
         'slug',
+        'intro',
+        'meta_title',
+        'meta_description',
+        'faq',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'faq' => 'array',
+        ];
+    }
 
     /**
      * @return BelongsTo<AffiliateCategory, $this>

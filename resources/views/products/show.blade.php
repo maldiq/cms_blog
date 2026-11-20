@@ -32,6 +32,34 @@
         $plainDescription = trim(strip_tags($description));
         $descriptionIsHtml = $description !== ''
             && preg_match('/<[a-z][\s\S]*>/i', $description) === 1;
+
+        $billingLabels = [
+            'monthly' => __('messages.affiliate_per_month'),
+            'yearly' => __('messages.affiliate_per_year'),
+            'one_time' => __('messages.affiliate_one_time'),
+        ];
+        $billingLabel = $billingLabels[$product->billing_period] ?? '';
+        $specRows = [
+            __('messages.affiliate_spec_cpu') => $product->cpu_cores ? $product->cpu_cores.' vCore' : null,
+            __('messages.affiliate_spec_ram') => $product->ram_mb !== null
+                ? ($product->ram_mb >= 1024
+                    ? rtrim(rtrim(number_format($product->ram_mb / 1024, 1, ',', '.'), '0'), ',').' GB'
+                    : $product->ram_mb.' MB')
+                : null,
+            __('messages.affiliate_spec_storage') => $product->storage_gb !== null
+                ? $product->storage_gb.' GB'.($product->storage_type ? ' '.$product->storage_type : '')
+                : null,
+            __('messages.affiliate_spec_bandwidth') => $product->bandwidth_tb !== null
+                ? rtrim(rtrim(number_format((float) $product->bandwidth_tb, 2, ',', '.'), '0'), ',').' TB'
+                : null,
+            __('messages.affiliate_spec_ipv4') => $product->ipv4_count ? $product->ipv4_count.'x IPv4' : null,
+            __('messages.affiliate_spec_ipv6') => $product->ipv6_support === null
+                ? null
+                : ($product->ipv6_support ? __('messages.affiliate_yes') : __('messages.affiliate_no')),
+            __('messages.affiliate_spec_port') => $product->port_speed ?: null,
+            __('messages.affiliate_spec_location') => $product->location ?: null,
+        ];
+        $specRows = array_filter($specRows, fn ($value): bool => $value !== null);
     @endphp
 
     @push('meta')
@@ -136,6 +164,9 @@
                     <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                         <p class="text-3xl font-extrabold tracking-tight text-slate-900">
                             {{ format_price($product->price, $locale) ?? __('messages.affiliate_check_price') }}
+                            @if ($billingLabel !== '')
+                                <span class="text-base font-semibold text-slate-400">{{ $billingLabel }}</span>
+                            @endif
                         </p>
                         @if ($product->original_price && (float) $product->original_price > (float) $product->price)
                             <p class="text-base text-slate-400 line-through">{{ format_price($product->original_price, $locale) }}</p>
@@ -218,6 +249,26 @@
                         {!! nl2br(e($description)) !!}
                     @endif
                 </div>
+            </section>
+        @endif
+
+        @if ($specRows !== [])
+            <section class="mt-8 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8" aria-labelledby="product-specs">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <h2 id="product-specs" class="text-lg font-bold text-slate-900">{{ __('messages.affiliate_specs_heading') }}</h2>
+                    @if ($product->last_checked_at)
+                        <p class="text-xs text-slate-400">{{ __('messages.affiliate_last_updated', ['date' => $product->last_checked_at->isoFormat('D MMMM YYYY')]) }}</p>
+                    @endif
+                </div>
+                <dl class="mt-5 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
+                    @foreach ($specRows as $label => $value)
+                        <div class="flex items-center justify-between gap-4 border-b border-slate-100 pb-2.5">
+                            <dt class="text-slate-500">{{ $label }}</dt>
+                            <dd class="text-right font-semibold text-slate-800">{{ $value }}</dd>
+                        </div>
+                    @endforeach
+                </dl>
+                <p class="mt-4 text-xs leading-5 text-slate-400">{{ __('messages.affiliate_specs_note') }}</p>
             </section>
         @endif
 

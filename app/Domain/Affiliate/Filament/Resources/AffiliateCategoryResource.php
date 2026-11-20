@@ -45,6 +45,36 @@ class AffiliateCategoryResource extends Resource
                     ->label('Slug')
                     ->maxLength(120)
                     ->helperText('Dipakai pada URL kategori. Kosongkan untuk otomatis dari nama.'),
+                Forms\Components\Textarea::make("translations.{$locale}.intro")
+                    ->label('Intro kategori')
+                    ->rows(5)
+                    ->helperText('Tampil di atas daftar produk. Jelaskan untuk siapa kategori ini dan cara memilih.')
+                    ->columnSpanFull(),
+                Forms\Components\TextInput::make("translations.{$locale}.meta_title")
+                    ->label('Meta title')
+                    ->maxLength(255)
+                    ->helperText('Kosongkan untuk memakai nama kategori.'),
+                Forms\Components\Textarea::make("translations.{$locale}.meta_description")
+                    ->label('Meta description')
+                    ->rows(2)
+                    ->maxLength(320)
+                    ->helperText('Kosongkan untuk memakai deskripsi bawaan.'),
+                Forms\Components\Repeater::make("translations.{$locale}.faq")
+                    ->label('FAQ kategori')
+                    ->schema([
+                        Forms\Components\TextInput::make('question')
+                            ->label('Pertanyaan')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Textarea::make('answer')
+                            ->label('Jawaban')
+                            ->required()
+                            ->rows(3),
+                    ])
+                    ->columns(1)
+                    ->collapsible()
+                    ->itemLabel(fn (array $state): ?string => $state['question'] ?? null)
+                    ->columnSpanFull(),
             ]),
             Forms\Components\Section::make('Pengaturan')->schema([
                 Forms\Components\TextInput::make('sort_order')

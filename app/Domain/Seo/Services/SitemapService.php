@@ -273,6 +273,9 @@ class SitemapService
     {
         Category::query()
             ->where('is_active', true)
+            ->whereHas('posts', fn ($query) => $query
+                ->published()
+                ->whereHas('translations', fn ($query) => $query->where('locale', $locale)))
             ->whereHas('translations', fn ($query) => $query->where('locale', $locale))
             ->with(['translations' => fn ($query) => $query->where('locale', $locale)])
             ->orderBy('id')
@@ -298,6 +301,9 @@ class SitemapService
     {
         Tag::query()
             ->where('is_active', true)
+            ->whereHas('posts', fn ($query) => $query
+                ->published()
+                ->whereHas('translations', fn ($query) => $query->where('locale', $locale)))
             ->whereHas('translations', fn ($query) => $query->where('locale', $locale))
             ->with(['translations' => fn ($query) => $query->where('locale', $locale)])
             ->orderBy('id')

@@ -33,7 +33,9 @@ class EditAffiliateCategory extends EditRecord
             $translation = $record->translate($language->code, false);
 
             if ($translation !== null) {
-                $data['translations'][$language->code] = $translation->only(['name', 'slug']);
+                $data['translations'][$language->code] = $translation->only([
+                    'name', 'slug', 'intro', 'meta_title', 'meta_description', 'faq',
+                ]);
             }
         }
 

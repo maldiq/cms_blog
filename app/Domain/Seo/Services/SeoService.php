@@ -16,7 +16,9 @@ use App\Domain\Portfolio\Models\Portfolio;
 use App\Domain\Service\Models\Service;
 use App\Domain\Setting\Settings\GeneralSettings;
 use App\Domain\Setting\Settings\SeoSettings;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class SeoService
 {
@@ -32,6 +34,7 @@ class SeoService
      *     description: ?string,
      *     keywords: ?string,
      *     canonical: string,
+     *     robots: ?string,
      *     og_type: string,
      *     og_title: string,
      *     og_description: ?string,
@@ -74,6 +77,10 @@ class SeoService
             $resolved['og_url'] = (string) $context['canonical'];
         }
 
+        if (isset($context['robots'])) {
+            $resolved['robots'] = (string) $context['robots'];
+        }
+
         if (isset($context['og_type'])) {
             $resolved['og_type'] = (string) $context['og_type'];
         }
@@ -110,6 +117,7 @@ class SeoService
             'description' => $description,
             'keywords' => null,
             'canonical' => $canonical,
+            'robots' => null,
             'og_type' => 'website',
             'og_title' => $title,
             'og_description' => $description,
@@ -198,10 +206,17 @@ class SeoService
         $description = $translation?->meta_description ?: $translation?->description ?: $base['description'];
         $canonical = $slug ? url("/{$locale}/category/{$slug}") : $base['canonical'];
 
+        // Kategori tanpa artikel terbit hanya menghasilkan halaman kosong.
+        $hasPosts = $category->posts()
+            ->published()
+            ->whereHas('translations', fn (Builder $query) => $query->where('locale', $locale))
+            ->exists();
+
         return array_merge($base, [
             'title' => $title,
             'description' => $description,
             'canonical' => $canonical,
+            'robots' => $hasPosts ? null : 'noindex, follow',
             'og_title' => $title,
             'og_description' => $description,
             'og_url' => $canonical,
@@ -221,10 +236,16 @@ class SeoService
         $title = $translation?->name ?: $base['title'];
         $canonical = $slug ? url("/{$locale}/tag/{$slug}") : $base['canonical'];
 
+        $hasPosts = $tag->posts()
+            ->published()
+            ->whereHas('translations', fn (Builder $query) => $query->where('locale', $locale))
+            ->exists();
+
         return array_merge($base, [
             'title' => $title,
             'description' => $base['description'],
             'canonical' => $canonical,
+            'robots' => $hasPosts ? null : 'noindex, follow',
             'og_title' => $title,
             'og_url' => $canonical,
             'hreflang' => $this->hreflangForModel($tag, $locale, fn (string $loc, ?string $s) => $s ? url("/{$loc}/tag/{$s}") : null),
@@ -343,8 +364,17 @@ class SeoService
         $slug = $translation?->slug;
         $segment = $locale === 'id' ? 'kategori' : 'category';
 
-        $title = $translation?->name ?: $base['title'];
+        $title = $translation?->meta_title ?: $translation?->name ?: $base['title'];
+        $description = $translation?->meta_description
+            ?: ($translation?->intro ? Str::limit(strip_tags((string) $translation->intro), 155) : null)
+            ?: $base['description'];
         $canonical = $slug ? url("/{$locale}/{$segment}/{$slug}") : $base['canonical'];
+
+        // Kategori produk kosong tidak layak diindeks.
+        $hasProducts = $category->products()
+            ->where('is_active', true)
+            ->whereHas('translations', fn (Builder $query) => $query->where('locale', $locale))
+            ->exists();
 
         $alternates = [];
 
@@ -363,8 +393,11 @@ class SeoService
 
         return array_merge($base, [
             'title' => $title,
+            'description' => $description,
             'canonical' => $canonical,
+            'robots' => $hasProducts ? null : 'noindex, follow',
             'og_title' => $title,
+            'og_description' => $description,
             'og_url' => $canonical,
             'hreflang' => $alternates !== [] ? $alternates : $this->hreflangForSamePath($locale),
         ]);

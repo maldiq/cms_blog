@@ -2,6 +2,7 @@
 
 namespace App\Domain\Blog\Post\Http\Controllers;
 
+use App\Domain\Affiliate\Http\Controllers\AffiliateProductController;
 use App\Domain\Blog\Post\Services\PostService;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
@@ -56,7 +57,12 @@ class BlogController extends Controller
         app()->setLocale($locale);
 
         $category = $this->postService->findCategoryBySlug($slug, $locale);
-        abort_if($category === null, 404);
+
+        // URL /category/{slug} dipakai bersama oleh kategori blog dan kategori
+        // produk (locale non-id). Jika bukan kategori blog, teruskan ke katalog.
+        if ($category === null) {
+            return app(AffiliateProductController::class)->category($locale, $slug, $request);
+        }
 
         $posts = $this->postService->getPublished($locale, ['category' => $slug]);
 

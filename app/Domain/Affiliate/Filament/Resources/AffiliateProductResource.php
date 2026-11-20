@@ -115,6 +115,15 @@ class AffiliateProductResource extends Resource
                     ->prefix('Rp')
                     ->helperText('Harga disimpan dalam IDR.')
                     ->nullable(),
+                Forms\Components\Select::make('billing_period')
+                    ->label('Periode harga')
+                    ->options([
+                        'monthly' => 'Per bulan',
+                        'yearly' => 'Per tahun',
+                        'one_time' => 'Sekali bayar',
+                    ])
+                    ->placeholder('Tidak disebutkan')
+                    ->helperText('Dipakai untuk label harga, mis. "Rp65.000 /bulan".'),
                 Forms\Components\TextInput::make('affiliate_url')
                     ->label('Tautan affiliate')
                     ->url()
@@ -124,6 +133,54 @@ class AffiliateProductResource extends Resource
                     ->helperText('Tautan utama. Perubahan di sini ikut memperbarui tujuan utama. Tambahkan tujuan cadangan dari tab "Tujuan Link".')
                     ->columnSpanFull(),
             ])->columns(2),
+            Forms\Components\Section::make('Spesifikasi VPS / Hosting')
+                ->description('Isi untuk produk hosting, VPS, atau cloud. Kolom kosong tidak ditampilkan di situs.')
+                ->collapsible()
+                ->schema([
+                    Forms\Components\TextInput::make('cpu_cores')
+                        ->label('CPU (vCore)')
+                        ->numeric()
+                        ->minValue(1),
+                    Forms\Components\TextInput::make('ram_mb')
+                        ->label('RAM (MB)')
+                        ->numeric()
+                        ->minValue(0)
+                        ->helperText('Contoh: 1024 untuk 1 GB.'),
+                    Forms\Components\TextInput::make('storage_gb')
+                        ->label('Penyimpanan (GB)')
+                        ->numeric()
+                        ->minValue(0),
+                    Forms\Components\Select::make('storage_type')
+                        ->label('Tipe penyimpanan')
+                        ->options([
+                            'NVMe' => 'NVMe',
+                            'SSD' => 'SSD',
+                            'HDD' => 'HDD',
+                            'SAS' => 'SAS',
+                        ]),
+                    Forms\Components\TextInput::make('bandwidth_tb')
+                        ->label('Bandwidth (TB)')
+                        ->numeric()
+                        ->minValue(0),
+                    Forms\Components\TextInput::make('ipv4_count')
+                        ->label('Jumlah IPv4')
+                        ->numeric()
+                        ->minValue(0),
+                    Forms\Components\Toggle::make('ipv6_support')
+                        ->label('Dukungan IPv6'),
+                    Forms\Components\TextInput::make('port_speed')
+                        ->label('Port')
+                        ->maxLength(20)
+                        ->placeholder('1Gbps'),
+                    Forms\Components\TextInput::make('location')
+                        ->label('Lokasi datacenter')
+                        ->maxLength(120)
+                        ->placeholder('Singapore, Amsterdam, dll.'),
+                    Forms\Components\DateTimePicker::make('last_checked_at')
+                        ->label('Terakhir dicek')
+                        ->seconds(false)
+                        ->helperText('Tampil sebagai "Terakhir diperbarui" di halaman kategori.'),
+                ])->columns(3),
             Forms\Components\Section::make('Publikasi')->schema([
                 Forms\Components\Toggle::make('is_featured')->label('Rekomendasi unggulan'),
                 Forms\Components\Toggle::make('is_active')->label('Tampilkan di website')->default(true),

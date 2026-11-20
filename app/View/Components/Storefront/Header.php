@@ -37,7 +37,9 @@ class Header extends Component
                 ->whereHas('translations', fn (Builder $query) => $query->where('locale', $locale))])
             ->orderBy('sort_order')
             ->orderBy('id')
-            ->get();
+            ->get()
+            ->filter(fn (AffiliateCategory $category): bool => $category->products_count > 0)
+            ->values();
 
         $this->productCount = AffiliateProduct::query()
             ->where('is_active', true)

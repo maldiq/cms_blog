@@ -30,9 +30,42 @@ trait SyncsAffiliateCategoryTranslations
             $category->translateOrNew($locale)->fill([
                 'name' => $name,
                 'slug' => $slug !== '' ? $slug : null,
+                'intro' => $bucket['intro'] ?? null,
+                'meta_title' => $bucket['meta_title'] ?? null,
+                'meta_description' => $bucket['meta_description'] ?? null,
+                'faq' => $this->normalizeFaq($bucket['faq'] ?? null),
             ])->save();
         }
 
         $category->load('translations');
+    }
+
+    /**
+     * @return list<array{question: string, answer: string}>|null
+     */
+    private function normalizeFaq(mixed $faq): ?array
+    {
+        if (! is_array($faq)) {
+            return null;
+        }
+
+        $items = [];
+
+        foreach ($faq as $item) {
+            if (! is_array($item)) {
+                continue;
+            }
+
+            $question = trim((string) ($item['question'] ?? ''));
+            $answer = trim((string) ($item['answer'] ?? ''));
+
+            if ($question === '' || $answer === '') {
+                continue;
+            }
+
+            $items[] = ['question' => $question, 'answer' => $answer];
+        }
+
+        return $items === [] ? null : $items;
     }
 }

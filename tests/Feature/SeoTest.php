@@ -57,6 +57,9 @@ class SeoTest extends TestCase
         $tag = Tag::query()->create(['is_active' => true]);
         $tag->translateOrNew('id')->fill(['name' => 'Laravel', 'slug' => 'laravel'])->save();
 
+        $post->categories()->attach($category->getKey());
+        $post->tags()->attach($tag->getKey());
+
         SitemapController::forgetCache();
         Cache::flush();
 
@@ -78,6 +81,31 @@ class SeoTest extends TestCase
         $this->assertStringContainsString(url('/id/services'), $body);
         $this->assertStringContainsString(url('/id/portfolio'), $body);
         $this->assertStringContainsString(url('/id/faq'), $body);
+    }
+
+    public function test_empty_taxonomy_pages_are_noindex_and_excluded_from_sitemap(): void
+    {
+        $category = Category::query()->create(['is_active' => true, 'sort_order' => 0]);
+        $category->translateOrNew('id')->fill(['name' => 'Kosong', 'slug' => 'kategori-kosong'])->save();
+
+        $tag = Tag::query()->create(['is_active' => true]);
+        $tag->translateOrNew('id')->fill(['name' => 'Kosong', 'slug' => 'tag-kosong'])->save();
+
+        SitemapController::forgetCache();
+        Cache::flush();
+
+        $body = $this->get('/sitemap.xml')->getContent();
+
+        $this->assertStringNotContainsString(url('/id/category/kategori-kosong'), $body);
+        $this->assertStringNotContainsString(url('/id/tag/tag-kosong'), $body);
+
+        $this->get('/id/category/kategori-kosong')
+            ->assertOk()
+            ->assertSee('<meta name="robots" content="noindex, follow">', false);
+
+        $this->get('/id/tag/tag-kosong')
+            ->assertOk()
+            ->assertSee('<meta name="robots" content="noindex, follow">', false);
     }
 
     public function test_meta_tag_rendered_correctly(): void
