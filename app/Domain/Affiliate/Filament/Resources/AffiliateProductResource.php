@@ -123,6 +123,7 @@ class AffiliateProductResource extends Resource
                         'one_time' => 'Sekali bayar',
                     ])
                     ->placeholder('Tidak disebutkan')
+                    ->visible(fn (Forms\Get $get): bool => (bool) $get('is_hosting'))
                     ->helperText('Dipakai untuk label harga, mis. "Rp65.000 /bulan".'),
                 Forms\Components\TextInput::make('affiliate_url')
                     ->label('Tautan affiliate')
@@ -133,8 +134,16 @@ class AffiliateProductResource extends Resource
                     ->helperText('Tautan utama. Perubahan di sini ikut memperbarui tujuan utama. Tambahkan tujuan cadangan dari tab "Tujuan Link".')
                     ->columnSpanFull(),
             ])->columns(2),
+            Forms\Components\Section::make('Jenis produk')
+                ->schema([
+                    Forms\Components\Toggle::make('is_hosting')
+                        ->label('Produk hosting / VPS')
+                        ->helperText('Aktifkan agar tabel spesifikasi server tampil di halaman produk dan kategori. Produk marketplace biasa biarkan nonaktif.')
+                        ->live(),
+                ]),
             Forms\Components\Section::make('Spesifikasi VPS / Hosting')
                 ->description('Isi untuk produk hosting, VPS, atau cloud. Kolom kosong tidak ditampilkan di situs.')
+                ->visible(fn (Forms\Get $get): bool => (bool) $get('is_hosting'))
                 ->collapsible()
                 ->schema([
                     Forms\Components\TextInput::make('cpu_cores')

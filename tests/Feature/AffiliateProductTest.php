@@ -178,7 +178,8 @@ class AffiliateProductTest extends TestCase
         Livewire::actingAs($admin)
             ->test(CreateAffiliateProduct::class)
             ->assertFormFieldExists('affiliate_category_id')
-            ->assertFormFieldExists('affiliate_platform_id');
+            ->assertFormFieldExists('affiliate_platform_id')
+            ->assertFormFieldExists('is_hosting');
     }
 
     public function test_selected_media_updates_create_and_edit_forms(): void
@@ -213,6 +214,7 @@ class AffiliateProductTest extends TestCase
             AffiliateProduct::query()->with('affiliatePlatform')->get()->pluck('affiliatePlatform.slug')->unique()->all(),
         );
         $this->assertSame(46, AffiliateProduct::query()->where('is_active', true)->count());
+        $this->assertSame(2, AffiliateProduct::query()->where('is_hosting', true)->count());
 
         $product = AffiliateProduct::query()
             ->whereHas('translations', fn ($query) => $query->where('slug', 'wardah-cushion-series'))
@@ -322,6 +324,7 @@ class AffiliateProductTest extends TestCase
         ])->save();
 
         $this->makeProduct('Hostinger VPS KVM 1', 'hostinger-vps-kvm-1', 'vps', 'Hosting & VPS', true, [
+            'is_hosting' => true,
             'billing_period' => 'monthly',
             'cpu_cores' => 1,
             'ram_mb' => 4096,
@@ -358,6 +361,22 @@ class AffiliateProductTest extends TestCase
             ->assertSee('Spesifikasi &amp; harga', false)
             ->assertSee('50 GB NVMe')
             ->assertSee('Terakhir diperbarui');
+    }
+
+    public function test_non_hosting_product_does_not_render_vps_specs(): void
+    {
+        $this->makeProduct('Headphone Biasa', 'headphone-biasa', 'shopee', 'Elektronik', true, [
+            'ipv6_support' => false,
+        ]);
+
+        $this->get('/id/products/headphone-biasa')
+            ->assertOk()
+            ->assertDontSee('Spesifikasi &amp; harga', false)
+            ->assertDontSee('IPv6');
+
+        $this->get('/id/kategori/elektronik')
+            ->assertOk()
+            ->assertDontSee('Spesifikasi &amp; harga', false);
     }
 
     private function makeProduct(

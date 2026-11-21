@@ -465,6 +465,7 @@ class AffiliateProductSeeder extends Seeder
             'slug' => 'hostinger-vps',
             'category' => 'Hosting & VPS',
             'platform' => 'vps',
+            'is_hosting' => true,
             'price' => 104000,
             'original_price' => 312000,
             'legacy_price' => 65000,
@@ -489,6 +490,7 @@ class AffiliateProductSeeder extends Seeder
             'slug' => 'digitalocean-droplets',
             'category' => 'Hosting & VPS',
             'platform' => 'vps',
+            'is_hosting' => true,
             'price' => 96000,
             'original_price' => null,
             'legacy_price' => 88000,
@@ -562,6 +564,7 @@ class AffiliateProductSeeder extends Seeder
             $existing ??= AffiliateProduct::query()->create([
                 'affiliate_category_id' => $categoryId,
                 'affiliate_platform_id' => $platformId,
+                'is_hosting' => (bool) ($product['is_hosting'] ?? false),
                 'affiliate_url' => $product['url'] ?? $this->marketplaceSearchUrl($product),
                 'price' => $product['price'],
                 'original_price' => $product['original_price'],
@@ -615,6 +618,10 @@ class AffiliateProductSeeder extends Seeder
                 if ((bool) ($product['featured'] ?? false)) {
                     $changes['is_featured'] = true;
                 }
+            }
+
+            if (($product['is_hosting'] ?? false) && ! $existing->is_hosting) {
+                $changes['is_hosting'] = true;
             }
 
             if (isset($product['legacy_price']) && (float) $existing->price === (float) $product['legacy_price']) {

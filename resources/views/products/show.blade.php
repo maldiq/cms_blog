@@ -38,28 +38,32 @@
             'yearly' => __('messages.affiliate_per_year'),
             'one_time' => __('messages.affiliate_one_time'),
         ];
-        $billingLabel = $billingLabels[$product->billing_period] ?? '';
-        $specRows = [
-            __('messages.affiliate_spec_cpu') => $product->cpu_cores ? $product->cpu_cores.' vCore' : null,
-            __('messages.affiliate_spec_ram') => $product->ram_mb !== null
-                ? ($product->ram_mb >= 1024
-                    ? rtrim(rtrim(number_format($product->ram_mb / 1024, 1, ',', '.'), '0'), ',').' GB'
-                    : $product->ram_mb.' MB')
-                : null,
-            __('messages.affiliate_spec_storage') => $product->storage_gb !== null
-                ? $product->storage_gb.' GB'.($product->storage_type ? ' '.$product->storage_type : '')
-                : null,
-            __('messages.affiliate_spec_bandwidth') => $product->bandwidth_tb !== null
-                ? rtrim(rtrim(number_format((float) $product->bandwidth_tb, 2, ',', '.'), '0'), ',').' TB'
-                : null,
-            __('messages.affiliate_spec_ipv4') => $product->ipv4_count ? $product->ipv4_count.'x IPv4' : null,
-            __('messages.affiliate_spec_ipv6') => $product->ipv6_support === null
-                ? null
-                : ($product->ipv6_support ? __('messages.affiliate_yes') : __('messages.affiliate_no')),
-            __('messages.affiliate_spec_port') => $product->port_speed ?: null,
-            __('messages.affiliate_spec_location') => $product->location ?: null,
-        ];
-        $specRows = array_filter($specRows, fn ($value): bool => $value !== null);
+        $billingLabel = $product->is_hosting ? ($billingLabels[$product->billing_period] ?? '') : '';
+        $specRows = [];
+
+        if ($product->is_hosting) {
+            $specRows = [
+                __('messages.affiliate_spec_cpu') => $product->cpu_cores ? $product->cpu_cores.' vCore' : null,
+                __('messages.affiliate_spec_ram') => $product->ram_mb !== null
+                    ? ($product->ram_mb >= 1024
+                        ? rtrim(rtrim(number_format($product->ram_mb / 1024, 1, ',', '.'), '0'), ',').' GB'
+                        : $product->ram_mb.' MB')
+                    : null,
+                __('messages.affiliate_spec_storage') => $product->storage_gb !== null
+                    ? $product->storage_gb.' GB'.($product->storage_type ? ' '.$product->storage_type : '')
+                    : null,
+                __('messages.affiliate_spec_bandwidth') => $product->bandwidth_tb !== null
+                    ? rtrim(rtrim(number_format((float) $product->bandwidth_tb, 2, ',', '.'), '0'), ',').' TB'
+                    : null,
+                __('messages.affiliate_spec_ipv4') => $product->ipv4_count ? $product->ipv4_count.'x IPv4' : null,
+                __('messages.affiliate_spec_ipv6') => $product->ipv6_support === null
+                    ? null
+                    : ($product->ipv6_support ? __('messages.affiliate_yes') : __('messages.affiliate_no')),
+                __('messages.affiliate_spec_port') => $product->port_speed ?: null,
+                __('messages.affiliate_spec_location') => $product->location ?: null,
+            ];
+            $specRows = array_filter($specRows, fn ($value): bool => $value !== null);
+        }
     @endphp
 
     @push('meta')

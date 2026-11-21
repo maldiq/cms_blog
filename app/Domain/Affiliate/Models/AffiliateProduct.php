@@ -32,6 +32,7 @@ class AffiliateProduct extends Model implements TranslatableContract
         'image_id',
         'affiliate_category_id',
         'affiliate_platform_id',
+        'is_hosting',
         'affiliate_url',
         'price',
         'original_price',
@@ -62,6 +63,7 @@ class AffiliateProduct extends Model implements TranslatableContract
             'bandwidth_tb' => 'decimal:2',
             'ipv4_count' => 'integer',
             'last_checked_at' => 'datetime',
+            'is_hosting' => 'boolean',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
             'click_count' => 'integer',
@@ -73,10 +75,11 @@ class AffiliateProduct extends Model implements TranslatableContract
      */
     public function hasSpecs(): bool
     {
-        return $this->cpu_cores !== null
-            || $this->ram_mb !== null
-            || $this->storage_gb !== null
-            || $this->bandwidth_tb !== null;
+        return $this->is_hosting
+            && ($this->cpu_cores !== null
+                || $this->ram_mb !== null
+                || $this->storage_gb !== null
+                || $this->bandwidth_tb !== null);
     }
 
     /**
