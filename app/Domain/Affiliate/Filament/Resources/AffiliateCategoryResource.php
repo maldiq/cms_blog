@@ -5,6 +5,7 @@ namespace App\Domain\Affiliate\Filament\Resources;
 use App\Domain\Affiliate\Filament\Resources\AffiliateCategoryResource\Pages;
 use App\Domain\Affiliate\Models\AffiliateCategory;
 use App\Domain\Blog\Filament\Concerns\InteractsWithLocaleTabs;
+use App\Domain\Media\Filament\Forms\Components\RichContentEditor;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -45,9 +46,8 @@ class AffiliateCategoryResource extends Resource
                     ->label('Slug')
                     ->maxLength(120)
                     ->helperText('Dipakai pada URL kategori. Kosongkan untuk otomatis dari nama.'),
-                Forms\Components\Textarea::make("translations.{$locale}.intro")
+                RichContentEditor::make("translations.{$locale}.intro")
                     ->label('Intro kategori')
-                    ->rows(5)
                     ->helperText('Tampil di atas daftar produk. Jelaskan untuk siapa kategori ini dan cara memilih.')
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make("translations.{$locale}.meta_title")

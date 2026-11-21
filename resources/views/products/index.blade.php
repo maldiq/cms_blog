@@ -88,7 +88,11 @@
             <div class="container-page py-7">
                 <h2 id="category-intro" class="sr-only">{{ $pageTitle }}</h2>
                 <div class="prose prose-slate max-w-3xl text-sm leading-7 text-slate-600">
-                    {!! nl2br(e($categoryIntro)) !!}
+                    @if (preg_match('/<[a-z][\s\S]*>/i', (string) $categoryIntro) === 1)
+                        {!! $categoryIntro !!}
+                    @else
+                        {!! nl2br(e($categoryIntro)) !!}
+                    @endif
                 </div>
                 @if ($lastUpdatedAt)
                     <p class="mt-4 text-xs font-medium text-slate-400">

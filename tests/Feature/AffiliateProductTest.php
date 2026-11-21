@@ -166,6 +166,15 @@ class AffiliateProductTest extends TestCase
             ->assertOk()
             ->assertSee('Shopee');
 
+        $category = AffiliateCategory::query()
+            ->whereHas('translations', fn ($query) => $query->where('slug', 'hosting-vps'))
+            ->firstOrFail();
+
+        $this->actingAs($admin)
+            ->get("/kelola/affiliate-categories/{$category->getKey()}/edit")
+            ->assertOk()
+            ->assertSee('Intro kategori');
+
         Livewire::actingAs($admin)
             ->test(CreateAffiliateProduct::class)
             ->assertFormFieldExists('affiliate_category_id')
@@ -304,7 +313,7 @@ class AffiliateProductTest extends TestCase
             ->firstOrFail();
 
         $category->translateOrNew('id')->fill([
-            'intro' => 'Panduan memilih VPS untuk website kecil dan aplikasi internal.',
+            'intro' => '<p>Panduan memilih VPS untuk website kecil.</p><p><strong>Fokus pada RAM</strong> dan bandwidth.</p>',
             'meta_title' => 'Hosting & VPS untuk Website Kecil',
             'meta_description' => 'Bandingkan paket VPS berdasarkan RAM, vCPU, dan bandwidth.',
             'faq' => [
@@ -329,6 +338,7 @@ class AffiliateProductTest extends TestCase
         $this->get('/id/kategori/hosting-vps')
             ->assertOk()
             ->assertSee('Panduan memilih VPS untuk website kecil')
+            ->assertSee('<strong>Fokus pada RAM</strong>', false)
             ->assertSee('Spesifikasi &amp; harga', false)
             ->assertSee('1 vCore')
             ->assertSee('4 GB')
