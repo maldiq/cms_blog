@@ -489,7 +489,8 @@ class AffiliateProductTest extends TestCase
             ->assertOk()
             ->assertSee('Vultr Cloud Compute 2 GB')
             ->assertSee('HostBrr Ryzen 5950X 2 GB')
-            ->assertSee('vCore');
+            ->assertSee('vCore')
+            ->assertSee('affiliate-product-vultr-cloud-compute-2gb.jpg', false);
 
         $this->get('/id/kategori/shared-hosting')
             ->assertOk()

@@ -302,13 +302,34 @@
                                                 ? $notSpecified
                                                 : $product->storage_gb.' GB'.($product->storage_type ? ' '.$product->storage_type : '');
                                             $billing = $billingLabels[$product->billing_period] ?? '';
+                                            $imageMedia = $product->image;
+                                            $imageUrl = $imageMedia
+                                                ? ($imageMedia->hasGeneratedConversion('medium') ? $imageMedia->getUrl('medium') : $imageMedia->getUrl())
+                                                : null;
                                         @endphp
                                         <tr class="align-top transition hover:bg-slate-50/70">
                                             <td class="px-5 py-4">
-                                                <a href="{{ route('products.show', ['locale' => $locale, 'slug' => $product->slug]) }}" class="font-semibold text-slate-900 transition hover:text-brand-800">
-                                                    {{ $product->title }}
-                                                </a>
-                                                <p class="mt-0.5 text-xs text-slate-400">{{ $product->affiliatePlatform?->name }}</p>
+                                                <div class="flex items-center gap-3">
+                                                    <a href="{{ route('products.show', ['locale' => $locale, 'slug' => $product->slug]) }}" class="block h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-slate-100" aria-label="{{ $product->title }}">
+                                                        @if ($imageUrl)
+                                                            <img src="{{ $imageUrl }}" alt="{{ $product->title }}" loading="lazy" class="h-full w-full object-cover" />
+                                                        @else
+                                                            <span class="grid h-full w-full place-items-center bg-gradient-to-br from-slate-100 to-slate-200 text-slate-400">
+                                                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+                                                                    <rect x="3" y="4" width="18" height="16" rx="2.5" />
+                                                                    <circle cx="9" cy="10" r="1.8" />
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m3.5 17 4.6-4.6a1.5 1.5 0 0 1 2.1 0l3.1 3.1 2.2-2.2a1.5 1.5 0 0 1 2.1 0l2.9 2.9" />
+                                                                </svg>
+                                                            </span>
+                                                        @endif
+                                                    </a>
+                                                    <div class="min-w-0">
+                                                        <a href="{{ route('products.show', ['locale' => $locale, 'slug' => $product->slug]) }}" class="font-semibold text-slate-900 transition hover:text-brand-800">
+                                                            {{ $product->title }}
+                                                        </a>
+                                                        <p class="mt-0.5 text-xs text-slate-400">{{ $product->affiliatePlatform?->name }}</p>
+                                                    </div>
+                                                </div>
                                             </td>
                                             @if ($hasCpu)
                                                 <td class="whitespace-nowrap px-4 py-4 text-slate-600">{{ $product->cpu_cores ? $product->cpu_cores.' vCore' : $notSpecified }}</td>
