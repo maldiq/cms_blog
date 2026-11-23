@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             AffiliatePlatformSeeder::class,
             AffiliateTrafficSourceSeeder::class,
             AffiliateProductSeeder::class,
+            RackNerdProductSeeder::class,
+            PartnerHostingProductSeeder::class,
             AffiliateBannerSeeder::class,
             PageSeeder::class,
             ServiceProThemeSeeder::class,

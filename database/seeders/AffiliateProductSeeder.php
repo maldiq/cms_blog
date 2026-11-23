@@ -459,11 +459,11 @@ class AffiliateProductSeeder extends Seeder
             'description' => 'Sarung motor tahan air untuk parkir luar ruangan. Produk kebutuhan yang jarang dibahas konten, tapi pencariannya stabil.',
         ],
 
-        // Hosting & VPS
+        // VPS
         [
             'title' => 'Hostinger VPS',
             'slug' => 'hostinger-vps',
-            'category' => 'Hosting & VPS',
+            'category' => 'VPS',
             'platform' => 'vps',
             'is_hosting' => true,
             'price' => 104000,
@@ -488,7 +488,7 @@ class AffiliateProductSeeder extends Seeder
         [
             'title' => 'DigitalOcean Droplets',
             'slug' => 'digitalocean-droplets',
-            'category' => 'Hosting & VPS',
+            'category' => 'VPS',
             'platform' => 'vps',
             'is_hosting' => true,
             'price' => 96000,

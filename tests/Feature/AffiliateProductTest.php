@@ -14,6 +14,8 @@ use Database\Seeders\AffiliateCategorySeeder;
 use Database\Seeders\AffiliatePlatformSeeder;
 use Database\Seeders\AffiliateProductSeeder;
 use Database\Seeders\LanguageSeeder;
+use Database\Seeders\PartnerHostingProductSeeder;
+use Database\Seeders\RackNerdProductSeeder;
 use Database\Seeders\RolePermissionSeeder;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -43,7 +45,7 @@ class AffiliateProductTest extends TestCase
         $this->makeProduct('Headphone Wireless', 'headphone-wireless', 'shopee', 'Elektronik');
         $this->makeProduct('Tas Harian', 'tas-harian', 'tiktok_shop', 'Fashion');
         $this->makeProduct('Buku Teknologi', 'buku-teknologi', 'amazon', 'Buku');
-        $this->makeProduct('Hosting VPS', 'hosting-vps', 'vps', 'Hosting & VPS');
+        $this->makeProduct('Hosting VPS', 'hosting-vps', 'vps', 'VPS');
         $this->makeProduct('Produk tersembunyi', 'produk-tersembunyi', 'shopee', 'Elektronik', false);
 
         $this->get('/id/products')
@@ -167,7 +169,7 @@ class AffiliateProductTest extends TestCase
             ->assertSee('Shopee');
 
         $category = AffiliateCategory::query()
-            ->whereHas('translations', fn ($query) => $query->where('slug', 'hosting-vps'))
+            ->whereHas('translations', fn ($query) => $query->where('slug', 'vps'))
             ->firstOrFail();
 
         $this->actingAs($admin)
@@ -311,19 +313,19 @@ class AffiliateProductTest extends TestCase
     public function test_hosting_category_shows_spec_table_faq_and_schema(): void
     {
         $category = AffiliateCategory::query()
-            ->whereHas('translations', fn ($query) => $query->where('locale', 'id')->where('slug', 'hosting-vps'))
+            ->whereHas('translations', fn ($query) => $query->where('locale', 'id')->where('slug', 'vps'))
             ->firstOrFail();
 
         $category->translateOrNew('id')->fill([
             'intro' => '<p>Panduan memilih VPS untuk website kecil.</p><p><strong>Fokus pada RAM</strong> dan bandwidth.</p>',
-            'meta_title' => 'Hosting & VPS untuk Website Kecil',
+            'meta_title' => 'VPS untuk Website Kecil',
             'meta_description' => 'Bandingkan paket VPS berdasarkan RAM, vCPU, dan bandwidth.',
             'faq' => [
                 ['question' => 'Berapa RAM untuk VPS website?', 'answer' => 'Satu sampai dua GB biasanya cukup.'],
             ],
         ])->save();
 
-        $this->makeProduct('Hostinger VPS KVM 1', 'hostinger-vps-kvm-1', 'vps', 'Hosting & VPS', true, [
+        $this->makeProduct('Hostinger VPS KVM 1', 'hostinger-vps-kvm-1', 'vps', 'VPS', true, [
             'is_hosting' => true,
             'billing_period' => 'monthly',
             'cpu_cores' => 1,
@@ -338,7 +340,7 @@ class AffiliateProductTest extends TestCase
             'last_checked_at' => '2026-11-20',
         ]);
 
-        $this->get('/id/kategori/hosting-vps')
+        $this->get('/id/kategori/vps')
             ->assertOk()
             ->assertSee('Panduan memilih VPS untuk website kecil')
             ->assertSee('<strong>Fokus pada RAM</strong>', false)
@@ -377,6 +379,141 @@ class AffiliateProductTest extends TestCase
         $this->get('/id/kategori/elektronik')
             ->assertOk()
             ->assertDontSee('Spesifikasi &amp; harga', false);
+    }
+
+    public function test_old_hosting_vps_category_url_redirects_permanently(): void
+    {
+        $this->get('/id/kategori/hosting-vps')
+            ->assertStatus(301)
+            ->assertRedirect('/id/kategori/vps');
+
+        $this->get('/id/category/hosting-vps')
+            ->assertStatus(301)
+            ->assertRedirect('/id/kategori/vps');
+    }
+
+    public function test_racknerd_seeder_adds_black_friday_vps_shared_and_reseller_plans(): void
+    {
+        $this->seed(RackNerdProductSeeder::class);
+        $this->seed(RackNerdProductSeeder::class);
+
+        $products = AffiliateProduct::query()
+            ->whereHas('affiliatePlatform', fn ($query) => $query->where('slug', 'racknerd'))
+            ->get();
+
+        $this->assertCount(11, $products);
+
+        $product = $products->first(
+            fn (AffiliateProduct $item): bool => $item->translate('id', false)?->slug === 'racknerd-4gb-kvm-vps'
+        );
+
+        $this->assertNotNull($product);
+        $this->assertTrue($product->is_hosting);
+        $this->assertSame('yearly', $product->billing_period);
+        $this->assertStringContainsString('pid=970', $product->affiliate_url);
+        $this->assertStringEndsWith('aff=1426', $product->affiliate_url);
+        $this->assertSame(4, $product->cpu_cores);
+        $this->assertSame(4096, $product->ram_mb);
+
+        $this->get('/id/kategori/vps')
+            ->assertOk()
+            ->assertSee('RackNerd 4 GB KVM VPS')
+            ->assertSee('vCore');
+
+        $this->get('/id/kategori/shared-hosting')
+            ->assertOk()
+            ->assertSee('RackNerd Shared Hosting 90 GB')
+            ->assertDontSee('vCore');
+
+        $this->get('/id/kategori/reseller-hosting')
+            ->assertOk()
+            ->assertSee('RackNerd Reseller Hosting 115 GB')
+            ->assertDontSee('vCore');
+
+        $this->get('/id/products/racknerd-4gb-kvm-vps')
+            ->assertOk()
+            ->assertSee('Spesifikasi &amp; harga', false)
+            ->assertSee('60 GB SSD')
+            ->assertSee('10 TB');
+    }
+
+    public function test_partner_hosting_seeder_adds_best_selling_plans_from_four_providers(): void
+    {
+        $this->seed(PartnerHostingProductSeeder::class);
+        $this->seed(PartnerHostingProductSeeder::class);
+
+        $products = AffiliateProduct::query()
+            ->whereHas('affiliatePlatform', fn ($query) => $query
+                ->whereIn('slug', ['domainesia', 'vultr', 'hostbrr', 'namecrane']))
+            ->get();
+
+        $this->assertCount(13, $products);
+
+        $find = fn (string $slug): ?AffiliateProduct => $products->first(
+            fn (AffiliateProduct $item): bool => $item->translate('id', false)?->slug === $slug
+        );
+
+        $domainesia = $find('domainesia-nimbus-go');
+        $this->assertNotNull($domainesia);
+        $this->assertTrue($domainesia->is_hosting);
+        $this->assertSame('monthly', $domainesia->billing_period);
+        $this->assertSame('32000.00', $domainesia->price);
+        $this->assertSame('65000.00', $domainesia->original_price);
+        $this->assertSame(15, $domainesia->storage_gb);
+        $this->assertSame('https://my.domainesia.com/ref.php?u=27743', $domainesia->affiliate_url);
+
+        $vultr = $find('vultr-cloud-compute-2gb');
+        $this->assertNotNull($vultr);
+        $this->assertSame(1, $vultr->cpu_cores);
+        $this->assertSame(2048, $vultr->ram_mb);
+        $this->assertSame(50, $vultr->storage_gb);
+        $this->assertSame('https://www.vultr.com/?ref=7309768', $vultr->affiliate_url);
+
+        $hostbrr = $find('hostbrr-cpanel-reseller-50gb');
+        $this->assertNotNull($hostbrr);
+        $this->assertSame(50, $hostbrr->storage_gb);
+        $this->assertSame('https://my.hostbrr.com/order/forms/a/OTIx', $hostbrr->affiliate_url);
+
+        $hostbrrVps = $find('hostbrr-ryzen-5950x-2gb');
+        $this->assertNotNull($hostbrrVps);
+        $this->assertSame(1, $hostbrrVps->cpu_cores);
+        $this->assertSame(2048, $hostbrrVps->ram_mb);
+        $this->assertSame('Falkenstein, Jerman', $hostbrrVps->location);
+
+        $namecrane = $find('namecrane-directadmin-reseller-tower-500');
+        $this->assertNotNull($namecrane);
+        $this->assertSame(500, $namecrane->storage_gb);
+        $this->assertSame('https://namecrane.com/ref/nainpick/directadmin-reseller-hosting', $namecrane->affiliate_url);
+
+        $this->get('/id/kategori/vps')
+            ->assertOk()
+            ->assertSee('Vultr Cloud Compute 2 GB')
+            ->assertSee('HostBrr Ryzen 5950X 2 GB')
+            ->assertSee('vCore');
+
+        $this->get('/id/kategori/shared-hosting')
+            ->assertOk()
+            ->assertSee('DomaiNesia Nimbus Go')
+            ->assertSee('NameCrane Beam 100')
+            ->assertDontSee('vCore');
+
+        $this->get('/id/kategori/reseller-hosting')
+            ->assertOk()
+            ->assertSee('HostBrr cPanel Reseller 50 GB')
+            ->assertSee('NameCrane DirectAdmin Reseller Tower 500')
+            ->assertDontSee('vCore');
+
+        $this->get('/id/products/domainesia-nimbus-go')
+            ->assertOk()
+            ->assertSee('Spesifikasi &amp; harga', false)
+            ->assertSee('15 GB SSD NVMe')
+            ->assertSee('Jakarta &amp; Singapura', false);
+
+        $sharedCategory = AffiliateCategory::query()
+            ->whereHas('translations', fn ($query) => $query->where('locale', 'id')->where('slug', 'shared-hosting'))
+            ->firstOrFail();
+
+        $this->assertStringContainsString('DomaiNesia', (string) $sharedCategory->translate('id', false)?->intro);
     }
 
     private function makeProduct(

@@ -6,6 +6,7 @@ use App\Domain\Affiliate\Http\Controllers\AffiliateProductController;
 use App\Domain\Blog\Post\Services\PostService;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
@@ -52,7 +53,7 @@ class BlogController extends Controller
         ]);
     }
 
-    public function category(string $locale, string $slug, Request $request): View
+    public function category(string $locale, string $slug, Request $request): View|RedirectResponse
     {
         app()->setLocale($locale);
 

@@ -242,6 +242,8 @@
                     </div>
                 @elseif ($showSpecs)
                     @php
+                        $hasCpu = $products->getCollection()->contains(fn ($item) => $item->cpu_cores !== null);
+                        $hasRam = $products->getCollection()->contains(fn ($item) => $item->ram_mb !== null);
                         $hasIpv4 = $products->getCollection()->contains(fn ($item) => $item->ipv4_count !== null);
                         $hasIpv6 = $products->getCollection()->contains(fn ($item) => $item->ipv6_support !== null);
                         $hasPort = $products->getCollection()->contains(fn ($item) => filled($item->port_speed));
@@ -266,8 +268,12 @@
                                 <thead class="bg-slate-50 text-[11px] uppercase tracking-[0.12em] text-slate-500">
                                     <tr>
                                         <th scope="col" class="px-5 py-3 font-semibold">{{ __('messages.affiliate_plan') }}</th>
-                                        <th scope="col" class="px-4 py-3 font-semibold">{{ __('messages.affiliate_spec_cpu') }}</th>
-                                        <th scope="col" class="px-4 py-3 font-semibold">{{ __('messages.affiliate_spec_ram') }}</th>
+                                        @if ($hasCpu)
+                                            <th scope="col" class="px-4 py-3 font-semibold">{{ __('messages.affiliate_spec_cpu') }}</th>
+                                        @endif
+                                        @if ($hasRam)
+                                            <th scope="col" class="px-4 py-3 font-semibold">{{ __('messages.affiliate_spec_ram') }}</th>
+                                        @endif
                                         <th scope="col" class="px-4 py-3 font-semibold">{{ __('messages.affiliate_spec_storage') }}</th>
                                         <th scope="col" class="px-4 py-3 font-semibold">{{ __('messages.affiliate_spec_bandwidth') }}</th>
                                         @if ($hasIpv4)
@@ -304,8 +310,12 @@
                                                 </a>
                                                 <p class="mt-0.5 text-xs text-slate-400">{{ $product->affiliatePlatform?->name }}</p>
                                             </td>
-                                            <td class="whitespace-nowrap px-4 py-4 text-slate-600">{{ $product->cpu_cores ? $product->cpu_cores.' vCore' : $notSpecified }}</td>
-                                            <td class="whitespace-nowrap px-4 py-4 text-slate-600">{{ $ram }}</td>
+                                            @if ($hasCpu)
+                                                <td class="whitespace-nowrap px-4 py-4 text-slate-600">{{ $product->cpu_cores ? $product->cpu_cores.' vCore' : $notSpecified }}</td>
+                                            @endif
+                                            @if ($hasRam)
+                                                <td class="whitespace-nowrap px-4 py-4 text-slate-600">{{ $ram }}</td>
+                                            @endif
                                             <td class="whitespace-nowrap px-4 py-4 text-slate-600">{{ $storage }}</td>
                                             <td class="whitespace-nowrap px-4 py-4 text-slate-600">{{ $product->bandwidth_tb !== null ? rtrim(rtrim(number_format((float) $product->bandwidth_tb, 2, ',', '.'), '0'), ',').' TB' : $notSpecified }}</td>
                                             @if ($hasIpv4)

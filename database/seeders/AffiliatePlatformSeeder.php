@@ -15,8 +15,31 @@ class AffiliatePlatformSeeder extends Seeder
         'shopee' => 'Shopee',
         'tiktok_shop' => 'TikTok Shop',
         'amazon' => 'Amazon',
+        'racknerd' => 'RackNerd',
+        'domainesia' => 'DomaiNesia',
+        'vultr' => 'Vultr',
+        'hostbrr' => 'HostBrr',
+        'namecrane' => 'NameCrane',
         'vps' => 'VPS / Hosting',
         'other' => 'Lainnya',
+    ];
+
+    /**
+     * Urutan tampilan platform di filter katalog.
+     *
+     * @var array<string, int>
+     */
+    private array $sortOrder = [
+        'shopee' => 0,
+        'tiktok_shop' => 1,
+        'amazon' => 2,
+        'racknerd' => 10,
+        'domainesia' => 11,
+        'vultr' => 12,
+        'hostbrr' => 13,
+        'namecrane' => 14,
+        'vps' => 20,
+        'other' => 30,
     ];
 
     /**
@@ -39,7 +62,7 @@ class AffiliatePlatformSeeder extends Seeder
                 ['slug' => $slug],
                 [
                     'is_active' => true,
-                    'sort_order' => array_search($slug, array_keys($this->platforms), true),
+                    'sort_order' => $this->sortOrder[$slug] ?? 99,
                 ],
             );
 

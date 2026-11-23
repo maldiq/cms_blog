@@ -90,9 +90,21 @@ class AffiliateProductController extends Controller
         return $this->catalog($locale, $request);
     }
 
-    public function category(string $locale, string $slug, Request $request): View
+    public function category(string $locale, string $slug, Request $request): View|RedirectResponse
     {
         app()->setLocale($locale);
+
+        // URL lama kategori Hosting & VPS dialihkan permanen ke kategori VPS.
+        if ($slug === 'hosting-vps') {
+            $target = AffiliateCategory::query()
+                ->where('is_active', true)
+                ->whereHas('translations', fn (Builder $query) => $query->where('locale', $locale)->where('slug', 'vps'))
+                ->first();
+
+            if ($target !== null) {
+                return redirect()->to(affiliate_category_url($locale, $target->slug), 301);
+            }
+        }
 
         $category = AffiliateCategory::query()
             ->where('is_active', true)
