@@ -120,6 +120,7 @@ class AffiliateProductResource extends Resource
                     ->options([
                         'monthly' => 'Per bulan',
                         'yearly' => 'Per tahun',
+                        'triennial' => 'Per 3 tahun',
                         'one_time' => 'Sekali bayar',
                     ])
                     ->placeholder('Tidak disebutkan')

@@ -171,6 +171,7 @@ return [
     'affiliate_spec_location' => 'Lokasi',
     'affiliate_per_month' => '/bulan',
     'affiliate_per_year' => '/tahun',
+    'affiliate_per_three_years' => '/3 tahun',
     'affiliate_one_time' => 'sekali bayar',
     'affiliate_last_updated' => 'Terakhir diperbarui :date',
     'affiliate_category_faq' => 'Pertanyaan umum',

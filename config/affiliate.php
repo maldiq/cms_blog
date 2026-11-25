@@ -131,6 +131,7 @@ return [
         'vultr' => ['label' => 'Vultr', 'class' => 'bg-sky-600/95 text-white'],
         'hostbrr' => ['label' => 'HostBrr', 'class' => 'bg-emerald-600/95 text-white'],
         'namecrane' => ['label' => 'NameCrane', 'class' => 'bg-cyan-700/95 text-white'],
+        'hosthatch' => ['label' => 'HostHatch', 'class' => 'bg-orange-600/95 text-white'],
         'vps' => ['label' => 'VPS / Hosting', 'class' => 'bg-indigo-600/95 text-white'],
         'other' => ['label' => 'Lainnya', 'class' => 'bg-slate-500/95 text-white'],
     ],

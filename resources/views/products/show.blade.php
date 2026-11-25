@@ -36,6 +36,7 @@
         $billingLabels = [
             'monthly' => __('messages.affiliate_per_month'),
             'yearly' => __('messages.affiliate_per_year'),
+            'triennial' => __('messages.affiliate_per_three_years'),
             'one_time' => __('messages.affiliate_one_time'),
         ];
         $billingLabel = $product->is_hosting ? ($billingLabels[$product->billing_period] ?? '') : '';

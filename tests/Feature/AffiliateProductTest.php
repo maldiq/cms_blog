@@ -13,6 +13,7 @@ use App\Domain\User\Models\User;
 use Database\Seeders\AffiliateCategorySeeder;
 use Database\Seeders\AffiliatePlatformSeeder;
 use Database\Seeders\AffiliateProductSeeder;
+use Database\Seeders\HostHatchProductSeeder;
 use Database\Seeders\LanguageSeeder;
 use Database\Seeders\PartnerHostingProductSeeder;
 use Database\Seeders\RackNerdProductSeeder;
@@ -489,8 +490,7 @@ class AffiliateProductTest extends TestCase
             ->assertOk()
             ->assertSee('Vultr Cloud Compute 2 GB')
             ->assertSee('HostBrr Ryzen 5950X 2 GB')
-            ->assertSee('vCore')
-            ->assertSee('affiliate-product-vultr-cloud-compute-2gb.jpg', false);
+            ->assertSee('vCore');
 
         $this->get('/id/kategori/shared-hosting')
             ->assertOk()
@@ -515,6 +515,75 @@ class AffiliateProductTest extends TestCase
             ->firstOrFail();
 
         $this->assertStringContainsString('DomaiNesia', (string) $sharedCategory->translate('id', false)?->intro);
+    }
+
+    public function test_hosthatch_seeder_adds_anniversary_vps_plans_with_affiliate_link(): void
+    {
+        $this->seed(HostHatchProductSeeder::class);
+        $this->seed(HostHatchProductSeeder::class);
+
+        $products = AffiliateProduct::query()
+            ->whereHas('affiliatePlatform', fn ($query) => $query->where('slug', 'hosthatch'))
+            ->get();
+
+        $this->assertCount(4, $products);
+
+        $find = fn (string $slug): ?AffiliateProduct => $products->first(
+            fn (AffiliateProduct $item): bool => $item->translate('id', false)?->slug === $slug
+        );
+
+        $nvme = $find('hosthatch-nvme-4gb');
+        $this->assertNotNull($nvme);
+        $this->assertTrue($nvme->is_hosting);
+        $this->assertSame('yearly', $nvme->billing_period);
+        $this->assertSame('560000.00', $nvme->price);
+        $this->assertSame(2, $nvme->cpu_cores);
+        $this->assertSame(4096, $nvme->ram_mb);
+        $this->assertSame(50, $nvme->storage_gb);
+        $this->assertSame(1, $nvme->ipv6_support);
+        $this->assertSame('https://cloud.hosthatch.com/a/5864', $nvme->affiliate_url);
+
+        $storage = $find('hosthatch-storage-4gb');
+        $this->assertNotNull($storage);
+        $this->assertSame(5000, $storage->storage_gb);
+        $this->assertSame(35, (int) $storage->bandwidth_tb);
+
+        $this->get('/id/kategori/vps')
+            ->assertOk()
+            ->assertSee('HostHatch NVMe 4 GB')
+            ->assertSee('HostHatch HFC 4 GB')
+            ->assertSee('Rp 560.000');
+
+        $this->get('/en/category/vps')
+            ->assertOk()
+            ->assertSee('HostHatch NVMe 4 GB')
+            ->assertSee('$35.00');
+
+        $this->get('/id/go/hosthatch-nvme-4gb')
+            ->assertRedirect('https://cloud.hosthatch.com/a/5864');
+    }
+
+    public function test_hosting_category_table_shows_product_thumbnails(): void
+    {
+        $image = app(MediaUploadService::class)->uploadFile(
+            UploadedFile::fake()->image('vps-thumbnail.jpg')
+        );
+
+        $product = $this->makeProduct('VPS dengan gambar', 'vps-dengan-gambar', 'vps', 'VPS', true, [
+            'is_hosting' => true,
+            'billing_period' => 'monthly',
+            'cpu_cores' => 1,
+            'ram_mb' => 1024,
+            'storage_gb' => 25,
+            'storage_type' => 'NVMe',
+        ]);
+
+        $product->update(['image_id' => $image->id]);
+
+        $this->get('/id/kategori/vps')
+            ->assertOk()
+            ->assertSee('VPS dengan gambar')
+            ->assertSee('alt="VPS dengan gambar"', false);
     }
 
     private function makeProduct(

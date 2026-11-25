@@ -20,6 +20,7 @@ class AffiliatePlatformSeeder extends Seeder
         'vultr' => 'Vultr',
         'hostbrr' => 'HostBrr',
         'namecrane' => 'NameCrane',
+        'hosthatch' => 'HostHatch',
         'vps' => 'VPS / Hosting',
         'other' => 'Lainnya',
     ];
@@ -38,6 +39,7 @@ class AffiliatePlatformSeeder extends Seeder
         'vultr' => 12,
         'hostbrr' => 13,
         'namecrane' => 14,
+        'hosthatch' => 15,
         'vps' => 20,
         'other' => 30,
     ];

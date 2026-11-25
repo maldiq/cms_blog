@@ -16,9 +16,9 @@ class HostingEditorial
         return [
             'VPS' => [
                 'id' => [
-                    'intro' => "Kategori VPS di NainPicks merangkum paket server virtual dari beberapa penyedia: promo tahunan RackNerd, cloud compute Vultr dengan tagihan bulanan, paket bulanan Hostinger, dan Droplet DigitalOcean. Fokusnya bukan hanya harga termurah, tetapi resource yang benar-benar didapat: vCPU, RAM, penyimpanan, bandwidth, dan periode tagihan.\n\nPerhatikan periode tagihan. Vultr, Hostinger, dan DigitalOcean menagih bulanan (Vultr dihitung per jam dengan cap bulanan), sementara promo RackNerd ditagih per tahun di muka, sehingga angka yang tampil adalah harga setahun. Untuk membandingkan biaya bulanan, bagi harga tahunan dengan 12.\n\nUntuk blog atau company profile, 1 vCPU dengan RAM 1–2 GB biasanya cukup. Naikkan RAM dan penyimpanan jika menjalankan panel kontrol, database, Docker, atau beberapa aplikasi sekaligus. Selalu cek ulang halaman penyedia sebelum membeli karena promo, stok lokasi, dan kurs dapat berubah.",
+                    'intro' => "Kategori VPS di NainPicks merangkum paket server virtual dari beberapa penyedia: promo tahunan RackNerd, cloud compute Vultr dengan tagihan bulanan, paket bulanan Hostinger, dan Droplet DigitalOcean, serta promo anniversary HostHatch dengan tagihan tahunan. Fokusnya bukan hanya harga termurah, tetapi resource yang benar-benar didapat: vCPU, RAM, penyimpanan, bandwidth, dan periode tagihan.\n\nPerhatikan periode tagihan. Vultr, Hostinger, dan DigitalOcean menagih bulanan (Vultr dihitung per jam dengan cap bulanan), sementara promo RackNerd dan HostHatch ditagih per tahun di muka, sehingga angka yang tampil adalah harga setahun. Untuk membandingkan biaya bulanan, bagi harga tahunan dengan 12.\n\nUntuk blog atau company profile, 1 vCPU dengan RAM 1–2 GB biasanya cukup. Naikkan RAM dan penyimpanan jika menjalankan panel kontrol, database, Docker, atau beberapa aplikasi sekaligus. Selalu cek ulang halaman penyedia sebelum membeli karena promo, stok lokasi, dan kurs dapat berubah.",
                     'meta_title' => 'VPS Murah: Harga, Spesifikasi, dan Perbandingan Paket',
-                    'meta_description' => 'Bandingkan paket VPS dari RackNerd, Vultr, Hostinger, dan DigitalOcean: vCPU, RAM, penyimpanan NVMe/SSD, bandwidth, lokasi, dan periode tagihan. Cek sebelum membeli.',
+                    'meta_description' => 'Bandingkan paket VPS dari RackNerd, Vultr, Hostinger, DigitalOcean, dan HostHatch: vCPU, RAM, penyimpanan NVMe/SSD, bandwidth, lokasi, dan periode tagihan. Cek sebelum membeli.',
                     'faq' => [
                         [
                             'question' => 'Berapa RAM yang dibutuhkan untuk VPS website?',
@@ -30,7 +30,7 @@ class HostingEditorial
                         ],
                         [
                             'question' => 'Kenapa ada harga tahunan dan harga bulanan?',
-                            'answer' => 'Vultr, Hostinger, dan DigitalOcean menagih bulanan, sementara promo Black Friday RackNerd menagih setahun di muka. Bagi harga tahunan dengan 12 untuk melihat ekuivalen bulanannya.',
+                            'answer' => 'Vultr, Hostinger, dan DigitalOcean menagih bulanan, sementara promo Black Friday RackNerd dan anniversary HostHatch menagih setahun di muka. Bagi harga tahunan dengan 12 untuk melihat ekuivalen bulanannya.',
                         ],
                         [
                             'question' => 'Kenapa harga promo VPS terlihat lebih murah?',
@@ -39,9 +39,9 @@ class HostingEditorial
                     ],
                 ],
                 'en' => [
-                    'intro' => "The VPS category on NainPicks gathers virtual server plans from several providers: RackNerd's annual promos, Vultr cloud compute billed monthly, Hostinger's monthly plans, and DigitalOcean Droplets. The focus is not just the lowest sticker price, but the resources you actually get: vCPU, RAM, storage, bandwidth, and billing period.\n\nPay attention to the billing period. Vultr, Hostinger, and DigitalOcean bill monthly (Vultr is metered hourly with a monthly cap), while RackNerd promos require an annual upfront payment, so the figure shown is the yearly price. Divide the annual price by 12 to compare monthly costs.\n\nFor a blog or company profile, 1 vCPU with 1–2 GB of RAM is usually enough. Add more RAM and storage when running a control panel, database, Docker, or several apps at once. Always recheck the provider page before buying, as promos, location availability, and exchange rates change.",
+                    'intro' => "The VPS category on NainPicks gathers virtual server plans from several providers: RackNerd's annual promos, Vultr cloud compute billed monthly, Hostinger's monthly plans, DigitalOcean Droplets, and HostHatch's annual anniversary promo. The focus is not just the lowest sticker price, but the resources you actually get: vCPU, RAM, storage, bandwidth, and billing period.\n\nPay attention to the billing period. Vultr, Hostinger, and DigitalOcean bill monthly (Vultr is metered hourly with a monthly cap), while RackNerd and HostHatch promos require an annual upfront payment, so the figure shown is the yearly price. Divide the annual price by 12 to compare monthly costs.\n\nFor a blog or company profile, 1 vCPU with 1–2 GB of RAM is usually enough. Add more RAM and storage when running a control panel, database, Docker, or several apps at once. Always recheck the provider page before buying, as promos, location availability, and exchange rates change.",
                     'meta_title' => 'Affordable VPS: Pricing, Specs, and Plan Comparison',
-                    'meta_description' => 'Compare VPS plans from RackNerd, Vultr, Hostinger, and DigitalOcean: vCPU, RAM, NVMe or SSD storage, bandwidth, location, and billing period. Check the specs before you buy.',
+                    'meta_description' => 'Compare VPS plans from RackNerd, Vultr, Hostinger, DigitalOcean, and HostHatch: vCPU, RAM, NVMe or SSD storage, bandwidth, location, and billing period. Check the specs before you buy.',
                     'faq' => [
                         [
                             'question' => 'How much RAM does a website VPS need?',
@@ -53,7 +53,7 @@ class HostingEditorial
                         ],
                         [
                             'question' => 'Why are some prices yearly and others monthly?',
-                            'answer' => 'Vultr, Hostinger, and DigitalOcean bill monthly, while RackNerd Black Friday promos require an annual upfront payment. Divide the annual price by 12 to see the monthly equivalent.',
+                            'answer' => 'Vultr, Hostinger, and DigitalOcean bill monthly, while RackNerd Black Friday and HostHatch anniversary promos require an annual upfront payment. Divide the annual price by 12 to see the monthly equivalent.',
                         ],
                         [
                             'question' => 'Why do VPS promo prices look so cheap?',

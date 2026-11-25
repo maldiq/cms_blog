@@ -168,6 +168,7 @@ return [
     'affiliate_spec_location' => 'Location',
     'affiliate_per_month' => '/mo',
     'affiliate_per_year' => '/yr',
+    'affiliate_per_three_years' => '/3 years',
     'affiliate_one_time' => 'one-time',
     'affiliate_last_updated' => 'Last updated :date',
     'affiliate_category_faq' => 'Frequently asked questions',
