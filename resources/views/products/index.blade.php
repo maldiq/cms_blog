@@ -206,7 +206,7 @@
                 </div>
             </aside>
 
-            <section aria-labelledby="catalog-results">
+            <section aria-labelledby="catalog-results" class="min-w-0">
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <p id="catalog-results" class="text-sm text-slate-600">
                         <span class="font-semibold text-slate-900">{{ $products->total() }}</span>
@@ -251,6 +251,7 @@
                         $billingLabels = [
                             'monthly' => __('messages.affiliate_per_month'),
                             'yearly' => __('messages.affiliate_per_year'),
+                            'triennial' => __('messages.affiliate_per_three_years'),
                             'one_time' => __('messages.affiliate_one_time'),
                         ];
                     @endphp
